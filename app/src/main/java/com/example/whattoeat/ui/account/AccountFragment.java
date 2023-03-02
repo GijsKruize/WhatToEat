@@ -1,4 +1,4 @@
-package com.example.whattoeat.ui.dashboard;
+package com.example.whattoeat.ui.account;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,23 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.whattoeat.databinding.FragmentDashboardBinding;
+import com.example.whattoeat.databinding.FragmentFoodBinding;
+import com.example.whattoeat.databinding.FragmentFoodBinding;
 
-public class DashboardFragment extends Fragment {
+public class AccountFragment extends Fragment {
 
-    private FragmentDashboardBinding binding;
+    private FragmentFoodBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+        AccountViewModel foodViewModel =
+                new ViewModelProvider(this).get(AccountViewModel.class);
 
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentFoodBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textDashboard;
-        dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textFood;
+        foodViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 

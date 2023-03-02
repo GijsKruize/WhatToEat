@@ -1,4 +1,4 @@
-package com.example.whattoeat.ui.notifications;
+package com.example.whattoeat.ui.map;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,22 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.whattoeat.databinding.FragmentNotificationsBinding;
+import com.example.whattoeat.databinding.FragmentMapBinding;
 
-public class NotificationsFragment extends Fragment {
+public class MapFragment extends Fragment {
 
-    private FragmentNotificationsBinding binding;
+    private FragmentMapBinding binding;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        NotificationsViewModel notificationsViewModel =
-                new ViewModelProvider(this).get(NotificationsViewModel.class);
+        MapViewModel mapViewModel =
+                new ViewModelProvider(this).get(MapViewModel.class);
 
-        binding = FragmentNotificationsBinding.inflate(inflater, container, false);
+        binding = FragmentMapBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        notificationsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textMap;
+        mapViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
