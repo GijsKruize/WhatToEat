@@ -3,8 +3,10 @@
     <color name="purple_200">#FFBB86FC</color>
     <color name="main_green">#0FB652</color>
     <color name="purple_700">#FF3700B3</color>
+    <color name="light_grey">#E7E7E7</color>
     <color name="second_grey">#B5B5B5</color>
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
 </resources>
