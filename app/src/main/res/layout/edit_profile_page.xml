@@ -10,6 +10,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="36dp"
+        android:drawableLeft="@drawable/confirm_edit"
         android:text="Update Profile"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,8 +20,8 @@
         android:layout_width="match_parent"
         android:layout_height="645dp"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="1dp"
-        tools:layout_editor_absoluteY="1dp">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="1dp">
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -44,17 +45,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:text="Profile Name"
                     android:textSize="18dp"
-                    android:textStyle="bold"
-                    android:text="Profile Name" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/editProfileUserEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:textColor="@color/second_grey"
-                    android:text="Profile@email.com" />
+                    android:text="Profile@email.com"
+                    android:textColor="@color/second_grey" />
 
             </LinearLayout>
         </FrameLayout>
@@ -62,80 +63,80 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
             android:layout_gravity="center"
+            android:layout_margin="12dp"
             android:background="@drawable/gray_bar_background">
 
             <EditText
                 android:id="@+id/editTextTextPersonName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
                 android:ems="10"
                 android:inputType="textPersonName"
-                android:text="Name"
-                app:cardCornerRadius="12dp"
                 android:padding="12dp"
-                android:backgroundTint="@android:color/transparent" />
+                android:text="Name"
+                app:cardCornerRadius="12dp" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
             android:layout_gravity="center"
+            android:layout_margin="12dp"
             android:background="@drawable/gray_bar_background">
 
             <EditText
                 android:id="@+id/editTextTextPostalAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
                 android:ems="10"
                 android:inputType="textPostalAddress"
-                android:text="Adress"
-                app:cardCornerRadius="12dp"
                 android:padding="12dp"
-                android:backgroundTint="@android:color/transparent" />
+                android:text="Adress"
+                app:cardCornerRadius="12dp" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
             android:layout_gravity="center"
+            android:layout_margin="12dp"
             android:background="@drawable/gray_bar_background">
 
             <EditText
                 android:id="@+id/editTextPhone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
                 android:ems="10"
                 android:inputType="phone"
-                android:text="Phone"
-                app:cardCornerRadius="12dp"
                 android:padding="12dp"
-                android:backgroundTint="@android:color/transparent" />
+                android:text="Phone"
+                app:cardCornerRadius="12dp" />
 
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="12dp"
             android:layout_gravity="center"
+            android:layout_margin="12dp"
             android:background="@drawable/gray_bar_background">
 
             <EditText
                 android:id="@+id/editTextTextEmailAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
                 android:ems="10"
                 android:inputType="textEmailAddress"
-                android:text="Email address"
-                app:cardCornerRadius="12dp"
                 android:padding="12dp"
-                android:backgroundTint="@android:color/transparent" />
+                android:text="Email address"
+                app:cardCornerRadius="12dp" />
 
         </RelativeLayout>
     </LinearLayout>

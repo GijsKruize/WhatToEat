@@ -42,7 +42,7 @@
                     android:scaleType="centerCrop"
                     app:layout_constraintTop_toTopOf="parent"
 
-                    />
+                    android:contentDescription="Image of the restaurant" />
 
                 <View
                     android:id="@+id/divider"

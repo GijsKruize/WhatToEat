@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -35,14 +36,12 @@
                 android:paddingTop="0dp">
 
                 <ImageView
-                    android:id="@+id/imageRestaurant"
+                    android:id="@+id/imageRecipe"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:src="@drawable/restaurant_stock"
+                    android:layout_height="wrap_content"
                     android:scaleType="centerCrop"
-                    app:layout_constraintTop_toTopOf="parent"
-
-                    />
+                    android:src="@drawable/recipe_stock"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
                     android:id="@+id/divider"
@@ -52,52 +51,61 @@
                     app:layout_constraintBottom_toBottomOf="parent" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
+
             <LinearLayout
                 android:id="@+id/linearLayoutContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="8dp"
-                android:paddingBottom="12dp"
-                android:paddingHorizontal="12dp"
                 android:background="@color/light_grey"
-                >
+                android:orientation="vertical"
+                android:paddingHorizontal="12dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="12dp">
 
 
                 <TextView
                     android:id="@+id/textRecipeName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
-                    android:textColor="@color/main_green"
-                    android:textSize="4.5mm"
-                    android:textAlignment="center"
+                    android:paddingVertical="4dp"
+                    android:shadowColor="@color/second_grey"
                     android:shadowDx="2"
                     android:shadowDy="2"
                     android:shadowRadius="2"
-                    android:shadowColor="@color/second_grey"
-                    android:paddingVertical="4dp"
-                    android:text="Recipe Name"
-                    />
+                    android:text="Chorizo &amp; mozzarella gnocchi bake"
+                    android:textAlignment="center"
+                    android:textColor="@color/main_green"
+                    android:textSize="4.5mm"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textLocationTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textStyle="bold"
+                    android:text="Ingredients"
                     android:textColor="@color/main_green"
                     android:textSize="24dp"
-                    android:text="Location"
-                    />
+                    android:textStyle="bold" />
+
                 <TextView
                     android:id="@+id/textLocationContent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingBottom="8dp"
                     android:paddingHorizontal="8dp"
-                    android:textSize="16dp"
-                    android:text="Heuvel Galerie 195\n5611 DK Eindhoven"
-                    />
+                    android:paddingBottom="8dp"
+                    android:text="
+                        1 tbsp olive oil\n
+                        1 onion, finely chopped\n
+                        2 garlic cloves, crushed\n
+                        120g chorizo, diced\n
+                        2 x 400g cans chopped tomatoes\n
+                        1 tsp caster sugar\n
+                        600g fresh gnocchi\n
+                        125g mozzarella ball, cut into chunks\n
+                        small bunch of basil, torn\n
+                        green salad, to serve"
+                    android:textAlignment="viewStart"
+                    android:textSize="16dp" />
 
             </LinearLayout>
         </LinearLayout>
