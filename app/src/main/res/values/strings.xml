@@ -7,4 +7,7 @@
     <string name="title_info">Info</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="what_to_eat" />
+    <string name="team" />
+    <string name="kuzey_hamidoglu" />
 </resources>
