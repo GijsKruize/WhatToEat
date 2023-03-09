@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1004996453779",
+    "firebase_url": "https://what-to-eat-tue-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "what-to-eat-tue",
+    "storage_bucket": "what-to-eat-tue.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1004996453779:android:e0365b554dd635048e7466",
+        "android_client_info": {
+          "package_name": "com.example.whattoeat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1004996453779-e9t7jpga32sbiso49sr27bmtrpk8cm0b.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.whattoeat",
+            "certificate_hash": "d8a5963433383371e272450089f58451fb3b90cf"
+          }
+        },
+        {
+          "client_id": "1004996453779-a7rvinn6u3mh9fs92en827740d143n36.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDYDueASOnTjU3-Li9J09YtjbOecReE_aY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1004996453779-a7rvinn6u3mh9fs92en827740d143n36.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
