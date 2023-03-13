@@ -25,9 +25,9 @@
 
     <fragment
         android:id="@+id/nav_account"
-        android:name="com.example.whattoeat.ui.food.FoodFragment"
+        android:name="com.example.whattoeat.ui.account.AccountFragment"
         android:label="@string/title_account"
-        tools:layout="@layout/fragment_account" />
+        tools:layout="@layout/activity_account_details" />
 
     <fragment
         android:id="@+id/nav_info"

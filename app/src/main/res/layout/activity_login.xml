@@ -52,8 +52,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo__1_" />
 
-    <EditText
-        android:id="@+id/emailLoginOld"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/emailLogin"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_marginTop="60dp"
@@ -61,25 +61,31 @@
         android:drawableLeft="@drawable/bolt"
         android:ems="10"
         android:inputType="textEmailAddress"
-        android:hint="j.doe@student.tue.nl"
+        android:hint="@string/emailLogin"
         app:layout_constraintEnd_toEndOf="@+id/loginText"
         app:layout_constraintStart_toStartOf="@+id/loginText"
         app:layout_constraintTop_toBottomOf="@+id/loginText2" />
 
-    <EditText
-        android:id="@+id/passwordLoginOld"
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/passwordLogin"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:background="@drawable/rounded_button_background_white"
         android:ems="10"
         android:inputType="textPassword"
         android:drawableLeft="@drawable/lock"
-        android:hint="***********"
+        android:hint="@string/passwordLogin"
         app:layout_constraintBottom_toTopOf="@+id/loginButton"
-        app:layout_constraintEnd_toEndOf="@+id/emailLoginOld"
-        app:layout_constraintStart_toStartOf="@+id/emailLoginOld"
-        app:layout_constraintTop_toBottomOf="@+id/emailLoginOld"
+        app:layout_constraintEnd_toEndOf="@+id/emailLogin"
+        app:layout_constraintStart_toStartOf="@+id/emailLogin"
+        app:layout_constraintTop_toBottomOf="@+id/emailLogin"
         app:layout_constraintVertical_bias="0.505" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/loginButtonLoginPage"
