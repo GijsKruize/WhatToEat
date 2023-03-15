@@ -16,19 +16,9 @@ import com.example.whattoeat.databinding.FragmentFoodBinding;
 public class FoodFragment extends Fragment {
 
     private FragmentFoodBinding binding;
-
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
-        FoodViewModel foodViewModel =
-                new ViewModelProvider(this).get(FoodViewModel.class);
-
-        binding = FragmentFoodBinding.inflate(inflater, container, false);
-        View root = binding.getRoot();
-
-        final TextView textView = binding.textFood;
-        foodViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        return root;
-    }
+//    public View onCreateView(@NonNull LayoutInflater inflater,)
+//
+//    }
 
     @Override
     public void onDestroyView() {
