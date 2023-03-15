@@ -6,6 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Title -->
+
     <View
         android:layout_width="296dp"
         android:layout_height="95dp"
@@ -15,7 +16,7 @@
         app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.039" />
+        app:layout_constraintVertical_bias="0.04" />
 
     <TextView
         android:id="@+id/title_text_view_2"
@@ -200,7 +201,7 @@
     <View
         android:layout_width="378dp"
         android:layout_height="207dp"
-        android:background="#80B5B5B5"
+        android:background="#E7E7E7"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.515"
@@ -214,7 +215,7 @@
         android:layout_height="132dp"
         android:layout_below="@+id/developer_name"
         android:layout_centerHorizontal="true"
-        android:text="Inspired by the idead of finding what to eat in a matter of a few clicks, the group is developing WHAT TO EAT? This way users can save time and energy while selecting dinner."
+        android:text="Inspired by the idea of finding what to eat in a matter of a few clicks, the group is developing WHAT TO EAT? This way users can save time and energy while selecting dinner."
         android:textColor="#FF000000"
         android:textSize="20sp"
         android:textStyle="bold"
