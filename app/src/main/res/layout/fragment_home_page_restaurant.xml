@@ -34,6 +34,32 @@
             app:defaultNavHost="true"
             app:navGraph="@navigation/mobile_navigation" />
     </androidx.cardview.widget.CardView>
+    <View
+        android:layout_width="21dp"
+        android:layout_height="24dp"
+        android:id="@+id/pieChartSkipped"
+        android:background="@drawable/gray_rectangle"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.605"
+        app:layout_constraintVertical_bias="0.21"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/textSkipped"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Skipped"
+        android:textColor="@color/black"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.734"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.21" />
     <TextView
         android:id="@+id/statiscticsText"
         android:layout_width="wrap_content"
@@ -48,6 +74,50 @@
         app:layout_constraintVertical_bias="0.58"
         app:layout_constraintHorizontal_bias="0.15"
 
+        />
+
+    <TextView
+        android:id="@+id/textViewsPerDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Page views per day:"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.65"
+        app:layout_constraintHorizontal_bias="0.15"
+        />
+
+    <TextView
+        android:id="@+id/textLikesPerDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Page likes per day:"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.72"
+        app:layout_constraintHorizontal_bias="0.15"
+        />
+    <TextView
+        android:id="@+id/textInteractionsPerDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Page interactions per day:"
+        android:textColor="@color/black"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.79"
+        app:layout_constraintHorizontal_bias="0.18"
         />
 
 
