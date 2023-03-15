@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.whattoeat.databinding.FragmentFoodBinding;
-import com.example.whattoeat.databinding.FragmentFoodBinding;
 
 public class AccountFragment extends Fragment {
 
