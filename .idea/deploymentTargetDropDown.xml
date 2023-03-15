@@ -7,11 +7,19 @@
         <deviceKey>
           <Key>
             <type value="VIRTUAL_DEVICE_PATH" />
+<<<<<<< HEAD
             <value value="$USER_HOME$/.android/avd/Pixel_XL_API_33.avd" />
+=======
+            <value value="$USER_HOME$/.android/avd/Pixel_6_API_33.avd" />
+>>>>>>> f185f8e (fixed navbar and started koloda)
           </Key>
         </deviceKey>
       </Target>
     </targetSelectedWithDropDown>
+<<<<<<< HEAD
     <timeTargetWasSelectedWithDropDown value="2023-03-15T11:54:12.244059Z" />
+=======
+    <timeTargetWasSelectedWithDropDown value="2023-03-15T13:47:52.172478Z" />
+>>>>>>> f185f8e (fixed navbar and started koloda)
   </component>
 </project>
