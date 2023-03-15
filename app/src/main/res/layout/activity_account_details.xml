@@ -93,6 +93,16 @@
                 android:layout_margin="12dp"
                 />
             <Button
+            android:id="@+id/deleteAccountBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gray_bar_background"
+            android:backgroundTint="@color/light_grey"
+            android:text="Change Preferences"
+            android:layout_margin="12dp"
+            />
+
+            <Button
                 android:id="@+id/logOutBtnOld"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
