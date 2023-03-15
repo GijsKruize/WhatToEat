@@ -4,45 +4,110 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/main_green"
     tools:context=".ui.account.Register">
+
+    <TextView
+        android:id="@+id/registerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="108dp"
+        android:text="Welcome to"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/registerText2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="WHAT TO EAT?"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/emailRegister"
+        app:layout_constraintEnd_toEndOf="@+id/registerText"
+        app:layout_constraintStart_toStartOf="@+id/registerText"
+        app:layout_constraintTop_toBottomOf="@+id/registerText"
+        app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/emailRegister"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/emailReg"
+        android:layout_height="48dp"
+        android:layout_marginTop="112dp"
+        android:background="@drawable/rounded_button_background_white"
+        android:drawableLeft="@drawable/bolt"
+        android:ems="10"
+        android:hint="@string/emailLogin"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="@+id/nameRegister"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/nameRegister"
+        app:layout_constraintTop_toBottomOf="@+id/registerText" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/nameRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:background="@drawable/rounded_button_background_white"
+        android:drawableLeft="@drawable/outline_person_24"
+        android:ems="10"
+        android:hint="@string/emailLogin"
+        android:inputType="text"
+        app:layout_constraintBottom_toTopOf="@+id/passwordRegister"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@+id/emailRegister" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/passwordRegister"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:hint="@string/emailReg"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailRegister"
-        tools:ignore="MissingConstraints" />
+        android:layout_height="48dp"
+        android:layout_marginBottom="56dp"
+        android:background="@drawable/rounded_button_background_white"
+        android:drawableLeft="@drawable/lock"
+        android:ems="10"
+        android:hint="@string/passwordLogin"
+        android:inputType="textPassword"
+        app:layout_constraintBottom_toTopOf="@+id/registerBtn"
+        app:layout_constraintEnd_toEndOf="@+id/nameRegister"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/nameRegister" />
 
     <ProgressBar
         android:id="@+id/progressBar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+        android:layout_width="8dp"
+        android:layout_height="6dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/registerBtn" />
 
     <Button
         android:id="@+id/registerBtn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="256dp"
+        android:layout_height="65dp"
+        android:layout_marginBottom="108dp"
+        android:background="@drawable/rounded_button_background_white"
+        android:text="SIGN UP"
+        android:textSize="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordRegister" />
+        app:layout_constraintTop_toBottomOf="@+id/emailRegister"
+        app:layout_constraintVertical_bias="1.0" />
 
     <TextView
         android:id="@+id/loginButtonRegPage"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
