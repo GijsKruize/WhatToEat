@@ -23,22 +23,23 @@ tools:context=".ui.account.AccountFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        >
 
         <ImageView
-            android:layout_width="match_parent"
+            android:id="@+id/nameBackground"
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/profilewidget" />
 
         <ImageView
+            android:id="@+id/profilePict"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="74dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginEnd="273dp"
+            android:layout_alignStart="@+id/nameBackground"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="20dp"
             android:layout_marginBottom="25dp"
             android:src="@drawable/avatar" />
 
@@ -46,13 +47,12 @@ tools:context=".ui.account.AccountFragment">
             android:id="@+id/userDetails"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="157dp"
-            android:layout_marginTop="18dp"
-
-            android:layout_marginEnd="-1dp"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="4dp"
+            android:layout_toEndOf="@+id/profilePict"
+            android:paddingLeft="2dp"
             android:text="@string/user_name"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -66,40 +66,60 @@ tools:context=".ui.account.AccountFragment">
 
         <Button
             android:id="@+id/editProfileBtn"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/gray_bar_background"
             android:backgroundTint="@color/light_grey"
             android:text="Edit Profile"
             android:layout_margin="12dp"
+            android:layout_gravity="center"
+            android:minWidth="300mm"
             />
 
         <Button
             android:id="@+id/resetPasswordBtn"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/gray_bar_background"
             android:backgroundTint="@color/light_grey"
             android:text="Reset Password"
             android:layout_margin="12dp"
+            android:layout_gravity="center"
+            android:minWidth="300mm"
             />
         <Button
             android:id="@+id/changePreferencesBtn"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/gray_bar_background"
             android:backgroundTint="@color/light_grey"
             android:text="Change Preferences"
             android:layout_margin="12dp"
+            android:layout_gravity="center"
+            android:minWidth="300mm"
             />
         <Button
             android:id="@+id/logOutBtn"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/gray_bar_background"
             android:backgroundTint="@color/light_grey"
             android:text="Logout"
             android:layout_margin="12dp"
+            android:layout_gravity="center"
+            android:minWidth="300mm"
+            />
+        <Button
+            android:id="@+id/deleteAccountBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gray_bar_background"
+            android:backgroundTint="@color/light_grey"
+            android:text="Change Preferences"
+            android:layout_margin="12dp"
+            android:layout_gravity="center"
+            android:minWidth="300mm"
+
             />
 
 
