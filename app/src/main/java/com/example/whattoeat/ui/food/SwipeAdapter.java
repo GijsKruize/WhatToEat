@@ -21,11 +21,12 @@ public class SwipeAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return 20;
+        return 10;
     }
 
     @Override
     public Object getItem(int i) {
+
         return null;
     }
 

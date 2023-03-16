@@ -13,6 +13,7 @@ import java.util.List;
 
 public class FoodFragment extends Fragment {
     private SwipeAdapter adapter;
+    private SwipeListener listener;
     private List<Integer> list;
     Koloda koloda;
 
@@ -35,7 +36,9 @@ public class FoodFragment extends Fragment {
         koloda = rView.findViewById(R.id.koloda);
         list = new ArrayList<>();
         adapter = new SwipeAdapter(this.getContext(),list);
+        listener = new SwipeListener(this.getContext());
         koloda.setAdapter(adapter);
+        koloda.setKolodaListener(listener);
 
         return rView;
     }

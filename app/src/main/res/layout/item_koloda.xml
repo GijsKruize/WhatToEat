@@ -10,7 +10,9 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="500dp"
-        android:layout_margin="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="-80dp"
         android:elevation="5dp"
         app:cardCornerRadius="15dp">
 
@@ -23,7 +25,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:backgroundTint="@color/white"
-                android:scaleType="fitXY"
+                android:scaleType="centerCrop"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
