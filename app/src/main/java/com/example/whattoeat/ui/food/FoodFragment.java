@@ -4,25 +4,39 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
-
-import com.example.whattoeat.databinding.FragmentFoodBinding;
-import com.example.whattoeat.databinding.FragmentFoodBinding;
+import com.example.whattoeat.R;
+import com.yalantis.library.Koloda;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FoodFragment extends Fragment {
+    private SwipeAdapter adapter;
+    private List<Integer> list;
+    Koloda koloda;
 
-    private FragmentFoodBinding binding;
-//    public View onCreateView(@NonNull LayoutInflater inflater,)
+//    @Override
+//    public void onCreate(Bundle savedInstanceState) {
+//        super.onCreate(savedInstanceState);
+//
+//        koloda = getView().findViewById(R.id.koloda);
+//        list = new ArrayList<>();
+//        adapter = new SwipeAdapter(this.getContext(),list);
+//        koloda.setAdapter(adapter);
 //
 //    }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        binding = null;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rView = inflater.inflate(R.layout.koloda, container, false);
+
+        koloda = rView.findViewById(R.id.koloda);
+        list = new ArrayList<>();
+        adapter = new SwipeAdapter(this.getContext(),list);
+        koloda.setAdapter(adapter);
+
+        return rView;
     }
 }
