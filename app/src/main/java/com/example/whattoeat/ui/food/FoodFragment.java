@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import com.example.whattoeat.R;
@@ -17,17 +18,6 @@ public class FoodFragment extends Fragment {
     private List<Integer> list;
     Koloda koloda;
 
-//    @Override
-//    public void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//
-//        koloda = getView().findViewById(R.id.koloda);
-//        list = new ArrayList<>();
-//        adapter = new SwipeAdapter(this.getContext(),list);
-//        koloda.setAdapter(adapter);
-//
-//    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -39,6 +29,7 @@ public class FoodFragment extends Fragment {
         listener = new SwipeListener(this.getContext());
         koloda.setAdapter(adapter);
         koloda.setKolodaListener(listener);
+        Toast.makeText(this.getContext(), "Swipe meals, just like on Tinder!", Toast.LENGTH_SHORT).show();
 
         return rView;
     }

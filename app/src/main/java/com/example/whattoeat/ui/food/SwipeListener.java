@@ -35,12 +35,12 @@ public class SwipeListener implements KolodaListener {
 
     @Override
     public void onCardSwipedLeft(int i) {
-        Toast.makeText(context, "Disliked recipe", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
     public void onCardSwipedRight(int i) {
-        Toast.makeText(context, "Liked recipe", Toast.LENGTH_SHORT).show();
+
     }
 
     @Override
