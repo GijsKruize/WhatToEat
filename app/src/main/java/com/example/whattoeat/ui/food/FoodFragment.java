@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -15,7 +16,8 @@ import java.util.List;
 public class FoodFragment extends Fragment {
     private SwipeAdapter adapter;
     private SwipeListener listener;
-    private List<Integer> list;
+    private List<Integer> img;
+    private List<String> name;
     Koloda koloda;
 
     @Override
@@ -24,8 +26,13 @@ public class FoodFragment extends Fragment {
         View rView = inflater.inflate(R.layout.koloda, container, false);
 
         koloda = rView.findViewById(R.id.koloda);
-        list = new ArrayList<>();
-        adapter = new SwipeAdapter(this.getContext(),list);
+        img = new ArrayList<>();
+        name = new ArrayList<>();
+        name.add("test1");
+        name.add("test2");
+        img.add(R.drawable.meal);
+        img.add(R.drawable.meal);
+        adapter = new SwipeAdapter(this.getContext(), img, name);
         listener = new SwipeListener(this.getContext());
         koloda.setAdapter(adapter);
         koloda.setKolodaListener(listener);

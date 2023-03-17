@@ -22,7 +22,7 @@
             android:orientation="vertical">
 
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/image"
+                android:id="@+id/mealImage"
                 android:layout_width="match_parent"
                 android:layout_height="400dp"
                 android:backgroundTint="@color/white"
@@ -41,6 +41,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/mealText"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_gravity="top"
