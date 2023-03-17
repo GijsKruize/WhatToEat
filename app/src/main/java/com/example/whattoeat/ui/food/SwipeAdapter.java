@@ -56,7 +56,7 @@ public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.ViewHolder> 
 
     @Override
     public int getCount() {
-        return img.size();
+        return name.size();
     }
 
     @Override
@@ -99,7 +99,7 @@ public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.ViewHolder> 
 
     @Override
     public int getItemCount() {
-        return img.size();
+        return name.size();
     }
 
 

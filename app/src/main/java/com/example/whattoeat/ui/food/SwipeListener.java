@@ -26,11 +26,12 @@ public class SwipeListener implements KolodaListener {
 
     @Override
     public void onCardLongPress(int i) {
-
+        Toast.makeText(context, "Please swipe", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onCardSingleTap(int i) {
+        Toast.makeText(context, "Please swipe", Toast.LENGTH_SHORT).show();
     }
 
     @Override

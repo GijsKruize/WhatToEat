@@ -30,6 +30,8 @@ public class FoodFragment extends Fragment {
         name = new ArrayList<>();
         name.add("test1");
         name.add("test2");
+        name.add("test3");
+        img.add(R.drawable.meal);
         img.add(R.drawable.meal);
         img.add(R.drawable.meal);
         adapter = new SwipeAdapter(this.getContext(), img, name);
