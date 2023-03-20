@@ -43,7 +43,7 @@ public class AccountPageFragment extends Fragment {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
             getActivity().finish();
-            startActivity(new Intent(AccountPageFragment.this, ));
+//            startActivity(new Intent(AccountPageFragment, MainActivity.class));
         } else {
             textView.setText(user.getEmail());
         }
