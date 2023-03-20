@@ -53,7 +53,7 @@ tools:context=".ui.account.AccountFragment">
             android:layout_marginTop="4dp"
             android:layout_toEndOf="@+id/profilePict"
             android:paddingLeft="2dp"
-            android:text="@string/user_name"
+            android:hint="@string/user_name"
             android:textStyle="bold" />
     </RelativeLayout>
     <LinearLayout
