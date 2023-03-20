@@ -25,17 +25,7 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_account);
 
-        auth = FirebaseAuth.getInstance();
-        button = findViewById(R.id.logOutBtn);
-        textView = findViewById(R.id.userDetails);
-        user = auth.getCurrentUser();
-        if (user == null){
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            textView.setText(user.getEmail());
-        }
+
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override

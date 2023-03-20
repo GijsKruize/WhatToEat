@@ -14,7 +14,7 @@
         android:theme="@style/Theme.WhatToEat"
         tools:targetApi="31">
         <activity
-            android:name=".ui.account.EditProfile"
+            android:name=".ui.account.EditUserProfile"
             android:exported="false" />
         <activity
             android:name=".ui.account.Register"

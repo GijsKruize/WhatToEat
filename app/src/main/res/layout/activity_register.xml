@@ -11,7 +11,7 @@
         android:id="@+id/registerText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="108dp"
+        android:layout_marginTop="82dp"
         android:text="Welcome to"
         android:textSize="40dp"
         android:textStyle="bold"
@@ -43,9 +43,8 @@
         android:hint="@string/emailReg"
         android:inputType="textEmailAddress"
         android:paddingLeft="12dp"
-        app:layout_constraintEnd_toEndOf="@+id/nameRegister"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="@+id/nameRegister"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerText" />
 
     <com.google.android.material.textfield.TextInputEditText
@@ -67,17 +66,16 @@
         android:id="@+id/passwordRegister"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_marginBottom="56dp"
         android:background="@drawable/rounded_button_background_white"
         android:drawableLeft="@drawable/lock"
         android:ems="10"
         android:hint="@string/passwordReg"
         android:inputType="textPassword"
         android:paddingLeft="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/registerBtn"
-        app:layout_constraintEnd_toEndOf="@+id/nameRegister"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/nameRegister" />
+        android:layout_marginTop="72dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailRegister" />
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -92,8 +90,8 @@
     <Button
         android:id="@+id/registerBtn"
         android:layout_width="256dp"
-        android:layout_height="65dp"
-        android:layout_marginBottom="108dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="64dp"
         android:background="@drawable/rounded_button_background_white"
         android:text="SIGN UP"
         android:textSize="40dp"
@@ -105,12 +103,14 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
-        android:id="@+id/loginButtonRegPage"
+        android:id="@+id/existingUser"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="wrap_content"
+        android:text="Already a user ?"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/light_grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/registerBtn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
