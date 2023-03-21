@@ -14,13 +14,16 @@
         android:theme="@style/Theme.WhatToEat"
         tools:targetApi="31">
         <activity
+            android:name=".ui.account.Login"
+            android:exported="false" />
+        <activity
             android:name=".ui.account.EditUserProfile"
             android:exported="false" />
         <activity
             android:name=".ui.account.Register"
             android:exported="false" />
         <activity
-            android:name=".ui.account.Login"
+            android:name=".ui.SplashScreen"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

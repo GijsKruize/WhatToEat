@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="ui.SplashScreen">
+
+
+    <!--Text and button-->
+    <TextView
+        android:id="@+id/title_text_view_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:text="WHAT TO EAT"
+        android:textColor="#FF000000"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:translationZ="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.344"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.257" />
+
+    <View
+        android:id="@+id/splashTop"
+        android:layout_width="214dp"
+        android:layout_height="272dp"
+        android:background="@drawable/quarter_circle2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_text_view_1"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+
+    <!--design-->
+
+    <Button
+        android:id="@+id/signup_button"
+        android:layout_width="172dp"
+        android:layout_height="79dp"
+        android:background="@drawable/rounded_button_background"
+        android:text="Sign In"
+        android:textColor="#FF000000"
+        android:textSize="20sp"
+        android:translationZ="1dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.429"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.613" />
+
+
+    <Button
+        android:id="@+id/btn_create_account"
+        android:layout_width="166dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="456dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.02"
+        android:padding="16dp"
+        android:text="Create Account"
+        android:textColor="#0000FF"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.583"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+
+    <View
+        android:layout_width="183dp"
+        android:layout_height="165dp"
+        android:background="@drawable/quarter_circle1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="-3dp"
+        tools:ignore="MissingConstraints" />
+
+    <TextView
+        android:id="@+id/splashTop1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="New user?"
+        android:padding="4dp"
+        android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.291"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signup_button" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
