@@ -1,5 +1,6 @@
 package com.example.whattoeat.ui.map;
 
+import android.content.Context;
 import android.location.Address;
 import android.location.Geocoder; //convert from address to long/latt
 import android.location.LocationManager;
@@ -20,6 +21,7 @@ import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.R;
 import com.example.whattoeat.databinding.FragmentMapBinding;
 import com.example.whattoeat.ui.account.Login;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -78,6 +80,16 @@ public class MapFragment extends Fragment {
         mapController.setZoom((long) 15);
         map.setMultiTouchControls(true);
 
+        Marker startMarker2 = new Marker(map);
+        LatLng house = getLocationFromAddress(this.getContext(), "White House");
+        GeoPoint startPoint3 = new GeoPoint(house.latitude, house.longitude);
+        startMarker2.setPosition(startPoint3);
+        startMarker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        startMarker2.setIcon(this.getResources().getDrawable(R.drawable.logo));
+        map.getOverlays().add(startMarker2);
+
+        mapController.animateTo(startPoint3);
+
         Marker startMarker = new Marker(map);
         GeoPoint startPoint2 = new GeoPoint(51.43616,5.42219);
         startMarker.setPosition(startPoint2);
@@ -86,7 +98,7 @@ public class MapFragment extends Fragment {
         map.getOverlays().add(startMarker);
 
         GeoPoint startPoint = new GeoPoint(51.442164898, 5.487164718);
-        mapController.animateTo(startPoint);
+        //mapController.animateTo(startPoint);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -132,20 +144,28 @@ public class MapFragment extends Fragment {
     }
 
 
-    @Nullable
-    private GeoPoint getGeoPointFromAddress(String address) {
-        Geocoder geocoder = new Geocoder(getContext());
+    public LatLng getLocationFromAddress(Context context, String strAddress) {
+
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng p1 = null;
+
         try {
-            List<Address> addresses = geocoder.getFromLocationName(address, 1);
-            if (addresses != null && !addresses.isEmpty()) {
-                double latitude = addresses.get(0).getLatitude();
-                double longitude = addresses.get(0).getLongitude();
-                return new GeoPoint(latitude, longitude);
+            // May throw an IOException
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            Address location = address.get(0);
+            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
         }
-        return null;
+
+        return p1;
     }
 }
 
