@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.whattoeat.MainActivity;
+import com.example.whattoeat.R;
 import com.example.whattoeat.databinding.FragmentMapBinding;
 import com.example.whattoeat.ui.account.Login;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,6 +28,7 @@ import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.util.MapTileIndex;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -70,6 +72,14 @@ public class MapFragment extends Fragment {
         map.setScrollableAreaLimitLongitude(MapView.getTileSystem().getMinLongitude(), MapView.getTileSystem().getMaxLongitude(), 0);
         mapController.setZoom((long) 15);
         map.setMultiTouchControls(true);
+
+        Marker startMarker = new Marker(map);
+        GeoPoint startPoint2 = new GeoPoint(51.43616,5.42219);
+        startMarker.setPosition(startPoint2);
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+        startMarker.setIcon(this.getResources().getDrawable(R.drawable.logo));
+        map.getOverlays().add(startMarker);
+
         GeoPoint startPoint = new GeoPoint(51.442164898, 5.487164718);
         mapController.animateTo(startPoint);
 
