@@ -61,7 +61,7 @@
         android:id="@+id/btn_create_account"
         android:layout_width="166dp"
         android:layout_height="72dp"
-        android:layout_marginTop="456dp"
+        android:layout_marginTop="460dp"
         android:background="@android:color/transparent"
         android:fontFamily="sans-serif-medium"
         android:letterSpacing="0.02"
@@ -70,10 +70,9 @@
         android:textColor="#0000FF"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.583"
+        app:layout_constraintHorizontal_bias="0.416"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <View
         android:layout_width="179dp"
@@ -87,18 +86,17 @@
         app:layout_constraintVertical_bias="1.0" />
 
 
+    <!--
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="484dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginTop="496dp"
         android:text="New user?"
         android:textSize="13sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.291"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
+        app:layout_constraintTop_toTopOf="parent" />
+    -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>
