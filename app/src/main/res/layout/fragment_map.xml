@@ -9,23 +9,22 @@
 
     <Button
         android:id="@+id/currentLocationButton"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:layout_constraintBottom_toTopOf="@+id/mapView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_width="54dp"
+        android:layout_height="49dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
         android:background="@drawable/rounded_button_background"
-        android:drawableBottom="@drawable/location" />
+        android:drawableBottom="@drawable/location"
+        app:layout_constraintEnd_toEndOf="@+id/mapView"
+        app:layout_constraintTop_toTopOf="@+id/mapView" />
 
     <org.osmdroid.views.MapView
         android:id="@+id/mapView"
-        android:layout_width="400dp"
-        android:layout_height="400dp"
-        android:layout_marginTop="164dp"
         tilesource="Mapnik"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.272"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         />

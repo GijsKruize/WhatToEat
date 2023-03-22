@@ -23,8 +23,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import org.osmdroid.api.IMapController;
+import org.osmdroid.tileprovider.tilesource.ITileSource;
+import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
+import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.util.GeoPoint;
+import org.osmdroid.util.MapTileIndex;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
@@ -55,13 +59,20 @@ public class MapFragment extends Fragment {
 
         button = binding.currentLocationButton;
         map = binding.mapView;
+        IMapController mapController = map.getController();
 
         map.setUseDataConnection(true);
         locationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(this.getContext()), map);
         locationOverlay.enableMyLocation();
+        map.setTilesScaledToDpi(true);
         map.getOverlays().add(locationOverlay);
         map.setTileSource(TileSourceFactory.MAPNIK);
-        IMapController mapController = map.getController();
+        map.setMaxZoomLevel((double)20);
+        map.setMinZoomLevel((double)12);
+        map.setHorizontalMapRepetitionEnabled(false);
+        map.setVerticalMapRepetitionEnabled(false);
+        map.setScrollableAreaLimitLatitude(MapView.getTileSystem().getMaxLatitude(), MapView.getTileSystem().getMinLatitude(), 0);
+        map.setScrollableAreaLimitLongitude(MapView.getTileSystem().getMinLongitude(), MapView.getTileSystem().getMaxLongitude(), 0);
         mapController.setZoom((long) 15);
         map.setMultiTouchControls(true);
         GeoPoint startPoint = new GeoPoint(51.442164898, 5.487164718);
