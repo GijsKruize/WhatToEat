@@ -19,8 +19,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/Theme.WhatToEat"
         tools:targetApi="31">
+
         <activity
             android:name=".ui.account.Login"
             android:exported="false" />
