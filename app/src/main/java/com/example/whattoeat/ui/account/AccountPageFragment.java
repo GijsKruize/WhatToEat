@@ -106,6 +106,11 @@ public class AccountPageFragment extends Fragment {
                                             Toast.makeText(context ,
                                                     "Account deleted!",
                                                     Toast.LENGTH_SHORT).show();
+                                            myRef = myRef.child("User").child(user.getUid());
+                                            myRef.removeValue()
+                                                  .addOnSuccessListener(unused ->
+                                                          Log.d("Account Page ",
+                                                                  "Account successfully deleted from the database!"));
                                             getActivity().startActivity(new Intent(getActivity(), Login.class));
                                         } else {
                                             Toast.makeText(context,
