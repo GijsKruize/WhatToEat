@@ -85,7 +85,7 @@ public class Register extends AppCompatActivity {
             map.put("email", email);
             map.put("name", name);
             map.put("phone", phone);
-            map.put("last login", timestamp);
+            map.put("last login", timestamp.toString());
 
             if(TextUtils.isEmpty(email)){
                 Toast.makeText(Register.this, "Enter Email", Toast.LENGTH_SHORT).show();
@@ -121,8 +121,10 @@ public class Register extends AppCompatActivity {
                                 startActivity(new Intent(Register.this, Login.class));
                             } else {
                                 // If sign in fails, display a message to the user.
-                                Toast.makeText(Register.this, "Authentication failed.",
-                                        Toast.LENGTH_SHORT).show();
+                                String Error = task.getException().getMessage();
+                                Log.d("Register Page: ", Error);
+                                Toast.makeText(Register.this, "Authentication failed: " + Error,
+                                        Toast.LENGTH_LONG).show();
                             }
                         }
                     });

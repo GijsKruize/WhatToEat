@@ -103,10 +103,10 @@ public class Login extends AppCompatActivity {
                                             .child(UID)
                                             .updateChildren(map)
                                             .addOnSuccessListener(unused ->
-                                                    Log.d("Login Page : ",
+                                                    Log.d("Login Page ",
                                                             "Timestamp successfully updated!"))
                                             .addOnFailureListener(error ->
-                                                    Log.d("Login Page: ",
+                                                    Log.d("Login Page ",
                                                             "Timestamp failed to save : " + error));
 
 

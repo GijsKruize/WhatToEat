@@ -21,7 +21,7 @@ public class EditProfile extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.fragment_account);
+        setContentView(R.layout.fragment_edit_profile);
 
     }
 }
