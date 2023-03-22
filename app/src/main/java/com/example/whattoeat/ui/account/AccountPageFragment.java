@@ -60,7 +60,7 @@ public class AccountPageFragment extends Fragment {
         context = getActivity().getApplicationContext();
 
         if (user == null){
-            Intent intent = new Intent(getActivity(), MainActivity.class);
+            Intent intent = new Intent(getActivity(), Login.class);
             startActivity(intent);
             getActivity().finish();
         } else {

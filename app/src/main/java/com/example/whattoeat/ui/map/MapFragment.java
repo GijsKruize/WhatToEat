@@ -1,6 +1,7 @@
 package com.example.whattoeat.ui.map;
 
 import android.location.LocationManager;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,11 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.databinding.FragmentMapBinding;
+import com.example.whattoeat.ui.account.Login;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
@@ -22,6 +27,11 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 public class MapFragment extends Fragment {
+
+    private FirebaseUser user;
+    private FirebaseAuth auth;
+
+
 
     private FragmentMapBinding binding;
     MyLocationNewOverlay locationOverlay;
@@ -63,6 +73,18 @@ public class MapFragment extends Fragment {
 
         //final TextView textView = binding.textMap;
        // mapViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        final TextView textView = binding.textMap;
+        mapViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+
+        //Check if user is authenticated
+        auth = FirebaseAuth.getInstance();
+        user = auth.getCurrentUser();
+
+        if (user == null){
+            Intent intent = new Intent(getActivity(), Login.class);
+            startActivity(intent);
+            getActivity().finish();
+        }
 
         return root;
     }
