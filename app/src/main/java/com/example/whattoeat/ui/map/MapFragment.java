@@ -56,7 +56,6 @@ public class MapFragment extends Fragment {
         locationOverlay.enableMyLocation();
         map.getOverlays().add(locationOverlay);
         map.setTileSource(TileSourceFactory.MAPNIK);
-        map.setTilesScaledToDpi(true);
         IMapController mapController = map.getController();
         mapController.setZoom((long) 15);
         map.setMultiTouchControls(true);
@@ -73,8 +72,6 @@ public class MapFragment extends Fragment {
 
         //final TextView textView = binding.textMap;
        // mapViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        final TextView textView = binding.textMap;
-        mapViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
 
         //Check if user is authenticated
         auth = FirebaseAuth.getInstance();
