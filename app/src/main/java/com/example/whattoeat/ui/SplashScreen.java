@@ -3,9 +3,12 @@ package com.example.whattoeat.ui;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.os.StrictMode;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.Button;
 import com.example.whattoeat.R;
@@ -17,6 +20,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+
+import org.osmdroid.config.Configuration;
 
 public class SplashScreen extends AppCompatActivity {
     private Button createAccount;
@@ -32,6 +37,12 @@ public class SplashScreen extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
+
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+
+        Context ctx = getApplicationContext();
+        Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         createAccount = findViewById(R.id.btn_create_account);
         signIn = findViewById(R.id.signup_button);
