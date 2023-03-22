@@ -6,6 +6,9 @@ android:layout_width="match_parent"
 android:layout_height="match_parent"
 tools:context=".ui.account.AccountPageFragment">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -58,9 +61,10 @@ tools:context=".ui.account.AccountPageFragment">
             android:textStyle="bold" />
     </RelativeLayout>
     <LinearLayout
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:layout_gravity="center"
         android:paddingHorizontal="32dp"
         >
 
@@ -118,6 +122,7 @@ tools:context=".ui.account.AccountPageFragment">
             android:backgroundTint="@color/light_grey"
             android:text="Delete account"
             android:layout_margin="12dp"
+            android:layout_marginBottom="64dp"
             android:layout_gravity="center"
             android:minWidth="300mm"
 
@@ -135,4 +140,5 @@ tools:context=".ui.account.AccountPageFragment">
 
     </LinearLayout>
 </LinearLayout>
+    </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
