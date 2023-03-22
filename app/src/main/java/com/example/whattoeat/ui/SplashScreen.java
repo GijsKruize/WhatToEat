@@ -1,26 +1,31 @@
 package com.example.whattoeat.ui;
 
-import static android.app.PendingIntent.getActivity;
-
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.RelativeLayout;
-
-import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.R;
 import com.example.whattoeat.ui.account.Login;
 import com.example.whattoeat.ui.account.Register;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.sql.Timestamp;
+import java.util.HashMap;
 
 public class SplashScreen extends AppCompatActivity {
     private Button createAccount;
 //    private View splash0;
 //    private View splash1;
     private Button signIn;
+    FirebaseAuth mAuth;
+    FirebaseDatabase database;
+    protected DatabaseReference myRef;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -30,6 +35,10 @@ public class SplashScreen extends AppCompatActivity {
 
         createAccount = findViewById(R.id.btn_create_account);
         signIn = findViewById(R.id.signup_button);
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+        mAuth = FirebaseAuth.getInstance();
+
 //        splash0 = findViewById(R.id.splashTop);
 //        splash1 = findViewById(R.id.splashTop1);
 
@@ -50,6 +59,22 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SplashScreen.this, Login.class));
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                final String UID = mAuth.getUid();
+                if(UID != null) {
+                    HashMap<String, Object> map = new HashMap<>();
+                    map.put("last login", timestamp.toString());
+                    //Send a log of the login to the database.
+                    myRef.child("User")
+                            .child(UID)
+                            .updateChildren(map)
+                            .addOnSuccessListener(unused ->
+                                    Log.d("Login Page : ",
+                                            "Timestamp successfully updated!"))
+                            .addOnFailureListener(error ->
+                                    Log.d("Login Page: ",
+                                            "Timestamp failed to save : " + error));
+                }
             }
         });
 

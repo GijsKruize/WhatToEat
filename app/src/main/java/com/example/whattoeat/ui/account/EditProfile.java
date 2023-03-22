@@ -16,8 +16,6 @@ import com.google.firebase.auth.FirebaseUser;
 public class EditProfile extends AppCompatActivity {
 
     FirebaseAuth auth;
-    Button button;
-    TextView textView;
     FirebaseUser user;
 
     @Override
@@ -25,16 +23,5 @@ public class EditProfile extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_account);
 
-
-
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
     }
 }

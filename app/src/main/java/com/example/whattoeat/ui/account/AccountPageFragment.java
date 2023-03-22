@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,15 +36,11 @@ import com.google.firebase.auth.FirebaseUser;
  */
 public class AccountPageFragment extends Fragment {
 
-    private FirebaseAuth auth;
-    private Button logoutButton;
-    private Button deleteUserBtn;
-    private Button editProfileBtn;
-    private Button resetPwBtn;
-    private Button changePrefBtn;
-    private TextView textView;
     private FirebaseUser user;
     private Context context;
+
+    FirebaseDatabase database;
+    protected DatabaseReference myRef;
     
 
     @Nullable
@@ -49,22 +49,35 @@ public class AccountPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
 
         //Assign items to their visual button
-        auth = FirebaseAuth.getInstance();
-        editProfileBtn = view.findViewById(R.id.editProfileBtn);
-        resetPwBtn = view.findViewById(R.id.resetPasswordBtn);
-        changePrefBtn = view.findViewById(R.id.changePreferencesBtn);
-        logoutButton = view.findViewById(R.id.logOutBtn);
-        deleteUserBtn = view.findViewById(R.id.deleteAccountBtn);
-        textView = view.findViewById(R.id.userDetails);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        Button editProfileBtn = view.findViewById(R.id.editProfileBtn);
+        Button resetPwBtn = view.findViewById(R.id.resetPasswordBtn);
+        Button changePrefBtn = view.findViewById(R.id.changePreferencesBtn);
+        Button logoutButton = view.findViewById(R.id.logOutBtn);
+        Button deleteUserBtn = view.findViewById(R.id.deleteAccountBtn);
+        TextView textView = view.findViewById(R.id.userDetails);
         user = auth.getCurrentUser();
         context = getActivity().getApplicationContext();
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
 
         if (user == null){
             Intent intent = new Intent(getActivity(), Login.class);
             startActivity(intent);
             getActivity().finish();
         } else {
-            textView.setText(user.getEmail());
+            myRef.child("User").child(user.getUid()).child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    }
+                    else {
+                        Log.d("firebase return", String.valueOf(task.getResult().getValue()));
+                        textView.setText(String.valueOf(task.getResult().getValue()));
+                    }
+                }
+            });
         }
 
         editProfileBtn.setOnClickListener(new View.OnClickListener() {
@@ -102,6 +115,8 @@ public class AccountPageFragment extends Fragment {
                                     }
                                 }
                         );
+
+
                     }
                 });
                 dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
