@@ -66,7 +66,9 @@ public class AccountPageFragment extends Fragment {
             startActivity(intent);
             getActivity().finish();
         } else {
-            myRef.child("User").child(user.getUid()).child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            myRef.child("User").child(user.getUid()).child("name")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {

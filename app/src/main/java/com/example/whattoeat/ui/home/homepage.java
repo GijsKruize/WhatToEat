@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -34,6 +37,7 @@ public class homepage extends Fragment {
 
     private List<String> recipeNames = new ArrayList<>();
     private List<String> recipeImages = new ArrayList<>();
+    private List<String> recipeIds = new ArrayList<>();
 
     FirebaseDatabase database;
     protected DatabaseReference myRef;
@@ -49,13 +53,16 @@ public class homepage extends Fragment {
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                recipeIds.clear();
                 recipeNames.clear();
                 recipeImages.clear();
                 for(DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
                     // retrieve data for each recipe
+                    String recipeId = recipeSnapshot.getKey();
                     String recipeName = recipeSnapshot.child("Name").getValue(String.class);
                     String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
 
+                    recipeIds.add(recipeId);
                     recipeNames.add(recipeName);
                     recipeImages.add(recipeImage);
                     Log.d("Firebase", "Recipe Name: " + recipeName +
@@ -103,11 +110,61 @@ public class homepage extends Fragment {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.card, viewGroup, false);
+            View view1 = getLayoutInflater().inflate(R.layout.fragment_food_card, viewGroup, false);
+
             ImageView mImageView = view.findViewById(R.id.imageViewCard);
             TextView mTextView = view.findViewById(R.id.textViewCard);
+            CardView card = view.findViewById(R.id.card);
+//            ImageView returnBtn = view1.findViewById(R.id.returnBtn);
 
             mTextView.setText(recipeNames.get(i));
             Picasso.with(getActivity().getApplicationContext()).load(recipeImages.get(i)).into(mImageView);
+
+            card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // check if the food_card fragment is not already displayed
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    Fragment currentFragment = fragmentManager.findFragmentById(R.id.homepage_container);
+                    if (currentFragment instanceof food_card) {
+                        return; // do nothing if food_card fragment is already displayed
+                    }
+
+                    //send data to the card
+                    Bundle args = new Bundle();
+                    args.putString("foodType", recipeIds.get(i));
+
+                    //change the fragment
+                    Fragment fragment = new food_card();
+                    fragment.setArguments(args);
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.homepage_container, fragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
+                    // remove the homepage fragment from the screen
+                    Fragment homepageFragment = fragmentManager.findFragmentById(R.id.homepage_container);
+                    if (homepageFragment != null) {
+                        fragmentTransaction.remove(homepageFragment);
+                    }
+
+
+                    Log.d("Cards", "Bro pressed on the card. " + recipeNames.get(i));
+                }
+            });
+
+//            returnBtn.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//                    Fragment fragment = fragmentManager.findFragmentById(R.id.food);
+//                    if (fragment != null) {
+//                        Log.d("Food", "Test");
+//                        fragmentManager.popBackStack(); // remove the food card and go back to the previous fragment
+//                    }
+//                }
+//            });
+
 
             return view;
         }
@@ -124,5 +181,16 @@ public class homepage extends Fragment {
         mListView.setAdapter(adapter);
 
         return view;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.food);
+        Log.d("Homepage", "onStop Called.");
+        if (fragment != null) {
+            fragmentManager.popBackStackImmediate();
+        }
     }
 }
