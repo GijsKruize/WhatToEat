@@ -56,5 +56,6 @@ dependencies {
     implementation 'org.osmdroid:osmdroid-wms:6.1.6'
     implementation 'org.osmdroid:osmdroid-mapsforge:6.1.6'
     implementation 'org.osmdroid:osmdroid-geopackage:6.1.6'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
 }
