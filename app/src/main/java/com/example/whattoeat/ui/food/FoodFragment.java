@@ -33,6 +33,7 @@ public class FoodFragment extends Fragment {
     Koloda koloda;
 
     @Override
+<<<<<<< HEAD
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rView = inflater.inflate(R.layout.koloda, container, false);
@@ -48,6 +49,10 @@ public class FoodFragment extends Fragment {
     }
 
     protected void getData(){
+=======
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+>>>>>>> 2ce38a572303bff32989e3f6e5c6be9e58ffab78
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Recipe");
         myRef.addValueEventListener(new ValueEventListener() {

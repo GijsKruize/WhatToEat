@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.example.whattoeat.R;
 import com.example.whattoeat.ui.account.Login;
@@ -38,6 +39,8 @@ public class homepage extends Fragment {
     private List<String> recipeNames = new ArrayList<>();
     private List<String> recipeImages = new ArrayList<>();
     private List<String> recipeIds = new ArrayList<>();
+    private ProgressBar progressBar;
+    private ListView mListView;
 
     FirebaseDatabase database;
     protected DatabaseReference myRef;
@@ -46,9 +49,31 @@ public class homepage extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
+        //Check if user is authenticated
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+
+        if (user == null){
+            Intent intent = new Intent(getActivity(), Login.class);
+            startActivity(intent);
+            getActivity().finish();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchData();
+    }
+    private void fetchData(){
+
+        progressBar.setVisibility(View.VISIBLE);
         //Connect to the database
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Recipe");
+
+        Log.d("Homepage: ", "Loading data........");
 
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -68,8 +93,9 @@ public class homepage extends Fragment {
                     Log.d("Firebase", "Recipe Name: " + recipeName +
                             ", Image source: " + recipeImage);
                 }
-                // notify the adapter that the data set has changed
-//                adapter.notifyDataSetChanged();
+                progressBar.setVisibility(View.GONE); // Hide the progress bar
+                MyAdapter adapter = (MyAdapter) mListView.getAdapter();
+                adapter.notifyDataSetChanged(); // Refresh the adapter with new data
             }
 
             @Override
@@ -77,17 +103,6 @@ public class homepage extends Fragment {
                 Log.e("Firebase", "Homepage could not fetch data from recipes: " + databaseError.getMessage());
             }
         });
-
-
-        //Check if user is authenticated
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseUser user = auth.getCurrentUser();
-
-        if (user == null){
-            Intent intent = new Intent(getActivity(), Login.class);
-            startActivity(intent);
-            getActivity().finish();
-        }
     }
 
     public class MyAdapter extends BaseAdapter {
@@ -153,19 +168,6 @@ public class homepage extends Fragment {
                 }
             });
 
-//            returnBtn.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//                    Fragment fragment = fragmentManager.findFragmentById(R.id.food);
-//                    if (fragment != null) {
-//                        Log.d("Food", "Test");
-//                        fragmentManager.popBackStack(); // remove the food card and go back to the previous fragment
-//                    }
-//                }
-//            });
-
-
             return view;
         }
     }
@@ -175,10 +177,13 @@ public class homepage extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_homepage, container, false);
 
-        ListView mListView = view.findViewById(R.id.listview);
+        mListView = view.findViewById(R.id.listview);
+        progressBar = view.findViewById(R.id.progressBarHome);
 
         MyAdapter adapter = new MyAdapter();
         mListView.setAdapter(adapter);
+
+        fetchData(); // Load the data
 
         return view;
     }
