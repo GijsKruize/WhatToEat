@@ -7,9 +7,9 @@
 
     <fragment
         android:id="@+id/nav_home"
-        android:name="com.example.whattoeat.ui.home.HomeFragment"
+        android:name="com.example.whattoeat.ui.home.homepage"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_homepage" />
 
     <fragment
         android:id="@+id/nav_map"
@@ -27,7 +27,7 @@
         android:id="@+id/nav_account"
         android:name="com.example.whattoeat.ui.account.AccountPageFragment"
         android:label="@string/title_account"
-        tools:layout="@layout/activity_account_details" />
+        tools:layout="@layout/fragment_account" />
 
     <fragment
         android:id="@+id/nav_info"

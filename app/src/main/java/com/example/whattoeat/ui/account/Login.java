@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -20,13 +21,20 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.sql.Timestamp;
+import java.util.HashMap;
 
 public class Login extends AppCompatActivity {
-    TextInputEditText editTextEmail, editTextPassword;
-    Button btnLogin;
-    ProgressBar progressBar;
-    FirebaseAuth mAuth;
-    TextView textView;
+    private TextInputEditText editTextEmail, editTextPassword;
+    private Button btnLogin;
+    private ProgressBar progressBar;
+    private FirebaseAuth mAuth;
+    private TextView textView;
+    private FirebaseDatabase database;
+    private DatabaseReference myRef;
 
     @Override
     public void onStart() {
@@ -51,6 +59,9 @@ public class Login extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         btnLogin = findViewById(R.id.loginButton);
         textView = findViewById(R.id.loginButtonLoginPage);
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference();
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,6 +95,21 @@ public class Login extends AppCompatActivity {
                                 progressBar.setVisibility(View.GONE);
                                 if (task.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(), "Login Succes", Toast.LENGTH_SHORT).show();
+                                    final String UID = mAuth.getUid();
+                                    HashMap<String, Object> map = new HashMap<>();
+                                    map.put("last login", timestamp.toString());
+                                    //Send a log of the login to the database.
+                                    myRef.child("User")
+                                            .child(UID)
+                                            .updateChildren(map)
+                                            .addOnSuccessListener(unused ->
+                                                    Log.d("Login Page ",
+                                                            "Timestamp successfully updated!"))
+                                            .addOnFailureListener(error ->
+                                                    Log.d("Login Page ",
+                                                            "Timestamp failed to save : " + error));
+
+
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     finish();

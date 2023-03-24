@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="ui.SplashScreen">
 
 
     <!--Text and button-->
@@ -25,16 +26,13 @@
         app:layout_constraintVertical_bias="0.257" />
 
     <View
-        android:layout_width="215dp"
-        android:layout_height="337dp"
+        android:id="@+id/splashTop"
+        android:layout_width="214dp"
+        android:layout_height="272dp"
         android:background="@drawable/quarter_circle2"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
         app:layout_constraintTop_toBottomOf="@+id/title_text_view_1"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 
@@ -61,7 +59,7 @@
         android:id="@+id/btn_create_account"
         android:layout_width="166dp"
         android:layout_height="72dp"
-        android:layout_marginTop="460dp"
+        android:layout_marginTop="456dp"
         android:background="@android:color/transparent"
         android:fontFamily="sans-serif-medium"
         android:letterSpacing="0.02"
@@ -70,33 +68,31 @@
         android:textColor="#0000FF"
         android:textSize="13sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.416"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <View
-        android:layout_width="179dp"
-        android:layout_height="308dp"
-        android:layout_marginTop="576dp"
-        android:background="@drawable/quarter_circle1"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="0.583"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
 
-    <!--
+    <View
+        android:layout_width="183dp"
+        android:layout_height="165dp"
+        android:background="@drawable/quarter_circle1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="-3dp"
+        tools:ignore="MissingConstraints" />
+
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/splashTop1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="40dp"
-        android:layout_marginTop="496dp"
         android:text="New user?"
+        android:padding="4dp"
         android:textSize="13sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.291"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-    -->
+        app:layout_constraintTop_toBottomOf="@+id/signup_button" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

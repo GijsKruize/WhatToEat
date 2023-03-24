@@ -15,6 +15,18 @@
     <string name="what_to_eat" />
     <string name="team" />
     <string name="kuzey_hamidoglu" />
-    <string name="user_name">User NameTEST</string>
+    <string name="user_name">test</string>
     <string name="firebase_web_client_id">1004996453779-e9t7jpga32sbiso49sr27bmtrpk8cm0b.apps.googleusercontent.com</string>
+    <string name="phoneReg">Phone Number</string>
+    <string name="italian">Italian</string>
+    <string name="french">French</string>
+    <string name="mexican">Mexican</string>
+    <string name="greek">Greek</string>
+    <string name="chinese">Chinese</string>
+    <string name="american">American</string>
+    <string name="turkish">Turkish</string>
+    <string name="tired">Tired</string>
+    <string name="excited">Excited</string>
+    <string name="sad">Sad</string>
+    <string name="happy">Happy</string>
 </resources>

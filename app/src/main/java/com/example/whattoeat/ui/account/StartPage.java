@@ -1,4 +1,4 @@
-package com.example.whattoeat;
+package com.example.whattoeat.ui.account;
 
 import android.os.Bundle;
 
@@ -8,12 +8,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.whattoeat.R;
+
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link RecipeCardFragment#newInstance} factory method to
+ * Use the {@link StartPage#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class RecipeCardFragment extends Fragment {
+public class StartPage extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -24,7 +26,7 @@ public class RecipeCardFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public RecipeCardFragment() {
+    public StartPage() {
         // Required empty public constructor
     }
 
@@ -34,11 +36,11 @@ public class RecipeCardFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment recipe_card.
+     * @return A new instance of fragment StartPage.
      */
     // TODO: Rename and change types and number of parameters
-    public static RecipeCardFragment newInstance(String param1, String param2) {
-        RecipeCardFragment fragment = new RecipeCardFragment();
+    public static StartPage newInstance(String param1, String param2) {
+        StartPage fragment = new StartPage();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -46,19 +48,27 @@ public class RecipeCardFragment extends Fragment {
         return fragment;
     }
 
+   // abuttton =
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setContentView(R.layout.fragment_start_page_yun);
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
+    /*
+    private void setContentView(int fragment_start_page_yun) {
+        button signIn
+    }
+*/
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_food_card, container, false);
+        return inflater.inflate(R.layout.fragment_start_page, container, false);
     }
 }
