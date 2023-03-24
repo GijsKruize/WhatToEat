@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.R;
-import com.example.whattoeat.ui.SplashScreen;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -89,6 +88,13 @@ public class AccountPageFragment extends Fragment {
             }
         });
 
+        changePrefBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), Preferences.class));
+            }
+        });
+
         deleteUserBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -147,6 +153,7 @@ public class AccountPageFragment extends Fragment {
 
             }
         });
+
 
         return view;
     }
