@@ -2,6 +2,7 @@ package com.example.whattoeat.ui.food;
 
 import android.content.Context;
 import android.database.DataSetObserver;
+import android.net.Uri;
 import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,19 +14,26 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.whattoeat.R;
 import com.google.android.material.imageview.ShapeableImageView;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.ViewHolder> implements Adapter {
     private Context context;
-    private List<Integer> img;
+    private List<String> img;
 
     private List<String> name;
 
 
-    public SwipeAdapter(Context context, List<Integer> img, List<String> name) {
+    public SwipeAdapter(Context context, List<String> img, List<String> name) {
         this.context = context;
         this.img = img;
         this.name = name;
@@ -41,7 +49,7 @@ public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull SwipeAdapter.ViewHolder holder, int position) {
         holder.getTextView().setText(name.get(position));
-        holder.getImageView().setImageResource(img.get(position));
+        Picasso.with(context).load("https://firebasestorage.googleapis.com/v0/b/what-to-eat-tue.appspot.com/o/the-best-caesar-salad-recipe-06-40e70f549ba2489db09355abd62f79a9.jpg?alt=media&token=220ba356-b1d6-4a21-ad0e-f305c19b46c2").into(holder.getImageView());
     }
 
     @Override
@@ -79,10 +87,8 @@ public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.ViewHolder> 
         } else {
             return null;
         }
-
-        holder.getImageView().setImageResource(img.get(i));
+        Picasso.with(context).load(img.get(i)).into(holder.getImageView());
         holder.getTextView().setText(name.get(i));
-
         return view;
     }
 
@@ -124,4 +130,3 @@ public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.ViewHolder> 
         }
     }
 }
-
