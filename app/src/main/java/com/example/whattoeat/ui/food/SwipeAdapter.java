@@ -2,41 +2,35 @@ package com.example.whattoeat.ui.food;
 
 import android.content.Context;
 import android.database.DataSetObserver;
-import android.net.Uri;
-import android.provider.ContactsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Adapter;
-import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide;
 import com.example.whattoeat.R;
 import com.google.android.material.imageview.ShapeableImageView;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.Picasso;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URI;
 import java.util.List;
 
 public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.ViewHolder> implements Adapter {
     private Context context;
+    private List<String> IDs;
+    private List<String> name;
     private List<String> img;
 
-    private List<String> name;
 
 
-    public SwipeAdapter(Context context, List<String> img, List<String> name) {
+
+    public SwipeAdapter(Context context, List<String> IDs, List<String> name, List<String> img ) {
         this.context = context;
         this.img = img;
         this.name = name;
+        this.IDs = IDs;
     }
 
     @NonNull
@@ -69,7 +63,7 @@ public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.ViewHolder> 
 
     @Override
     public Object getItem(int i) {
-        return null;
+        return IDs.get(i);
     }
 
     @Override

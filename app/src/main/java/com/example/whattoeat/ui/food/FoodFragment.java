@@ -1,5 +1,6 @@
 package com.example.whattoeat.ui.food;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -29,9 +30,10 @@ import java.util.concurrent.CountDownLatch;
 public class FoodFragment extends Fragment {
     private SwipeAdapter adapter;
     private SwipeListener listener;
+    private List<String> recipeIds = new ArrayList<>();
     private List<String> recipeNames = new ArrayList<>();
     private List<String> recipeImages = new ArrayList<>();
-    private List<String> recipeIds = new ArrayList<>();
+
 
     private ProgressBar progressBar;
     Koloda koloda;
@@ -41,13 +43,8 @@ public class FoodFragment extends Fragment {
                              Bundle savedInstanceState) {
         View rView = inflater.inflate(R.layout.koloda, container, false);
         progressBar = rView.findViewById(R.id.progressBar2);
-
         koloda = rView.findViewById(R.id.koloda);
-        adapter = new SwipeAdapter(this.getContext(), this.recipeImages, this.recipeNames);
-        System.out.println("hier");
-        listener = new SwipeListener(this.getContext());
-        koloda.setAdapter(adapter);
-        koloda.setKolodaListener(listener);
+
         Toast.makeText(this.getContext(), "Swipe meals, just like on Tinder!", Toast.LENGTH_SHORT).show();
         return rView;
     }
@@ -60,6 +57,7 @@ public class FoodFragment extends Fragment {
 
     protected void getData() {
         progressBar.setVisibility(View.VISIBLE);
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Recipe");
         myRef.addValueEventListener(new ValueEventListener() {
@@ -81,8 +79,10 @@ public class FoodFragment extends Fragment {
                             ", Image source: " + recipeImage);
                 }
                 progressBar.setVisibility(View.GONE);
-                adapter = new SwipeAdapter(getContext(),recipeImages,recipeNames);
+                adapter = new SwipeAdapter(getContext(), recipeIds, recipeNames, recipeImages);
                 koloda.setAdapter(adapter);
+                listener = new SwipeListener(getContext(), recipeIds);
+                koloda.setKolodaListener(listener);
                 adapter.notifyDataSetChanged();
             }
 
