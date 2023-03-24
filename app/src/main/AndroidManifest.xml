@@ -30,6 +30,7 @@
         <activity
             android:name=".ui.account.EditUserProfile"
             android:exported="false" />
+        <activity android:name=".ui.account.Preferences"/>
         <activity
             android:name=".ui.account.Register"
             android:exported="false" />
@@ -56,6 +57,7 @@
         <meta-data
             android:name="com.google.firebase.auth.DEFAULT_WEB_CLIENT_ID"
             android:value="@string/firebase_web_client_id" />
+        <activity android:name=".ui.food.HomeRestaurant"/>
     </application>
 
 </manifest>

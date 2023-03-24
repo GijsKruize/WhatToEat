@@ -20,7 +20,6 @@ import android.widget.Toast;
 
 import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.R;
-import com.example.whattoeat.ui.SplashScreen;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -66,7 +65,9 @@ public class AccountPageFragment extends Fragment {
             startActivity(intent);
             getActivity().finish();
         } else {
-            myRef.child("User").child(user.getUid()).child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            myRef.child("User").child(user.getUid()).child("name")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
@@ -84,6 +85,13 @@ public class AccountPageFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(getContext(), EditProfile.class));
+            }
+        });
+
+        changePrefBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), Preferences.class));
             }
         });
 
@@ -145,6 +153,7 @@ public class AccountPageFragment extends Fragment {
 
             }
         });
+
 
         return view;
     }

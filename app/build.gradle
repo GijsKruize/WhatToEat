@@ -51,10 +51,13 @@ dependencies {
     implementation 'com.github.blackfizz:eazegraph:1.2.5l@aar'
     implementation 'com.nineoldandroids:library:2.4.0'
     implementation 'com.github.Yalantis:Koloda-Android:v0.0.2-alpha'
+    implementation "com.google.firebase:firebase-database:20.1.0"
+
     implementation 'com.google.maps.android:android-maps-utils:2.3.0'
     implementation 'org.osmdroid:osmdroid-android:6.1.6'
     implementation 'org.osmdroid:osmdroid-wms:6.1.6'
     implementation 'org.osmdroid:osmdroid-mapsforge:6.1.6'
     implementation 'org.osmdroid:osmdroid-geopackage:6.1.6'
+    implementation 'com.squareup.picasso:picasso:2.5.2'
 
 }
