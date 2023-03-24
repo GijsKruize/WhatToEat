@@ -41,7 +41,6 @@ public class Preferences extends AppCompatActivity {
 
     CheckBox mItalian, mFrench, mMexican, mGreek, mChinese, mAmerican, mTurkish;
 
-
     FirebaseDatabase database;
     DatabaseReference preferencesRef;
 
@@ -50,8 +49,6 @@ public class Preferences extends AppCompatActivity {
     String uid;
 
     private String selectedLocation;
-
-
 
 
 
@@ -78,22 +75,13 @@ public class Preferences extends AppCompatActivity {
         mAmerican = findViewById(R.id.checkBox13);
         mTurkish = findViewById(R.id.checkBox14);
 
-
-//        mSharedPreferences = getSharedPreferences("userPref", MODE_PRIVATE);
         //Database
 
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
 
 
-//        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(RadioGroup group, int checkedId) {
-//                radioButton = findViewById(checkedId);
-//                Toast.makeText(getApplicationContext(), "You selected: " + radioButton.getText(), Toast.LENGTH_SHORT).show();
-//
-//            }
-//        });
+
 
 
         mSubmit.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +97,6 @@ public class Preferences extends AppCompatActivity {
 //
                 if (mFrench.isChecked()) {
                     preferencesRef.child(uid).child("Cuisine").child("French").setValue(true);
-
                 }
 //
                 if (mMexican.isChecked()) {
@@ -133,7 +120,12 @@ public class Preferences extends AppCompatActivity {
                 }
 
 
-                Toast.makeText(Preferences.this, "Saved", Toast.LENGTH_SHORT).show();
+                int radioId = radioGroup.getCheckedRadioButtonId();
+
+                radioButton = findViewById(radioId);
+
+
+                Toast.makeText(Preferences.this, "Saved: "+ radioButton.getText(), Toast.LENGTH_SHORT).show();
 
 //                Intent intent = new Intent(Preferences.this, AccountPageFragment.class);
 //                startActivity(intent);
@@ -146,6 +138,7 @@ public class Preferences extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 //                    preferencesRef. setValue(selectedLocation);
+                selectedLocation = "out";
                 mOut.setBackgroundColor(Color.GREEN);
                 mHome.setBackgroundColor(Color.TRANSPARENT);
                 mBoth.setBackgroundColor(Color.TRANSPARENT);
@@ -177,6 +170,15 @@ public class Preferences extends AppCompatActivity {
         });
 
 
+    }
+
+    public void checkButton(View v){
+        int radioId = radioGroup.getCheckedRadioButtonId();
+
+        radioButton = findViewById(radioId);
+
+        Toast.makeText(this, "Selected Radio Button: " + radioButton.getText(),
+                Toast.LENGTH_SHORT).show();
     }
 }
 
