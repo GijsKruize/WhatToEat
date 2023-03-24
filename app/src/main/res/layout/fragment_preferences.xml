@@ -2,25 +2,23 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container"
+    android:id="@+id/containerPreferences"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="?attr/actionBarSize">
+    android:paddingTop="?attr/actionBarSize"
+    android:background="@color/white"
+    tools:context=".ui.account.PreferencesPage">
 
     <View
+        android:id="@+id/backgroundPref"
         android:layout_width="350dp"
-        android:layout_height="500dp"
+        android:layout_height="400dp"
         android:layout_gravity="center"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginRight="100dp"
-        android:layout_marginBottom="100dp"
         android:alpha="0.6"
+        android:background="@drawable/preference_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@drawable/preference_background"
-        >
+        app:layout_constraintTop_toTopOf="parent">
 
     </View>
 
@@ -30,50 +28,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="out"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.21"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.175" />
+        android:layout_marginHorizontal="12dp"
+        app:layout_constraintEnd_toStartOf="@+id/homeButton"
+        app:layout_constraintTop_toTopOf="@+id/homeButton" />
 
     <Button
         android:id="@+id/submitButton"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="SUBMIT"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/backgroundPref"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.83" />
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
     <Button
         android:id="@+id/homeButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="home"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.175" />
+        app:layout_constraintTop_toBottomOf="@+id/preferenceTitle" />
 
     <Button
         android:id="@+id/bothButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="both"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.785"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-
-        app:layout_constraintVertical_bias="0.175" />
+        android:layout_marginHorizontal="12dp"
+        app:layout_constraintStart_toEndOf="@+id/homeButton"
+        app:layout_constraintTop_toTopOf="@+id/homeButton" />
 
     <TextView
         android:id="@+id/moodQuestion"
@@ -81,177 +67,132 @@
         android:layout_height="wrap_content"
         android:text="What kind of mood are you in?"
         android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.270" />
+        app:layout_constraintEnd_toEndOf="@+id/backgroundPref"
+        app:layout_constraintStart_toStartOf="@+id/backgroundPref"
+        app:layout_constraintTop_toBottomOf="@+id/homeButton" />
 
     <RadioGroup
         android:id="@+id/emotions_radio_group"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.350"
-        app:layout_constraintHorizontal_bias="0.46"
-        >
+        app:layout_constraintEnd_toEndOf="@+id/backgroundPref"
+        app:layout_constraintStart_toStartOf="@+id/backgroundPref"
+        app:layout_constraintTop_toBottomOf="@+id/moodQuestion">
 
         <RadioButton
             android:id="@+id/radio_happy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/happy"
-            android:onClick="checkButton"
             android:checked="true"
-            />
+            android:layout_marginHorizontal="4dp"
+            android:text="@string/happy" />
 
         <RadioButton
             android:id="@+id/radio_sad"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/sad"
-            android:onClick="checkButton"
-            />
+            android:layout_marginHorizontal="4dp"
+            android:text="@string/sad" />
 
         <RadioButton
             android:id="@+id/radio_excited"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/excited"
-            android:onClick="checkButton"
-            />
+            android:layout_marginHorizontal="4dp"
+            android:text="@string/excited" />
 
         <RadioButton
             android:id="@+id/radio_tired"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/tired"
-            android:onClick="checkButton"
-            />
-
-
-
-
+            android:layout_marginHorizontal="4dp"
+            android:text="@string/tired" />
     </RadioGroup>
 
 
 
-    <TextView
-        android:id="@+id/cuisineQuestion"
+        <TextView
+            android:id="@+id/cuisineQuestion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What kind of cuisines do you like?"
+            android:textColor="@color/black"
+            app:layout_constraintEnd_toEndOf="@+id/backgroundPref"
+            app:layout_constraintStart_toStartOf="@+id/backgroundPref"
+            app:layout_constraintTop_toBottomOf="@+id/emotions_radio_group" />
+
+    <TableLayout
+        android:id="@+id/tableLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="What kind of cuisines do you like?"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.472" />
+        app:layout_constraintEnd_toEndOf="@+id/backgroundPref"
+        app:layout_constraintStart_toStartOf="@+id/backgroundPref"
+        app:layout_constraintTop_toBottomOf="@+id/cuisineQuestion">
 
+        <TableRow>
 
-    <CheckBox
-        android:id="@+id/checkBox8"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/italian"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.149"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.541" />
+            <CheckBox
+                android:id="@+id/checkBox8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/italian" />
 
-    <CheckBox
-        android:id="@+id/checkBox9"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/french"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.541" />
+            <CheckBox
+                android:id="@+id/checkBox9"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/french" />
 
-    <CheckBox
-        android:id="@+id/checkBox10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/mexican"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.84"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.541" />
+            <CheckBox
+                android:id="@+id/checkBox10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mexican" />
+        </TableRow>
 
-    <CheckBox
-        android:id="@+id/checkBox11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/greek"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.741" />
+        <TableRow>
 
-    <CheckBox
-        android:id="@+id/checkBox12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/chinese"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.155"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.648" />
+            <CheckBox
+                android:id="@+id/checkBox11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/greek" />
 
-    <CheckBox
-        android:id="@+id/checkBox13"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/american"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.648" />
+            <CheckBox
+                android:id="@+id/checkBox12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/chinese" />
 
-    <CheckBox
-        android:id="@+id/checkBox14"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/turkish"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.83"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.648" />
+            <CheckBox
+                android:id="@+id/checkBox13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/american" />
+        </TableRow>
 
+        <TableRow>
 
+            <CheckBox
+                android:id="@+id/checkBox14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/turkish" />
+        </TableRow>
+    </TableLayout>
 
 
     <TextView
         android:id="@+id/preferenceTitle"
-        android:layout_width="395dp"
-        android:layout_height="66dp"
-        android:text="     Please select your preferences..."
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="Please select your preferences..."
         android:textColor="@color/black"
         android:textSize="20sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.024" />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/backgroundPref"
+        app:layout_constraintStart_toStartOf="@+id/backgroundPref"
+        app:layout_constraintTop_toTopOf="@+id/backgroundPref" />
 </androidx.constraintlayout.widget.ConstraintLayout>

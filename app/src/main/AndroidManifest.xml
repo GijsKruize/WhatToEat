@@ -30,7 +30,7 @@
         <activity
             android:name=".ui.account.EditUserProfile"
             android:exported="false" />
-        <activity android:name=".ui.account.Preferences"/>
+<!--        <activity android:name=".ui.account.PreferencesPage"/>-->
         <activity
             android:name=".ui.account.Register"
             android:exported="false" />
