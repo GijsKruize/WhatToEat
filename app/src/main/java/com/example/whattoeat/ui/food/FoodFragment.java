@@ -22,6 +22,7 @@ import com.yalantis.library.Koloda;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 public class FoodFragment extends Fragment {
     private SwipeAdapter adapter;
@@ -32,9 +33,22 @@ public class FoodFragment extends Fragment {
     Koloda koloda;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://what-to-eat-tue-default-rtdb.europe-west1.firebasedatabase.app");
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rView = inflater.inflate(R.layout.koloda, container, false);
+        koloda = rView.findViewById(R.id.koloda);
+        getData();
+        adapter = new SwipeAdapter(this.getContext(), this.recipeImages, this.recipeNames);
+        System.out.println("hier");
+        listener = new SwipeListener(this.getContext());
+        koloda.setAdapter(adapter);
+        koloda.setKolodaListener(listener);
+        Toast.makeText(this.getContext(), "Swipe meals, just like on Tinder!", Toast.LENGTH_SHORT).show();
+        return rView;
+    }
+
+    protected void getData(){
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Recipe");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -54,7 +68,7 @@ public class FoodFragment extends Fragment {
                     Log.d("Firebase", "Recipe Name: " + recipeName +
                             ", Image source: " + recipeImage);
                 }
-                System.out.println(recipeIds);
+                System.out.println(recipeIds + "test");
             }
 
             @Override
@@ -62,19 +76,6 @@ public class FoodFragment extends Fragment {
                 Log.e("Firebase", "Homepage could not fetch data from recipes: " + databaseError.getMessage());
             }
         });
-
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rView = inflater.inflate(R.layout.koloda, container, false);
-        koloda = rView.findViewById(R.id.koloda);
-        adapter = new SwipeAdapter(this.getContext(), this.recipeImages, this.recipeNames);
-        listener = new SwipeListener(this.getContext());
-        koloda.setAdapter(adapter);
-        koloda.setKolodaListener(listener);
-        Toast.makeText(this.getContext(), "Swipe meals, just like on Tinder!", Toast.LENGTH_SHORT).show();
-        return rView;
     }
 
 }
