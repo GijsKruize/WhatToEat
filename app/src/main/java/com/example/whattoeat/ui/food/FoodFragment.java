@@ -5,6 +5,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -19,6 +20,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.yalantis.library.Koloda;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -30,15 +32,17 @@ public class FoodFragment extends Fragment {
     private List<String> recipeNames = new ArrayList<>();
     private List<String> recipeImages = new ArrayList<>();
     private List<String> recipeIds = new ArrayList<>();
+
+    private ProgressBar progressBar;
     Koloda koloda;
 
     @Override
-<<<<<<< HEAD
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rView = inflater.inflate(R.layout.koloda, container, false);
+        progressBar = rView.findViewById(R.id.progressBar2);
+
         koloda = rView.findViewById(R.id.koloda);
-        getData();
         adapter = new SwipeAdapter(this.getContext(), this.recipeImages, this.recipeNames);
         System.out.println("hier");
         listener = new SwipeListener(this.getContext());
@@ -48,11 +52,14 @@ public class FoodFragment extends Fragment {
         return rView;
     }
 
-    protected void getData(){
-=======
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
->>>>>>> 2ce38a572303bff32989e3f6e5c6be9e58ffab78
+    @Override
+    public void onResume() {
+        super.onResume();
+        getData();
+    }
+
+    protected void getData() {
+        progressBar.setVisibility(View.VISIBLE);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Recipe");
         myRef.addValueEventListener(new ValueEventListener() {
@@ -61,7 +68,7 @@ public class FoodFragment extends Fragment {
                 recipeIds.clear();
                 recipeNames.clear();
                 recipeImages.clear();
-                for(DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
+                for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
                     // retrieve data for each recipe
                     String recipeId = recipeSnapshot.getKey();
                     String recipeName = recipeSnapshot.child("Name").getValue(String.class);
@@ -73,7 +80,10 @@ public class FoodFragment extends Fragment {
                     Log.d("Firebase", "Recipe Name: " + recipeName +
                             ", Image source: " + recipeImage);
                 }
-                System.out.println(recipeIds + "test");
+                progressBar.setVisibility(View.GONE);
+                adapter = new SwipeAdapter(getContext(),recipeImages,recipeNames);
+                koloda.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
             }
 
             @Override
