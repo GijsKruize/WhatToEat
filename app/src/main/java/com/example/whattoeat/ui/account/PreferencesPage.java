@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -200,5 +201,16 @@ public class PreferencesPage extends Fragment {
             }
         });
         return view;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.popBackStack();
+        Fragment preferencesFragment = getChildFragmentManager().findFragmentById(R.id.containerPreferences);
+        if (preferencesFragment != null) {
+            getChildFragmentManager().beginTransaction().remove(preferencesFragment).commit();
+        }
     }
 }

@@ -90,7 +90,7 @@ public class AccountPageFragment extends Fragment {
                 // Change the fragment to the preferences fragment
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                 Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
-                if (currentFragment instanceof PreferencesPage) {
+                if (currentFragment instanceof EditUserProfile) {
                     return; // do nothing if food_card fragment is already displayed
                 }
 

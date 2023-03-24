@@ -34,7 +34,7 @@ public class FoodFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FirebaseDatabase database = FirebaseDatabase.getInstance("https://what-to-eat-tue-default-rtdb.europe-west1.firebasedatabase.app");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("Recipe");
         myRef.addValueEventListener(new ValueEventListener() {
             @Override

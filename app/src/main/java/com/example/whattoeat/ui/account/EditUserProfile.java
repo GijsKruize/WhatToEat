@@ -3,6 +3,7 @@ package com.example.whattoeat.ui.account;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,5 +63,16 @@ public class EditUserProfile extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_user_profile, container, false);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        fragmentManager.popBackStack();
+        Fragment editUserFragment = getChildFragmentManager().findFragmentById(R.id.containerEditProfile);
+        if (editUserFragment != null) {
+            getChildFragmentManager().beginTransaction().remove(editUserFragment).commit();
+        }
     }
 }
