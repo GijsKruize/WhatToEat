@@ -4,7 +4,10 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.example.whattoeat.R;
 import com.example.whattoeat.ui.account.Login;
@@ -34,6 +38,9 @@ public class homepage extends Fragment {
 
     private List<String> recipeNames = new ArrayList<>();
     private List<String> recipeImages = new ArrayList<>();
+    private List<String> recipeIds = new ArrayList<>();
+    private ProgressBar progressBar;
+    private ListView mListView;
 
     FirebaseDatabase database;
     protected DatabaseReference myRef;
@@ -41,35 +48,6 @@ public class homepage extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        //Connect to the database
-        database = FirebaseDatabase.getInstance();
-        myRef = database.getReference("Recipe");
-
-        myRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                recipeNames.clear();
-                recipeImages.clear();
-                for(DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
-                    // retrieve data for each recipe
-                    String recipeName = recipeSnapshot.child("Name").getValue(String.class);
-                    String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
-
-                    recipeNames.add(recipeName);
-                    recipeImages.add(recipeImage);
-                    Log.d("Firebase", "Recipe Name: " + recipeName +
-                            ", Image source: " + recipeImage);
-                }
-                // notify the adapter that the data set has changed
-//                adapter.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("Firebase", "Homepage could not fetch data from recipes: " + databaseError.getMessage());
-            }
-        });
 
 
         //Check if user is authenticated
@@ -81,6 +59,50 @@ public class homepage extends Fragment {
             startActivity(intent);
             getActivity().finish();
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        fetchData();
+    }
+    private void fetchData(){
+
+        progressBar.setVisibility(View.VISIBLE);
+        //Connect to the database
+        database = FirebaseDatabase.getInstance();
+        myRef = database.getReference("Recipe");
+
+        Log.d("Homepage: ", "Loading data........");
+
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                recipeIds.clear();
+                recipeNames.clear();
+                recipeImages.clear();
+                for(DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
+                    // retrieve data for each recipe
+                    String recipeId = recipeSnapshot.getKey();
+                    String recipeName = recipeSnapshot.child("Name").getValue(String.class);
+                    String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
+
+                    recipeIds.add(recipeId);
+                    recipeNames.add(recipeName);
+                    recipeImages.add(recipeImage);
+                    Log.d("Firebase", "Recipe Name: " + recipeName +
+                            ", Image source: " + recipeImage);
+                }
+                progressBar.setVisibility(View.GONE); // Hide the progress bar
+                MyAdapter adapter = (MyAdapter) mListView.getAdapter();
+                adapter.notifyDataSetChanged(); // Refresh the adapter with new data
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Firebase", "Homepage could not fetch data from recipes: " + databaseError.getMessage());
+            }
+        });
     }
 
     public class MyAdapter extends BaseAdapter {
@@ -103,11 +125,48 @@ public class homepage extends Fragment {
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.card, viewGroup, false);
+            View view1 = getLayoutInflater().inflate(R.layout.fragment_food_card, viewGroup, false);
+
             ImageView mImageView = view.findViewById(R.id.imageViewCard);
             TextView mTextView = view.findViewById(R.id.textViewCard);
+            CardView card = view.findViewById(R.id.card);
+//            ImageView returnBtn = view1.findViewById(R.id.returnBtn);
 
             mTextView.setText(recipeNames.get(i));
             Picasso.with(getActivity().getApplicationContext()).load(recipeImages.get(i)).into(mImageView);
+
+            card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    // check if the food_card fragment is not already displayed
+                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                    Fragment currentFragment = fragmentManager.findFragmentById(R.id.homepage_container);
+                    if (currentFragment instanceof food_card) {
+                        return; // do nothing if food_card fragment is already displayed
+                    }
+
+                    //send data to the card
+                    Bundle args = new Bundle();
+                    args.putString("foodType", recipeIds.get(i));
+
+                    //change the fragment
+                    Fragment fragment = new food_card();
+                    fragment.setArguments(args);
+                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                    fragmentTransaction.replace(R.id.homepage_container, fragment);
+                    fragmentTransaction.addToBackStack(null);
+                    fragmentTransaction.commit();
+
+                    // remove the homepage fragment from the screen
+                    Fragment homepageFragment = fragmentManager.findFragmentById(R.id.homepage_container);
+                    if (homepageFragment != null) {
+                        fragmentTransaction.remove(homepageFragment);
+                    }
+
+
+                    Log.d("Cards", "Bro pressed on the card. " + recipeNames.get(i));
+                }
+            });
 
             return view;
         }
@@ -118,11 +177,25 @@ public class homepage extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_homepage, container, false);
 
-        ListView mListView = view.findViewById(R.id.listview);
+        mListView = view.findViewById(R.id.listview);
+        progressBar = view.findViewById(R.id.progressBarHome);
 
         MyAdapter adapter = new MyAdapter();
         mListView.setAdapter(adapter);
 
+        fetchData(); // Load the data
+
         return view;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        Fragment fragment = fragmentManager.findFragmentById(R.id.food);
+        Log.d("Homepage", "onStop Called.");
+        if (fragment != null) {
+            fragmentManager.popBackStackImmediate();
+        }
     }
 }

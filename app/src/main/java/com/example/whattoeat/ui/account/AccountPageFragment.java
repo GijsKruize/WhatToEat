@@ -9,6 +9,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,7 +22,7 @@ import android.widget.Toast;
 
 import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.R;
-import com.example.whattoeat.ui.SplashScreen;
+import com.example.whattoeat.ui.home.food_card;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -66,7 +68,9 @@ public class AccountPageFragment extends Fragment {
             startActivity(intent);
             getActivity().finish();
         } else {
-            myRef.child("User").child(user.getUid()).child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            myRef.child("User").child(user.getUid()).child("name")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull Task<DataSnapshot> task) {
                     if (!task.isSuccessful()) {
@@ -83,7 +87,51 @@ public class AccountPageFragment extends Fragment {
         editProfileBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(getContext(), EditProfile.class));
+                // Change the fragment to the preferences fragment
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
+                if (currentFragment instanceof EditUserProfile) {
+                    return; // do nothing if food_card fragment is already displayed
+                }
+
+                //change the fragment
+                Fragment fragment = new EditUserProfile();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.containerAccount, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
+                // remove the homepage fragment from the screen
+                Fragment accountFragment = fragmentManager.findFragmentById(R.id.containerAccount);
+                if (accountFragment != null) {
+                    fragmentTransaction.remove(accountFragment);
+                }
+            }
+        });
+
+        changePrefBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Change the fragment to the preferences fragment
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
+                if (currentFragment instanceof PreferencesPage) {
+                    return; // do nothing if food_card fragment is already displayed
+                }
+
+                //change the fragment
+                Fragment fragment = new PreferencesPage();
+                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+                fragmentTransaction.replace(R.id.containerAccount, fragment);
+                fragmentTransaction.addToBackStack(null);
+                fragmentTransaction.commit();
+
+                // remove the homepage fragment from the screen
+                Fragment accountFragment = fragmentManager.findFragmentById(R.id.containerAccount);
+                if (accountFragment != null) {
+                    fragmentTransaction.remove(accountFragment);
+                }
+
             }
         });
 
@@ -145,6 +193,7 @@ public class AccountPageFragment extends Fragment {
 
             }
         });
+
 
         return view;
     }

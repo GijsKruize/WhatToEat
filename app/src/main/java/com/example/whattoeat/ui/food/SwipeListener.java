@@ -8,11 +8,16 @@ import androidx.annotation.NonNull;
 
 import com.yalantis.library.KolodaListener;
 
+import java.util.List;
+
 public class SwipeListener implements KolodaListener {
     private Context context;
 
-    public SwipeListener(Context context){
+    private List<String> IDs;
+
+    public SwipeListener(Context context, List<String> IDs){
         this.context = context;
+        this.IDs =IDs;
     }
     @Override
     public void onCardDoubleTap(int i) {
@@ -36,12 +41,12 @@ public class SwipeListener implements KolodaListener {
 
     @Override
     public void onCardSwipedLeft(int i) {
-
+        System.out.println(IDs.get(i+1) + " negative");
     }
 
     @Override
     public void onCardSwipedRight(int i) {
-
+        System.out.println(IDs.get(i+1) + " positive");
     }
 
     @Override
