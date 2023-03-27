@@ -202,15 +202,4 @@ public class PreferencesPage extends Fragment {
         });
         return view;
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        fragmentManager.popBackStack();
-        Fragment preferencesFragment = getChildFragmentManager().findFragmentById(R.id.containerPreferences);
-        if (preferencesFragment != null) {
-            getChildFragmentManager().beginTransaction().remove(preferencesFragment).commit();
-        }
-    }
 }

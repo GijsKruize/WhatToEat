@@ -115,33 +115,41 @@ public class AccountPageFragment extends Fragment {
         editProfileBtn.setOnClickListener(view1 -> {
             // Change the fragment to the preferences fragment
             Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
-            Log.d("Account: ", fragmentManager.toString());
-            if (currentFragment instanceof EditUserProfile) {
-                return; // do nothing if food_card fragment is already displayed
+            if (currentFragment instanceof EditProfile) {
+                return; // do nothing if EditProfile fragment is already displayed
             }
 
-            //change the fragment
-            Fragment fragment1 = new EditUserProfile();
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            fragmentTransaction.replace(R.id.containerAccount, fragment1);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commitAllowingStateLoss();
+            Toast.makeText(context, "Fill in either of the bars " +
+                    "to change your Profile! Empty means it wont change.",
+                    Toast.LENGTH_LONG).show();
+
+            //Get the new fragment
+            Fragment fragment1 = new EditProfile();
+
+            //Change it
+            fragmentManager.beginTransaction()
+                    .replace(R.id.containerAccount, fragment1, null)
+                    .setReorderingAllowed(true)
+                    .addToBackStack("account1")
+                    .commit();
         });
 
         changePrefBtn.setOnClickListener(view1 -> {
             // Change the fragment to the preferences fragment
-            FragmentManager fragmentManager1 = getChildFragmentManager();
-            Fragment currentFragment = fragmentManager1.findFragmentById(R.id.containerAccount);
+            Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
             if (currentFragment instanceof PreferencesPage) {
-                return; // do nothing if food_card fragment is already displayed
+                return; // do nothing if Preferences fragment is already displayed
             }
 
-            //change the fragment
-            Fragment fragment12 = new PreferencesPage();
-            FragmentTransaction fragmentTransaction = fragmentManager1.beginTransaction();
-            fragmentTransaction.replace(R.id.containerAccount, fragment12);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commitAllowingStateLoss();
+            //Get the new fragment
+            Fragment fragment2 = new PreferencesPage();
+
+            //Change it
+            fragmentManager.beginTransaction()
+                    .replace(R.id.containerAccount, fragment2, null)
+                    .setReorderingAllowed(true)
+                    .addToBackStack("account2")
+                    .commit();
         });
 
         deleteUserBtn.setOnClickListener(view1 -> {
@@ -185,14 +193,28 @@ public class AccountPageFragment extends Fragment {
         return view;
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.containerAccount);
-        Log.d("Account Page: ", "onStop Called.");
-        if (fragment != null) {
-            fragmentManager.popBackStackImmediate();
-        }
-    }
+//    //Whenever we change fragments, we want to make sure that the back button
+//    //takes us back to the previous fragment
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        Log.d("Account Page: ", "onResume Called.");
+//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//        Fragment fragment = fragmentManager.findFragmentById(R.id.containerAccount);
+//        if (fragment != null) {
+//            fragmentManager.popBackStackImmediate();
+//        }
+//
+//    }
+//
+//    //Make sure we destroy the fragment when we leave the page
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        Log.d("Account Page: ", "onDestroy Called.");
+//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//        Fragment fragment = fragmentManager.findFragmentById(R.id.containerAccount);
+//        fragmentManager.popBackStackImmediate();
+//    }
+
 }
