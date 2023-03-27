@@ -28,6 +28,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Register extends AppCompatActivity {
 
@@ -87,12 +89,14 @@ public class Register extends AppCompatActivity {
             map.put("phone", phone);
             map.put("last login", timestamp.toString());
 
-            if(TextUtils.isEmpty(email)){
-                Toast.makeText(Register.this, "Enter Email", Toast.LENGTH_SHORT).show();
+            //Check the users entries.
+            if(!emptyEntries(email, name, phone, password)){
+                Log.e("Register: ", "empty entry!");
                 return;
             }
-            if (TextUtils.isEmpty(password)){
-                Toast.makeText(Register.this, "Enter Password", Toast.LENGTH_SHORT).show();
+
+            if(!validEntries(email, name, password)){
+                Log.e("Register: ", "non valid entry!");
                 return;
             }
 
@@ -129,5 +133,71 @@ public class Register extends AppCompatActivity {
                         }
                     });
         });
+    }
+
+    /**
+     * This method checks whether all fields are filled in
+     *
+     * @param email email from user
+     * @param name name from the user
+     * @param phone phone number from the user
+     * @param password password from the user
+     * @return true if entries are not empty, false otherwise.
+     */
+
+    private boolean emptyEntries(String email, String name, String phone, String password){
+        if(TextUtils.isEmpty(email)){
+            Toast.makeText(Register.this, "Enter Email", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(TextUtils.isEmpty(name)){
+            Toast.makeText(Register.this, "Enter Name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(TextUtils.isEmpty(phone)){
+            Toast.makeText(Register.this, "Enter Phone number", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(password)){
+            Toast.makeText(Register.this, "Enter Password", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Method checks what the user enterd. Returns false if it is not what we want.
+     * @param email email of the user
+     * @param name name of the user
+     * @param password password of the user
+     * @return true when entries are valid. False otherwise.
+     */
+    public boolean validEntries(String email, String name, String password){
+        Pattern pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+
+        if(name.length() > 16){
+            Toast.makeText(Register.this,
+                    "Username needs to be 16 characters or shorter!",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if(!pattern.matcher(password).find()){
+            Toast.makeText(Register.this,
+                    "Password needs to contain a special character!",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if (password.length() <= 8){
+            Toast.makeText(Register.this,
+                    "Password needs to be at least 8 characters long",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
     }
 }
