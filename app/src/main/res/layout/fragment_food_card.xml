@@ -96,7 +96,7 @@
                         android:layout_height="match_parent">
 
                         <TextView
-                            android:id="@+id/textLocationTitle"
+                            android:id="@+id/ingredientsTitle"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="Ingredients"
@@ -117,22 +117,29 @@
                     </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/textRecipeContent"
+                        android:id="@+id/textRecipeIngredients"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:paddingHorizontal="8dp"
                         android:paddingBottom="8dp"
-                        android:text="
-                            1 tbsp olive oil\n
-                            1 onion, finely chopped\n
-                            2 garlic cloves, crushed\n
-                            120g chorizo, diced\n
-                            2 x 400g cans chopped tomatoes\n
-                            1 tsp caster sugar\n
-                            600g fresh gnocchi\n
-                            125g mozzarella ball, cut into chunks\n
-                            small bunch of basil, torn\n
-                            green salad, to serve"
+                        android:text=""
+                        android:textAlignment="viewStart"
+                        android:textSize="16dp" />
+                    <TextView
+                        android:id="@+id/tutorialTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="How to make this recipe"
+                        android:textColor="@color/main_green"
+                        android:textSize="24dp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tutorialContent"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingHorizontal="8dp"
+                        android:paddingBottom="8dp"
+                        android:text=""
                         android:textAlignment="viewStart"
                         android:textSize="16dp" />
 

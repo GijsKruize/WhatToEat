@@ -64,6 +64,8 @@ public class AccountPageFragment extends Fragment {
         Button logoutButton = view.findViewById(R.id.logOutBtn);
         Button deleteUserBtn = view.findViewById(R.id.deleteAccountBtn);
         TextView textView = view.findViewById(R.id.userDetails);
+
+        //Database and user setup
         user = auth.getCurrentUser();
         context = getActivity().getApplicationContext();
         database = FirebaseDatabase.getInstance();
@@ -92,14 +94,14 @@ public class AccountPageFragment extends Fragment {
             Context context = getActivity().getApplicationContext();
             if (email.isEmpty()){
                 Toast.makeText(context,
-                        "Enter an Email address",
+                        "Something went wrong there.. Try again later!",
                         Toast.LENGTH_SHORT).show();
                 return;
             } else {
                 auth.sendPasswordResetEmail(email)
                         .addOnSuccessListener(unused -> Toast.makeText(context,
                                 "Check your email! Password reset email " +
-                                        "successfully sent!",
+                                        "was sent to you!",
                                 Toast.LENGTH_LONG).show()).addOnFailureListener(e -> {
                                     Log.e("Login Page: ", e.toString());
                                     Toast.makeText(context,

@@ -22,6 +22,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
 
+import org.w3c.dom.Text;
+
+import java.lang.ref.Reference;
+import java.util.HashMap;
+
 
 public class food_card extends Fragment {
 
@@ -55,8 +60,9 @@ public class food_card extends Fragment {
         View view =  inflater.inflate(R.layout.fragment_food_card, container, false);
 
         TextView mTitle = view.findViewById(R.id.textRecipeName);
-        TextView mContent = view.findViewById(R.id.textRecipeContent);
+        TextView mIngredients = view.findViewById(R.id.textRecipeIngredients);
         TextView mTime = view.findViewById(R.id.textTimeToCook);
+        TextView mTutorial = view.findViewById(R.id.tutorialContent);
         ImageView mImageView = view.findViewById(R.id.imageRecipe);
 
         database = FirebaseDatabase.getInstance();
@@ -78,9 +84,25 @@ public class food_card extends Fragment {
                             String name = dataSnapshot.child("Name").getValue(String.class);
                             String image = dataSnapshot.child("Image").getValue(String.class);
                             String time = dataSnapshot.child("Time").getValue().toString();
+
+                            HashMap<String, String> ingredients = new HashMap<>();
+                            DataSnapshot ingredientsData = dataSnapshot.child("Ingredients");
+
+                            for(DataSnapshot d: ingredientsData.getChildren()){
+                                String ingredientName = d.getKey();
+                                String ingredientValue = d.getValue().toString();
+                                ingredients.put(ingredientName, ingredientValue);
+                            }
+                            String ingredientsText = "";
+                            // Loop through the ingredients HashMap and append each ingredient name and value to the string
+                            for (String ingredientName : ingredients.keySet()) {
+                                String ingredientValue = ingredients.get(ingredientName);
+                                ingredientsText += ingredientName + ": " + ingredientValue + "\n";
+                            }
                             mTitle.setText(name);
                             mTime.setText(time + " minutes");
-                            mContent.setText("test");
+                            mIngredients.setText(ingredientsText);
+
 
                             Picasso.with(getActivity().getApplicationContext()).load(image).into(mImageView);
                         }
