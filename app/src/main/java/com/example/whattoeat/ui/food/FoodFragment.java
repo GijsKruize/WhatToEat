@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment;
 import com.example.whattoeat.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -30,13 +31,21 @@ import java.util.concurrent.CountDownLatch;
 public class FoodFragment extends Fragment {
     private SwipeAdapter adapter;
     private SwipeListener listener;
+    private String mood;
     private List<String> recipeIds = new ArrayList<>();
     private List<String> recipeNames = new ArrayList<>();
     private List<String> recipeImages = new ArrayList<>();
+    private List<String> recipeStyles = new ArrayList<>();
+
+    private List<String> historyFilter = new ArrayList<>();
 
 
     private ProgressBar progressBar;
     Koloda koloda;
+
+    public FoodFragment(String mood) {
+        this.mood = mood;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,15 +61,39 @@ public class FoodFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        filterData();
         getData();
     }
+    protected void filterData(){
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String uid = auth.getCurrentUser().getUid();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
 
+        DatabaseReference historyRef = database.getReference("Swipe History");
+        historyRef.child(uid).child(mood).addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                for (DataSnapshot historySnapshot : snapshot.getChildren()) {
+                    historyFilter.add(historySnapshot.getKey());
+                    System.out.println(historySnapshot.getKey());
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
     protected void getData() {
         progressBar.setVisibility(View.VISIBLE);
-
+        historyFilter.clear();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("Recipe");
-        myRef.addValueEventListener(new ValueEventListener() {
+
+        DatabaseReference recipeRef = database.getReference("Recipe");
+        recipeRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 recipeIds.clear();
@@ -71,26 +104,33 @@ public class FoodFragment extends Fragment {
                     String recipeId = recipeSnapshot.getKey();
                     String recipeName = recipeSnapshot.child("Name").getValue(String.class);
                     String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
-
-                    recipeIds.add(recipeId);
-                    recipeNames.add(recipeName);
-                    recipeImages.add(recipeImage);
+                    String recipeStyle = recipeSnapshot.child("Style").getValue(String.class);
+                    if (!historyFilter.contains(recipeId)) {
+                        System.out.println(recipeId+"FILTERED OUT");
+                        recipeIds.add(recipeId);
+                        recipeNames.add(recipeName);
+                        recipeImages.add(recipeImage);
+                        recipeStyles.add(recipeStyle);
+                    }
                     Log.d("Firebase", "Recipe Name: " + recipeName +
                             ", Image source: " + recipeImage);
                 }
                 progressBar.setVisibility(View.GONE);
                 adapter = new SwipeAdapter(getContext(), recipeIds, recipeNames, recipeImages);
                 koloda.setAdapter(adapter);
-                listener = new SwipeListener(getContext(), recipeIds);
+                listener = new SwipeListener(getContext(), recipeIds, recipeStyles, mood);
                 koloda.setKolodaListener(listener);
                 adapter.notifyDataSetChanged();
             }
+
 
             @Override
             public void onCancelled(@NonNull DatabaseError databaseError) {
                 Log.e("Firebase", "Homepage could not fetch data from recipes: " + databaseError.getMessage());
             }
         });
+
+
     }
 
 }

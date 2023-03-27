@@ -19,9 +19,9 @@
 
     <fragment
         android:id="@+id/nav_food"
-        android:name="com.example.whattoeat.ui.food.FoodFragment"
+        android:name="com.example.whattoeat.ui.food.fragment_mood"
         android:label="@string/title_food"
-        tools:layout="@layout/fragment_food" />
+        tools:layout="@layout/fragment_mood" />
 
     <fragment
         android:id="@+id/nav_account"

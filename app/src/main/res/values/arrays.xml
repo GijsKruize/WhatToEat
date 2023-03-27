@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="radio_buttons">
+        <item>Happy😃</item>
+        <item>Sad😢</item>
+        <item>Angry😡</item>
+        <item>Tired😴</item>
+        <item>Romantic💕</item>
+        <item>Stressed😖</item>
+        <item>Excited😆</item>
+        <item>Funky🤪</item>
+    </string-array>
+</resources>
