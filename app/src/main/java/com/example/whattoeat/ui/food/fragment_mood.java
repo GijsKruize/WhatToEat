@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.example.whattoeat.R;
 import com.example.whattoeat.ui.account.PreferencesPage;
+import com.example.whattoeat.ui.home.food_card;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -94,25 +95,16 @@ public class fragment_mood extends Fragment {
                 otherPreferences.child(uid).child("Mood").setValue(mood);
 
                 FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_mood);
-                if (currentFragment instanceof fragment_mood) {
-                    return; // do nothing if food_card fragment is already displayed
-                }
-
-                //change the fragment
                 Fragment fragment = new FoodFragment(mood);
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.fragment_mood, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
 
-                // remove the homepage fragment from the screen
-                Fragment moodfragment = fragmentManager.findFragmentById(R.id.fragment_mood);
-                if (moodfragment != null) {
-                    fragmentTransaction.remove(moodfragment);
-                }
 
+                fragmentManager.beginTransaction()
+                        .replace(R.id.fragment_mood, fragment)
+                        .setReorderingAllowed(true)
+                        .addToBackStack("home")
+                        .commit();
             }
+
 
         });
 

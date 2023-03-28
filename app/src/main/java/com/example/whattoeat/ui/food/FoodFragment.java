@@ -62,9 +62,11 @@ public class FoodFragment extends Fragment {
     public void onResume() {
         super.onResume();
         filterData();
-        getData();
+        getRestaurants();
     }
-    protected void filterData(){
+
+    protected void filterData() {
+        progressBar.setVisibility(View.VISIBLE);
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String uid = auth.getCurrentUser().getUid();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -77,7 +79,6 @@ public class FoodFragment extends Fragment {
 
                 for (DataSnapshot historySnapshot : snapshot.getChildren()) {
                     historyFilter.add(historySnapshot.getKey());
-                    System.out.println(historySnapshot.getKey());
                 }
             }
 
@@ -87,17 +88,17 @@ public class FoodFragment extends Fragment {
             }
         });
     }
-    protected void getData() {
-        progressBar.setVisibility(View.VISIBLE);
+    protected void getRestaurants() {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-
-        DatabaseReference recipeRef = database.getReference("Recipe");
+        DatabaseReference recipeRef = database.getReference("Restaurant");
         recipeRef.addValueEventListener(new ValueEventListener() {
+
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 recipeIds.clear();
                 recipeNames.clear();
                 recipeImages.clear();
+                recipeStyles.clear();
                 for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
                     // retrieve data for each recipe
                     String recipeId = recipeSnapshot.getKey();
@@ -105,7 +106,38 @@ public class FoodFragment extends Fragment {
                     String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
                     String recipeStyle = recipeSnapshot.child("Style").getValue(String.class);
                     if (!historyFilter.contains(recipeId)) {
-                        System.out.println(recipeId+"FILTERED OUT");
+                        recipeIds.add(recipeId);
+                        recipeNames.add(recipeName);
+                        recipeImages.add(recipeImage);
+                        recipeStyles.add(recipeStyle);
+                    }
+                    Log.d("Firebase", "Recipe Name: " + recipeName +
+                            ", Image source: " + recipeImage);
+                }
+                getRecipes();
+            }
+
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("Firebase", "Homepage could not fetch data from recipes: " + databaseError.getMessage());
+            }
+        });
+
+    }
+    protected void getRecipes() {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference recipeRef = database.getReference("Recipe");
+        recipeRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
+                    // retrieve data for each recipe
+                    String recipeId = recipeSnapshot.getKey();
+                    String recipeName = recipeSnapshot.child("Name").getValue(String.class);
+                    String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
+                    String recipeStyle = recipeSnapshot.child("Style").getValue(String.class);
+                    if (!historyFilter.contains(recipeId)) {
                         recipeIds.add(recipeId);
                         recipeNames.add(recipeName);
                         recipeImages.add(recipeImage);
@@ -128,7 +160,6 @@ public class FoodFragment extends Fragment {
                 Log.e("Firebase", "Homepage could not fetch data from recipes: " + databaseError.getMessage());
             }
         });
-
 
     }
 
