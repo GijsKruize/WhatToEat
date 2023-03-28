@@ -7,6 +7,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,11 @@ import android.widget.Toast;
 import com.example.whattoeat.R;
 import com.example.whattoeat.ui.account.PreferencesPage;
 import com.example.whattoeat.ui.home.food_card;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,7 +43,8 @@ public class fragment_mood extends Fragment {
     RadioButton radioButton;
     private String mood;
     FirebaseAuth auth;
-    private String uid;
+    FirebaseUser user;
+    private String UID;
     DatabaseReference preferencesRef;
 
     private List<String> moods = new ArrayList<String>();
@@ -49,7 +55,8 @@ public class fragment_mood extends Fragment {
         super.onCreate(savedInstanceState);
         this.mood = "None";
         auth = FirebaseAuth.getInstance();
-        uid = auth.getCurrentUser().getUid();
+        user = auth.getCurrentUser();
+        UID = user.getUid();
         preferencesRef = FirebaseDatabase.getInstance().getReference().child("Preference");
         moods.add(0, "Happy");
         moods.add(1, "Sad");
@@ -92,7 +99,14 @@ public class fragment_mood extends Fragment {
                         .child("Preference");
 
                 //Set the mood and location in the database
-                otherPreferences.child(uid).child("Mood").setValue(mood);
+                otherPreferences.child(UID)
+                        .child("Mood")
+                        .setValue(mood)
+                        .addOnCompleteListener(task ->
+                                Log.d("Mood page: ", "Mood added to user!"))
+                        .addOnFailureListener(e ->
+                                Log.d("Mood page: ", e.toString())
+                        );
 
                 FragmentManager fragmentManager = getChildFragmentManager();
                 Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_mood);

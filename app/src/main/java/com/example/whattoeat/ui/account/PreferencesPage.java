@@ -88,16 +88,16 @@ public class PreferencesPage extends Fragment {
 
                 switch(checkedId) {
                     case R.id.radio_happy:
-                        mood = "happy";
+                        mood = "Happy";
                         break;
                     case R.id.radio_sad:
-                        mood = "sad";
+                        mood = "Sad";
                         break;
                     case R.id.radio_excited:
-                        mood = "excited";
+                        mood = "Excited";
                         break;
                     case R.id.radio_tired:
-                        mood = "tired";
+                        mood = "Tired";
                         break;
                 }
             }
