@@ -51,15 +51,14 @@ public class fragment_mood extends Fragment {
         auth = FirebaseAuth.getInstance();
         uid = auth.getCurrentUser().getUid();
         preferencesRef = FirebaseDatabase.getInstance().getReference().child("Preference");
-        moods.add(0, "NONE");
-        moods.add(1, "Happy");
-        moods.add(2, "Sad");
-        moods.add(3, "Angry");
-        moods.add(4, "Tired");
-        moods.add(5, "Romantic");
-        moods.add(6, "Stressed");
-        moods.add(7, "Excited");
-        moods.add(8, "Funky");
+        moods.add(0, "Happy");
+        moods.add(1, "Sad");
+        moods.add(2, "Angry");
+        moods.add(3, "Tired");
+        moods.add(4, "Romantic");
+        moods.add(5, "Stressed");
+        moods.add(6, "Excited");
+        moods.add(7, "Funky");
 
     }
 
@@ -76,7 +75,8 @@ public class fragment_mood extends Fragment {
         mMultiLineRadioGroup.setOnCheckedChangeListener(new MultiLineRadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ViewGroup group, RadioButton button) {
-                mood = moods.get(button.getId());
+                int buttonID = ((button.getId()-1) % 8);
+                mood = moods.get(buttonID);
             }
         });
 
@@ -94,14 +94,20 @@ public class fragment_mood extends Fragment {
                 //Set the mood and location in the database
                 otherPreferences.child(uid).child("Mood").setValue(mood);
 
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment fragment = new FoodFragment(mood);
+                FragmentManager fragmentManager = getChildFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.fragment_mood);
+                if (currentFragment instanceof FoodFragment) {
+                    return; // do nothing if Preferences fragment is already displayed
+                }
 
+                //Get the new fragment
+                Fragment fragment2 = new FoodFragment(mood);
 
+                //Change it
                 fragmentManager.beginTransaction()
-                        .replace(R.id.fragment_mood, fragment)
+                        .replace(R.id.fragment_mood, fragment2, null)
                         .setReorderingAllowed(true)
-                        .addToBackStack("home")
+                        .addToBackStack("mood selector")
                         .commit();
             }
 
