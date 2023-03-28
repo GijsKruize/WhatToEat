@@ -49,7 +49,6 @@ public class homepage extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
         //Check if user is authenticated
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
@@ -130,7 +129,6 @@ public class homepage extends Fragment {
             ImageView mImageView = view.findViewById(R.id.imageViewCard);
             TextView mTextView = view.findViewById(R.id.textViewCard);
             CardView card = view.findViewById(R.id.card);
-//            ImageView returnBtn = view1.findViewById(R.id.returnBtn);
 
             mTextView.setText(recipeNames.get(i));
             Picasso.with(getActivity().getApplicationContext()).load(recipeImages.get(i)).into(mImageView);
@@ -152,16 +150,12 @@ public class homepage extends Fragment {
                     //change the fragment
                     Fragment fragment = new food_card();
                     fragment.setArguments(args);
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.homepage_container, fragment);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
 
-                    // remove the homepage fragment from the screen
-                    Fragment homepageFragment = fragmentManager.findFragmentById(R.id.homepage_container);
-                    if (homepageFragment != null) {
-                        fragmentTransaction.remove(homepageFragment);
-                    }
+                    fragmentManager.beginTransaction()
+                            .replace(R.id.homepage_container, fragment, null)
+                            .setReorderingAllowed(true)
+                            .addToBackStack("home")
+                            .commit();
 
 
                     Log.d("Cards", "Bro pressed on the card. " + recipeNames.get(i));
@@ -186,16 +180,5 @@ public class homepage extends Fragment {
         fetchData(); // Load the data
 
         return view;
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-        Fragment fragment = fragmentManager.findFragmentById(R.id.food);
-        Log.d("Homepage", "onStop Called.");
-        if (fragment != null) {
-            fragmentManager.popBackStackImmediate();
-        }
     }
 }

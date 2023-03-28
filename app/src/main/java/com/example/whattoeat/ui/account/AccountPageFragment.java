@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -23,7 +24,10 @@ import android.widget.Toast;
 import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.R;
 import com.example.whattoeat.ui.home.food_card;
+import com.example.whattoeat.ui.home.homepage;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -43,12 +47,14 @@ public class AccountPageFragment extends Fragment {
 
     FirebaseDatabase database;
     protected DatabaseReference myRef;
-    
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
+        FragmentManager fragmentManager = getChildFragmentManager();
+        Fragment fragment = new homepage();
 
         //Assign items to their visual button
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -58,6 +64,8 @@ public class AccountPageFragment extends Fragment {
         Button logoutButton = view.findViewById(R.id.logOutBtn);
         Button deleteUserBtn = view.findViewById(R.id.deleteAccountBtn);
         TextView textView = view.findViewById(R.id.userDetails);
+
+        //Database and user setup
         user = auth.getCurrentUser();
         context = getActivity().getApplicationContext();
         database = FirebaseDatabase.getInstance();
@@ -70,131 +78,143 @@ public class AccountPageFragment extends Fragment {
         } else {
             myRef.child("User").child(user.getUid()).child("name")
                     .get()
-                    .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DataSnapshot> task) {
-                    if (!task.isSuccessful()) {
-                        Log.e("firebase", "Error getting data", task.getException());
-                    }
-                    else {
-                        Log.d("firebase return", String.valueOf(task.getResult().getValue()));
-                        textView.setText(String.valueOf(task.getResult().getValue()));
-                    }
-                }
-            });
+                    .addOnCompleteListener(task -> {
+                        if (!task.isSuccessful()) {
+                            Log.e("firebase", "Error getting data", task.getException());
+                        }
+                        else {
+                            Log.d("firebase return", String.valueOf(task.getResult().getValue()));
+                            textView.setText(String.valueOf(task.getResult().getValue()));
+                        }
+                    });
         }
 
-        editProfileBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // Change the fragment to the preferences fragment
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
-                if (currentFragment instanceof EditUserProfile) {
-                    return; // do nothing if food_card fragment is already displayed
-                }
-
-                //change the fragment
-                Fragment fragment = new EditUserProfile();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerAccount, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-
-                // remove the homepage fragment from the screen
-                Fragment accountFragment = fragmentManager.findFragmentById(R.id.containerAccount);
-                if (accountFragment != null) {
-                    fragmentTransaction.remove(accountFragment);
-                }
+        resetPwBtn.setOnClickListener(view1 -> {
+            String email = user.getEmail();
+            Context context = getActivity().getApplicationContext();
+            if (email.isEmpty()){
+                Toast.makeText(context,
+                        "Something went wrong there.. Try again later!",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            } else {
+                auth.sendPasswordResetEmail(email)
+                        .addOnSuccessListener(unused -> Toast.makeText(context,
+                                "Check your email! Password reset email " +
+                                        "was sent to you!",
+                                Toast.LENGTH_LONG).show()).addOnFailureListener(e -> {
+                                    Log.e("Login Page: ", e.toString());
+                                    Toast.makeText(context,
+                                            "There was a problem with sending the email! " +
+                                                    "Please try again later.",
+                                            Toast.LENGTH_SHORT).show();
+                                });
             }
         });
 
-        changePrefBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Change the fragment to the preferences fragment
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
-                if (currentFragment instanceof PreferencesPage) {
-                    return; // do nothing if food_card fragment is already displayed
-                }
-
-                //change the fragment
-                Fragment fragment = new PreferencesPage();
-                FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                fragmentTransaction.replace(R.id.containerAccount, fragment);
-                fragmentTransaction.addToBackStack(null);
-                fragmentTransaction.commit();
-
-                // remove the homepage fragment from the screen
-                Fragment accountFragment = fragmentManager.findFragmentById(R.id.containerAccount);
-                if (accountFragment != null) {
-                    fragmentTransaction.remove(accountFragment);
-                }
-
+        editProfileBtn.setOnClickListener(view1 -> {
+            // Change the fragment to the preferences fragment
+            Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
+            if (currentFragment instanceof EditProfile) {
+                return; // do nothing if EditProfile fragment is already displayed
             }
+
+            Toast.makeText(context, "Fill in either of the bars " +
+                    "to change your Profile! Empty means it wont change.",
+                    Toast.LENGTH_LONG).show();
+
+            //Get the new fragment
+            Fragment fragment1 = new EditProfile();
+
+            //Change it
+            fragmentManager.beginTransaction()
+                    .replace(R.id.containerAccount, fragment1, null)
+                    .setReorderingAllowed(true)
+                    .addToBackStack("account1")
+                    .commit();
         });
 
-        deleteUserBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-                dialog.setTitle("Are you sure?");
-                dialog.setMessage("Deleting this account means that it will permanently" +
-                        " be removed from our systems. There is no way back!");
-                dialog.setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        user.delete().addOnCompleteListener(
-                                new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
-                                            user.getUid();
-                                            Toast.makeText(context ,
-                                                    "Account deleted!",
-                                                    Toast.LENGTH_SHORT).show();
-                                            myRef = myRef.child("User").child(user.getUid());
-                                            myRef.removeValue()
-                                                  .addOnSuccessListener(unused ->
-                                                          Log.d("Account Page ",
-                                                                  "Account successfully deleted from the database!"));
-                                            getActivity().startActivity(new Intent(getActivity(), Login.class));
-                                        } else {
-                                            Toast.makeText(context,
-                                                    task.getException().getMessage(),
-                                                    Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                }
-                        );
+        changePrefBtn.setOnClickListener(view1 -> {
+            // Change the fragment to the preferences fragment
+            Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
+            if (currentFragment instanceof PreferencesPage) {
+                return; // do nothing if Preferences fragment is already displayed
+            }
 
+            //Get the new fragment
+            Fragment fragment2 = new PreferencesPage();
 
+            //Change it
+            fragmentManager.beginTransaction()
+                    .replace(R.id.containerAccount, fragment2, null)
+                    .setReorderingAllowed(true)
+                    .addToBackStack("account2")
+                    .commit();
+        });
+
+        deleteUserBtn.setOnClickListener(view1 -> {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setTitle("Are you sure?");
+            dialog.setMessage("Deleting this account means that it will permanently" +
+                    " be removed from our systems. There is no way back!");
+            dialog.setPositiveButton("Delete", (dialogInterface, i) -> user.delete().addOnCompleteListener(
+                    task -> {
+                        if(task.isSuccessful()){
+                            user.getUid();
+                            Toast.makeText(context ,
+                                    "Account deleted!",
+                                    Toast.LENGTH_SHORT).show();
+                            myRef = myRef.child("User").child(user.getUid());
+                            myRef.removeValue()
+                                  .addOnSuccessListener(unused ->
+                                          Log.d("Account Page ",
+                                                  "Account successfully deleted from the database!"));
+                            getActivity().startActivity(new Intent(getActivity(), Login.class));
+                        } else {
+                            Toast.makeText(context,
+                                    task.getException().getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
-                });
-                dialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
-                AlertDialog alertDialog = dialog.create();
-                alertDialog.show();
-            }
+            ));
+            dialog.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
+            AlertDialog alertDialog = dialog.create();
+            alertDialog.show();
         });
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(getActivity(), MainActivity.class);
-                startActivity(intent);
-                getActivity().finish();
-                getActivity().startActivity(new Intent(getActivity(), Login.class));
+        logoutButton.setOnClickListener(view1 -> {
+            FirebaseAuth.getInstance().signOut();
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            startActivity(intent);
+            getActivity().finish();
+            getActivity().startActivity(new Intent(getActivity(), Login.class));
 
-            }
         });
-
 
         return view;
     }
+
+//    //Whenever we change fragments, we want to make sure that the back button
+//    //takes us back to the previous fragment
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        Log.d("Account Page: ", "onResume Called.");
+//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//        Fragment fragment = fragmentManager.findFragmentById(R.id.containerAccount);
+//        if (fragment != null) {
+//            fragmentManager.popBackStackImmediate();
+//        }
+//
+//    }
+//
+//    //Make sure we destroy the fragment when we leave the page
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        Log.d("Account Page: ", "onDestroy Called.");
+//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+//        Fragment fragment = fragmentManager.findFragmentById(R.id.containerAccount);
+//        fragmentManager.popBackStackImmediate();
+//    }
+
 }

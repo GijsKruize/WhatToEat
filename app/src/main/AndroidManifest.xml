@@ -29,7 +29,7 @@
             android:name=".ui.account.Login"
             android:exported="false" />
         <activity
-            android:name=".ui.account.EditUserProfile"
+            android:name=".ui.account.EditProfile"
             android:exported="false" />
 <!--        <activity android:name=".ui.account.PreferencesPage"/>-->
         <activity

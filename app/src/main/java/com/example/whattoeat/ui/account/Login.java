@@ -16,6 +16,8 @@ import android.widget.Toast;
 import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
@@ -32,7 +34,7 @@ public class Login extends AppCompatActivity {
     private Button btnLogin;
     private ProgressBar progressBar;
     private FirebaseAuth mAuth;
-    private TextView textView;
+    private TextView textView, forgotPassword;
     private FirebaseDatabase database;
     private DatabaseReference myRef;
 
@@ -59,6 +61,7 @@ public class Login extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
         btnLogin = findViewById(R.id.loginButton);
         textView = findViewById(R.id.loginButtonLoginPage);
+        forgotPassword = findViewById(R.id.forgotPassword);
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         Timestamp timestamp = new Timestamp(System.currentTimeMillis());
@@ -72,6 +75,31 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        forgotPassword.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view){
+                String email = String.valueOf(editTextEmail.getText());
+                if (email.isEmpty()){
+                    Toast.makeText(Login.this, "Enter an Email address", Toast.LENGTH_SHORT).show();
+                    return;
+                } else {
+                    mAuth.sendPasswordResetEmail(email)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    Toast.makeText(Login.this, "Email successfully sent!", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.e("Login Page: ", e.toString());
+                                    Toast.makeText(Login.this,
+                                            "Something went wrong! Please provide a valid email address!",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                }
+            }
+        });
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -15,7 +15,9 @@ import com.example.whattoeat.R;
 import com.google.android.material.imageview.ShapeableImageView;
 import com.squareup.picasso.Picasso;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 
 public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.ViewHolder> implements Adapter {
     private Context context;
@@ -28,6 +30,10 @@ public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.ViewHolder> 
 
     public SwipeAdapter(Context context, List<String> IDs, List<String> name, List<String> img ) {
         this.context = context;
+        long seed = System.nanoTime();
+        Collections.shuffle(img, new Random(seed));
+        Collections.shuffle(name, new Random(seed));
+        Collections.shuffle(IDs, new Random(seed));
         this.img = img;
         this.name = name;
         this.IDs = IDs;
