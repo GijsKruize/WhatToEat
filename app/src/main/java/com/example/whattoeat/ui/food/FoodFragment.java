@@ -53,33 +53,34 @@ public class FoodFragment extends Fragment {
         View rView = inflater.inflate(R.layout.koloda, container, false);
         progressBar = rView.findViewById(R.id.progressBar2);
         koloda = rView.findViewById(R.id.koloda);
-
-        Toast.makeText(this.getContext(), "Swipe meals, just like on Tinder!", Toast.LENGTH_SHORT).show();
         return rView;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        progressBar.setVisibility(View.VISIBLE);
         filterData();
-        getRestaurants();
+
     }
 
     protected void filterData() {
-        progressBar.setVisibility(View.VISIBLE);
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String uid = auth.getCurrentUser().getUid();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference historyRef = database.getReference("Swipe History");
-        historyRef.child(uid).child(mood).addValueEventListener(new ValueEventListener() {
+        historyRef.child(uid).child(mood).addListenerForSingleValueEvent(new ValueEventListener() {
+
 
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
                 for (DataSnapshot historySnapshot : snapshot.getChildren()) {
                     historyFilter.add(historySnapshot.getKey());
+                    Log.d("Firebase", "Filter: " + historySnapshot.getKey());
                 }
+                getRestaurants();
             }
 
             @Override
