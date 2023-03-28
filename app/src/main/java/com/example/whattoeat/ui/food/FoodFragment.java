@@ -89,7 +89,6 @@ public class FoodFragment extends Fragment {
     }
     protected void getData() {
         progressBar.setVisibility(View.VISIBLE);
-        historyFilter.clear();
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
         DatabaseReference recipeRef = database.getReference("Recipe");

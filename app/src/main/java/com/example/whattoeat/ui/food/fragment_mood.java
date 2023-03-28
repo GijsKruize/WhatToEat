@@ -2,6 +2,7 @@ package com.example.whattoeat.ui.food;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -17,8 +18,11 @@ import android.widget.Toast;
 import com.example.whattoeat.R;
 import com.example.whattoeat.ui.account.PreferencesPage;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.whygraphics.multilineradiogroup.MultiLineRadioGroup;
 
 import java.util.ArrayList;
@@ -46,15 +50,15 @@ public class fragment_mood extends Fragment {
         auth = FirebaseAuth.getInstance();
         uid = auth.getCurrentUser().getUid();
         preferencesRef = FirebaseDatabase.getInstance().getReference().child("Preference");
-        moods.add(0,"NONE");
-        moods.add(1,"Happy");
-        moods.add(2,"Sad");
-        moods.add(3,"Angry");
-        moods.add(4,"Tired");
-        moods.add(5,"Romantic");
-        moods.add(6,"Stressed");
-        moods.add(7,"Excited");
-        moods.add(8,"Funky");
+        moods.add(0, "NONE");
+        moods.add(1, "Happy");
+        moods.add(2, "Sad");
+        moods.add(3, "Angry");
+        moods.add(4, "Tired");
+        moods.add(5, "Romantic");
+        moods.add(6, "Stressed");
+        moods.add(7, "Excited");
+        moods.add(8, "Funky");
 
     }
 
@@ -71,8 +75,7 @@ public class fragment_mood extends Fragment {
         mMultiLineRadioGroup.setOnCheckedChangeListener(new MultiLineRadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ViewGroup group, RadioButton button) {
-                mood =  moods.get(button.getId());
-                System.out.println(button.getId());
+                mood = moods.get(button.getId());
             }
         });
 
@@ -115,4 +118,5 @@ public class fragment_mood extends Fragment {
 
         return view;
     }
+
 }
