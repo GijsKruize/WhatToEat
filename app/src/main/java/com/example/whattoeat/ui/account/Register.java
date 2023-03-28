@@ -22,8 +22,12 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -40,6 +44,7 @@ public class Register extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase database;
     protected DatabaseReference myRef;
+    private Boolean result = false;
 
     @Override
     public void onStart() {
@@ -74,6 +79,16 @@ public class Register extends AppCompatActivity {
 //            finish();
 //        });
 
+        editTextName.setOnFocusChangeListener((view, b) -> {
+            if (!b) {
+                String name = String.valueOf(editTextName.getText());
+                if (!checkIfUsernameExists(name)) {
+                    Log.e("Register: ", "non valid username");
+                    Toast.makeText(Register.this, "Username already exists", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         returnBtn.setOnClickListener(view -> startActivity(new Intent(Register.this, Login.class)));
         btnReg.setOnClickListener(view -> {
             progressBar.setVisibility(View.VISIBLE);
@@ -95,8 +110,14 @@ public class Register extends AppCompatActivity {
                 return;
             }
 
-            if(!validEntries(email, name, password)){
+            if(!validEntries(name, password)){
                 Log.e("Register: ", "non valid entry!");
+                return;
+            }
+
+            Log.e("Register: ", ""+checkIfUsernameExists(name));
+            if(!checkIfUsernameExists(name)){
+                Log.e("Register: ", "non valid username");
                 return;
             }
 
@@ -168,14 +189,40 @@ public class Register extends AppCompatActivity {
         return true;
     }
 
+    private boolean checkIfUsernameExists(String username) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
+        Query query = ref.orderByChild("username").equalTo(username);
+        AtomicReference<Boolean> exists = new AtomicReference<>(false);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
+                    exists.set(true);
+                    break;
+                }
+                if (exists.get()) {
+                    result = false;
+                } else {
+                    result = true;
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // Handle error
+            }
+        });
+        return result;
+    }
+
+
     /**
      * Method checks what the user enterd. Returns false if it is not what we want.
-     * @param email email of the user
      * @param name name of the user
      * @param password password of the user
      * @return true when entries are valid. False otherwise.
      */
-    public boolean validEntries(String email, String name, String password){
+    public boolean validEntries(String name, String password){
         Pattern pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
 
         if(name.length() > 16){

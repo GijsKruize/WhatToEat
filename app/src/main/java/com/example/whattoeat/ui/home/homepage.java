@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,6 +29,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -44,8 +44,9 @@ public class homepage extends Fragment {
     private List<String> listIdsRest = new ArrayList<>();
     private ProgressBar progressBar;
     private ListView mListView;
-
+    private String[][] data;
     FirebaseDatabase database;
+    private boolean isDataShuffled = false;
     protected DatabaseReference myRefRecipe, myRefRestaurant;
 
     @Override
@@ -66,6 +67,7 @@ public class homepage extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        isDataShuffled = false; // Reset the variable to false
         fetchData();
     }
     private void fetchData(){
@@ -79,10 +81,10 @@ public class homepage extends Fragment {
         Log.d("Homepage: ", "Loading data........");
 
         //fetch data
-        fetchCardData();
+        fetchFromDb();
     }
 
-    public void fetchCardData(){
+    public void fetchFromDb(){
         myRefRecipe.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -130,6 +132,7 @@ public class homepage extends Fragment {
                 progressBar.setVisibility(View.GONE); // Hide the progress bar
                 MyAdapter adapter = (MyAdapter) mListView.getAdapter();
                 adapter.notifyDataSetChanged(); // Refresh the adapter with new data
+                data = new String[listNamesRec.size() + listNamesRest.size()][3];
             }
 
             @Override
@@ -164,72 +167,76 @@ public class homepage extends Fragment {
             TextView mTextView = view.findViewById(R.id.textViewCard);
             CardView card = view.findViewById(R.id.card);
 
-            //combined lists.
-            List<String> listIds = new ArrayList<>();
-            List<String> listNames = new ArrayList<>();
-            List<String> listImages = new ArrayList<>();
-
-            // Loop through each list and add the corresponding elements to the new lists
-            for (int j = 0; j < listNamesRec.size(); j++) {
-                listNames.add(listNamesRec.get(j));
-                listImages.add(listImagesRec.get(j));
-                listIds.add(listIdsRec.get(j));
-
+            if(!isDataShuffled) {
+                shuffleData();
             }
-            for (int j = 0; j < listImagesRest.size(); j++) {
-                listNames.add(listNamesRest.get(j));
-                listImages.add(listImagesRest.get(j));
-                listIds.add(listIdsRest.get(j));
-            }
-            mTextView.setText(listNames.get(i));
-            Picasso.with(getActivity().getApplicationContext()).load(listImages.get(i)).into(mImageView);
 
-            card.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // check if the food_card fragment is not already displayed
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    Fragment currentFragment = fragmentManager.findFragmentById(R.id.homepage_container);
+            mTextView.setText(data[i][0]);
+            Picasso.with(getActivity().getApplicationContext()).load(data[i][1]).into(mImageView);
 
-                    //disable interaction with homepage.
-                    if (currentFragment instanceof food_card) {
-                        return; // do nothing if food_card fragment is already displayed
-                    }
+            card.setOnClickListener(view1 -> {
+                // check if the food_card fragment is not already displayed
+                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                Fragment currentFragment = fragmentManager.findFragmentById(R.id.homepage_container);
 
-                    if (currentFragment instanceof CardWidgetFragment) {
-                        return; // do nothing if CardWidgetFragment fragment is already displayed
-                    }
-
-                    //send data to the card
-                    Bundle args = new Bundle();
-                    args.putString("cardType", listIds.get(i));
-                    Log.d("Homepage: ", "send data to card" + listIds.get(i));
-
-                    //change the fragment
-                    Fragment fragment;
-                    if (listIds.get(i).contains("Recipe")) {
-                        fragment = new food_card();
-                    } else {
-                        fragment = new CardWidgetFragment();
-                    }
-
-                    //send card data to the fragment
-                    fragment.setArguments(args);
-
-                    //change to the fragment
-                    fragmentManager.beginTransaction()
-                            .replace(R.id.homepage_container, fragment, null)
-                            .setReorderingAllowed(true)
-                            .addToBackStack("home")
-                            .commit();
-
-
-                    Log.d("Cards", "Bro pressed on the card. " + listNames.get(i));
+                //disable interaction with homepage.
+                if (currentFragment instanceof food_card) {
+                    return; // do nothing if food_card fragment is already displayed
                 }
+
+                if (currentFragment instanceof CardWidgetFragment) {
+                    return; // do nothing if CardWidgetFragment fragment is already displayed
+                }
+
+                //send data to the card
+                Bundle args = new Bundle();
+                args.putString("cardType", data[i][2]);
+                Log.d("Homepage: ", "send data to card" + data[i][2]);
+
+                //change the fragment
+                Fragment fragment;
+                if (data[i][2].contains("Recipe")) {
+                    fragment = new food_card();
+                } else {
+                    fragment = new CardWidgetFragment();
+                }
+
+                //send card data to the fragment
+                fragment.setArguments(args);
+
+                //change to the fragment
+                fragmentManager.beginTransaction()
+                        .replace(R.id.homepage_container, fragment, null)
+                        .setReorderingAllowed(true)
+                        .addToBackStack("home")
+                        .commit();
+
+
+                Log.d("Cards", "Pressed on the card: " + data[i][0]);
             });
 
             return view;
         }
+    }
+
+    private void shuffleData() {
+        // Combine the recipe and restaurant data into a single list
+        List<String[]> dataList = new ArrayList<>();
+        for (int i = 0; i < listNamesRec.size(); i++) {
+            dataList.add(new String[] {listNamesRec.get(i), listImagesRec.get(i), listIdsRec.get(i)});
+        }
+        for (int i = 0; i < listNamesRest.size(); i++) {
+            dataList.add(new String[] {listNamesRest.get(i), listImagesRest.get(i), listIdsRest.get(i)});
+        }
+
+        // Shuffle the list
+        Collections.shuffle(dataList);
+
+        // Copy the shuffled data back into the data array
+        for (int i = 0; i < dataList.size(); i++) {
+            data[i] = dataList.get(i);
+        }
+        isDataShuffled = true;
     }
 
     @Override
@@ -247,4 +254,5 @@ public class homepage extends Fragment {
 
         return view;
     }
+
 }
