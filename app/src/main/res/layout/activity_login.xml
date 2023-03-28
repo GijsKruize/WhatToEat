@@ -54,7 +54,7 @@
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/emailLogin"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="48dp"
         android:layout_marginTop="30dp"
         android:background="@drawable/rounded_button_background_white"
@@ -69,7 +69,7 @@
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/passwordLogin"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="48dp"
         android:background="@drawable/rounded_button_background_white"
         android:drawableLeft="@drawable/lock"

@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_green"
-    tools:context=".ui.account.Register">
+    tools:context=".ui.account.RegisterRestaurant">
 
     <TextView
-        android:id="@+id/registerText"
+        android:id="@+id/registerRestaurantText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="82dp"
@@ -20,20 +20,20 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/registerText2"
+        android:id="@+id/registerRestaurantText2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="WHAT TO EAT?"
         android:textSize="40dp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/emailRegister"
-        app:layout_constraintEnd_toEndOf="@+id/registerText"
-        app:layout_constraintStart_toStartOf="@+id/registerText"
-        app:layout_constraintTop_toBottomOf="@+id/registerText"
+        app:layout_constraintBottom_toTopOf="@+id/emailRestaurantRegister"
+        app:layout_constraintEnd_toEndOf="@+id/registerRestaurantText"
+        app:layout_constraintStart_toStartOf="@+id/registerRestaurantText"
+        app:layout_constraintTop_toBottomOf="@+id/registerRestaurantText"
         app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/emailRegister"
+        android:id="@+id/emailRestaurantRegister"
         android:layout_width="300dp"
         android:layout_height="48dp"
         android:layout_marginTop="112dp"
@@ -45,10 +45,10 @@
         android:paddingLeft="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerText" />
+        app:layout_constraintTop_toBottomOf="@+id/registerRestaurantText" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/nameRegister"
+        android:id="@+id/nameRestaurantRegister"
         android:layout_width="300dp"
         android:layout_height="48dp"
         android:background="@drawable/rounded_button_background_white"
@@ -57,13 +57,13 @@
         android:hint="@string/nameReg"
         android:inputType="text"
         android:paddingLeft="12dp"
-        app:layout_constraintBottom_toTopOf="@+id/phoneRegister"
+        app:layout_constraintBottom_toTopOf="@+id/phoneRestaurantRegister"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailRegister" />
+        app:layout_constraintTop_toBottomOf="@+id/emailRestaurantRegister" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/phoneRegister"
+        android:id="@+id/phoneRestaurantRegister"
         android:layout_width="300dp"
         android:layout_height="48dp"
         android:background="@drawable/rounded_button_background_white"
@@ -74,36 +74,54 @@
         android:paddingLeft="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/nameRegister"
-        app:layout_constraintTop_toBottomOf="@+id/passwordRegister" />
+        app:layout_constraintBottom_toTopOf="@+id/addressRestaurantRegister"
+        app:layout_constraintTop_toBottomOf="@+id/nameRestaurantRegister" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/passwordRegister"
+        android:id="@+id/addressRestaurantRegister"
         android:layout_width="300dp"
         android:layout_height="48dp"
+        android:background="@drawable/rounded_button_background_white"
+        android:drawableLeft="@drawable/house"
+        android:ems="10"
+        android:hint="@string/addressReg"
+        android:inputType="text"
+        android:paddingLeft="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/passwordRestaurantRegister"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/phoneRestaurantRegister"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/passwordRestaurantRegister"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="188dp"
         android:background="@drawable/rounded_button_background_white"
         android:drawableLeft="@drawable/lock"
         android:ems="10"
         android:hint="@string/passwordReg"
         android:inputType="textPassword"
         android:paddingLeft="12dp"
-        android:layout_marginTop="124dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailRegister" />
+        app:layout_constraintTop_toBottomOf="@+id/emailRestaurantRegister" />
 
     <ProgressBar
-        android:id="@+id/progressBar"
+        android:id="@+id/progressBarRestaurant"
         android:layout_width="8dp"
         android:layout_height="6dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/registerBtnRestaurant" />
 
     <Button
-        android:id="@+id/registerBtn"
+        android:id="@+id/registerBtnRestaurant"
         android:layout_width="256dp"
         android:layout_height="64dp"
         android:layout_marginBottom="64dp"
@@ -114,7 +132,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailRegister"
+        app:layout_constraintTop_toBottomOf="@+id/emailRestaurantRegister"
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
@@ -126,6 +144,6 @@
         android:textColor="@color/light_grey"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/registerBtn" />
+        app:layout_constraintTop_toBottomOf="@+id/registerBtnRestaurant" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
