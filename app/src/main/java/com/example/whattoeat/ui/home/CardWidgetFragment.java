@@ -19,32 +19,33 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+public class CardWidgetFragment extends Fragment {
 
-public class food_card extends Fragment {
-
-    private String food_id = "FOODTEST";
+    private String restaurant_id = "FOODTEST";
     FirebaseDatabase database;
     protected DatabaseReference myRef;
 
-    public String getFood_type(){
-        return food_id;
+    public String getRestaurant_type(){
+        return restaurant_id;
     }
 
-    public void setFood_type(String type){
-        this.food_id = type;
+    public void setRestaurant_type(String type){
+        this.restaurant_id = type;
     }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle args = getArguments();
         if (args != null) {
-            setFood_type(args.getString("cardType"));
+            setRestaurant_type(args.getString("cardType"));
         }
     }
 
@@ -52,19 +53,19 @@ public class food_card extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view =  inflater.inflate(R.layout.fragment_food_card, container, false);
+        View view = inflater.inflate(R.layout.fragment_cardwidget, container, false);
 
-        TextView mTitle = view.findViewById(R.id.textRecipeName);
-        TextView mIngredients = view.findViewById(R.id.textRecipeIngredients);
-        TextView mTime = view.findViewById(R.id.textTimeToCook);
-        TextView mTutorial = view.findViewById(R.id.tutorialContent);
-        ImageView mImageView = view.findViewById(R.id.imageRecipe);
+        TextView mTitle = view.findViewById(R.id.textRestaurantName);
+        TextView mLocation = view.findViewById(R.id.textLocationContent);
+        TextView mCuisine = view.findViewById(R.id.textCuisineContent);
+        TextView mContact = view.findViewById(R.id.textContactContent);
+        ImageView mImageView = view.findViewById(R.id.imageRestaurant);
 
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
 
-        myRef.child("Recipe")
-                .child(getFood_type())
+        myRef.child("Restaurant")
+                .child(getRestaurant_type())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
@@ -77,34 +78,16 @@ public class food_card extends Fragment {
                             DataSnapshot dataSnapshot = task.getResult();
                             String name = dataSnapshot.child("Name").getValue(String.class);
                             String image = dataSnapshot.child("Image").getValue(String.class);
-                            String time = dataSnapshot.child("Time").getValue().toString();
+                            String cuisine = dataSnapshot.child("Style").getValue(String.class);
+                            String location = dataSnapshot.child("Location").getValue().toString() + "\n";
+                            String phone = dataSnapshot.child("Phone").getValue().toString()+ "\n";
+                            String website = dataSnapshot.child("Hyperlink").getValue(String.class);
+                            String contact = location + phone + website;
 
-                            HashMap<String, String> ingredients = new HashMap<>();
-                            DataSnapshot ingredientsData = dataSnapshot.child("Ingredients");
-
-                            for(DataSnapshot d: ingredientsData.getChildren()){
-                                String ingredientName = d.getKey();
-                                String ingredientValue = d.getValue().toString();
-                                ingredients.put(ingredientName, ingredientValue);
-                            }
-                            String ingredientsText = "";
-                            // Loop through the ingredients HashMap and append each ingredient name and value to the string
-                            for (String ingredientName : ingredients.keySet()) {
-                                String ingredientValue = ingredients.get(ingredientName);
-
-                                String[] words = ingredientName.split("\\s+");
-                                StringBuilder outputString = new StringBuilder();
-                                for (String word : words) {
-                                    outputString.append(word.substring(0, 1).toUpperCase())
-                                            .append(word.substring(1))
-                                            .append(" ");
-                                }
-                                ingredientsText += outputString + ": " + ingredientValue + "\n";
-                            }
                             mTitle.setText(name);
-                            mTime.setText(time + " minutes");
-                            mIngredients.setText(ingredientsText);
-
+                            mLocation.setText(location);
+                            mCuisine.setText(cuisine);
+                            mContact.setText(contact);
 
                             HashMap<Integer, String> tutorialSteps = new HashMap<>(); // use Integer as key to store step number
                             DataSnapshot tutorialData = dataSnapshot.child("Tutorial");
@@ -130,9 +113,6 @@ public class food_card extends Fragment {
                                     tutorialText += "\n \n \n";
                                 }
                             }
-
-
-                            mTutorial.setText(tutorialText);
 
                             Picasso.with(getActivity().getApplicationContext()).load(image).into(mImageView);
                         }
