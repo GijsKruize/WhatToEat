@@ -113,8 +113,7 @@ public class MapFragment extends Fragment {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //mapController.animateTo(locationOverlay.getMyLocation());
-                setupMarkers();
+                mapController.animateTo(locationOverlay.getMyLocation());
             }
         });
 
