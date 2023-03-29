@@ -133,12 +133,15 @@ public class homepage extends Fragment {
                     String restaurantId = Restaurant.getKey();
                     String restaurantName = Restaurant.child("Name").getValue(String.class);
                     String restaurantImage = Restaurant.child("Image").getValue(String.class);
+                    Boolean verified = Restaurant.child("Verified").getValue(Boolean.class);
 
-                    listIdsRest.add(restaurantId);
-                    listNamesRest.add(restaurantName);
-                    listImagesRest.add(restaurantImage);
-                    Log.d("Firebase", "Recipe Name: " + restaurantName +
-                            ", Image source: " + restaurantImage);
+                    if(verified) {
+                        listIdsRest.add(restaurantId);
+                        listNamesRest.add(restaurantName);
+                        listImagesRest.add(restaurantImage);
+                        Log.d("Firebase", "Recipe Name: " + restaurantName +
+                                ", Image source: " + restaurantImage);
+                    }
                 }
                 progressBar.setVisibility(View.GONE); // Hide the progress bar
                 Log.d("Homepage: ", "listrec : "+ listNamesRec.size() + " listrest: " + listNamesRest.size());

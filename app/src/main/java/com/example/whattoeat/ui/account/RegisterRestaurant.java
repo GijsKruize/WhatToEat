@@ -180,6 +180,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                 mapRest.put("Longitude", longitude);
                 mapRest.put("Name", restaurant);
                 mapRest.put("Phone", phone);
+                mapRest.put("Location", address);
                 mapRest.put("Style", "");
                 mapRest.put("Verified", false);
 
