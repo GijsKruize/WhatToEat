@@ -30,4 +30,6 @@
     <string name="excited">Excited</string>
     <string name="sad">Sad</string>
     <string name="happy">Happy</string>
+    <string name="statistics">Statistics:</string>
+    <string name="total_likes_of_all_moods">Total likes of all moods:</string>
 </resources>
