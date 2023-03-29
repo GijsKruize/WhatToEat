@@ -215,11 +215,16 @@ public class MapFragment extends Fragment {
                 }
                 int i = 0;
                 for(String name : markerNames) {
-                    if(markerVerifiers.get(i)) {
+                    setupMarkers(i);
+                    i++;
+                }
+               /* for(String name : markerNames) {
+                    if(markerVerifiers.get(i) == true) {
                         setupMarkers(i);
                     }
                     i++;
                 }
+                */
                 //progressBar.setVisibility(View.GONE); // Hide the progress bar
             }
 

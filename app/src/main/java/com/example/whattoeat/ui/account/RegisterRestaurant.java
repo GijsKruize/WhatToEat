@@ -188,9 +188,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                 mapRest.put("Location", address);
                 mapRest.put("Style", "");
                 mapRest.put("Verified", false);
-
-
-
+                
 
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task -> {
