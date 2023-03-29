@@ -100,6 +100,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                 String password = String.valueOf(editTextPassword.getText());
                 String restaurant = String.valueOf(restaurantName.getText());
                 String address = String.valueOf(editTextAddress.getText());
+                Boolean delivers = false;
 
                 editTextName.setVisibility(View.INVISIBLE);
                 editTextAddress.setVisibility(View.INVISIBLE);
@@ -160,6 +161,69 @@ public class RegisterRestaurant extends AppCompatActivity {
                 } catch (MessagingException e) {
                     e.printStackTrace();
                 }
+                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+                HashMap<String, Object> mapRestUser = new HashMap<>();
+                mapRestUser.put("email", email);
+                mapRestUser.put("name", name);
+                mapRestUser.put("restaurant", restaurant);
+
+                mapRestUser.put("last login", timestamp.toString());
+
+                HashMap<String, Object> mapRest = new HashMap<>();
+                mapRest.put("Delivers", delivers);
+                mapRest.put("Hyperlink", "");
+                mapRest.put("Image", "");
+                mapRest.put("Latitude", latitude);
+                mapRest.put("Longitude", longitude);
+                mapRest.put("Name", restaurant);
+                mapRest.put("Phone", phone);
+                mapRest.put("Style", "");
+                mapRest.put("Verified", false);
+
+
+
+
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                final String UID = mAuth.getUid();
+
+                                myRef.child("Owner")
+                                        .child(UID)
+                                        .setValue(mapRestUser)
+                                        .addOnSuccessListener(unused -> Log.d(
+                                                "Register Page Restaurant: ",
+                                                "Successfully sent data to database!"
+                                        ))
+                                        .addOnFailureListener(e -> Log.d(
+                                                "Register Page Restaurant: ",
+                                                "Failed to send data!" + e
+                                        ));
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(RegisterRestaurant.this, "Account Created.",
+                                        Toast.LENGTH_SHORT).show();
+                                myRef.child("Restaurant")
+                                        .child(restaurant)
+                                        .setValue(mapRest)
+                                        .addOnSuccessListener(unused -> Log.d(
+                                                "Register Page Restaurant: ",
+                                                "Successfully sent data to database!"
+                                        ))
+                                        .addOnFailureListener(e -> Log.d(
+                                                "Register Page Restaurant: ",
+                                                "Failed to send data!" + e
+                                        ));
+                                startActivity(new Intent(RegisterRestaurant.this, Login.class));
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                String Error = task.getException().getMessage();
+                                Log.d("Register Page: ", Error);
+                                Toast.makeText(RegisterRestaurant.this, "Authentication failed: " + Error,
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        });
             }
         });
 
