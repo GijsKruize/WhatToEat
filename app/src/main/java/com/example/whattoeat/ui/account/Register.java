@@ -122,35 +122,32 @@ public class Register extends AppCompatActivity {
             }
 
             mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                progressBar.setVisibility(View.INVISIBLE);
-                                final String UID = mAuth.getUid();
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            progressBar.setVisibility(View.INVISIBLE);
+                            final String UID = mAuth.getUid();
 
-                                myRef.child("User")
-                                        .child(UID)
-                                        .setValue(map)
-                                        .addOnSuccessListener(unused -> Log.d(
-                                                "Register Page: ",
-                                                "Successfully sent data to database!"
-                                        ))
-                                        .addOnFailureListener(e -> Log.d(
-                                                "Register Page: ",
-                                                "Failed to send data!" + e
-                                        ));
-                                // If sign in fails, display a message to the user.
-                                Toast.makeText(Register.this, "Account Created.",
-                                        Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(Register.this, Login.class));
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                String Error = task.getException().getMessage();
-                                Log.d("Register Page: ", Error);
-                                Toast.makeText(Register.this, "Authentication failed: " + Error,
-                                        Toast.LENGTH_LONG).show();
-                            }
+                            myRef.child("User")
+                                    .child(UID)
+                                    .setValue(map)
+                                    .addOnSuccessListener(unused -> Log.d(
+                                            "Register Page: ",
+                                            "Successfully sent data to database!"
+                                    ))
+                                    .addOnFailureListener(e -> Log.d(
+                                            "Register Page: ",
+                                            "Failed to send data!" + e
+                                    ));
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(Register.this, "Account Created.",
+                                    Toast.LENGTH_SHORT).show();
+                            startActivity(new Intent(Register.this, Login.class));
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            String Error = task.getException().getMessage();
+                            Log.d("Register Page: ", Error);
+                            Toast.makeText(Register.this, "Authentication failed: " + Error,
+                                    Toast.LENGTH_LONG).show();
                         }
                     });
         });
