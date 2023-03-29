@@ -31,6 +31,9 @@
         <activity
             android:name=".ui.account.EditProfile"
             android:exported="false" />
+        <activity
+            android:name=".ui.account.RegisterRestaurant"
+            android:exported="false" />
 <!--        <activity android:name=".ui.account.PreferencesPage"/>-->
         <activity
             android:name=".ui.account.Register"

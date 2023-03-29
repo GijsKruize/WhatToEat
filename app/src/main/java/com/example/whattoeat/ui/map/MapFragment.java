@@ -165,7 +165,7 @@ public class MapFragment extends Fragment {
         restaurantMarker.setTitle(markerNames.get(i));
         restaurantMarker.setSubDescription("Phone: " + markerPhones.get(i) + "<br>Style: " + markerStyles.get(i) + "<br>Website: " + markerSites.get(i));
         map.getOverlays().add(restaurantMarker);
-        
+
     }
     private void fetchData(){
 

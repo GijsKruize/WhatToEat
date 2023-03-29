@@ -22,6 +22,7 @@ import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.R;
 import com.example.whattoeat.ui.account.Login;
 import com.example.whattoeat.ui.account.Register;
+import com.example.whattoeat.ui.account.RegisterRestaurant;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -33,6 +34,8 @@ import org.osmdroid.config.Configuration;
 
 public class SplashScreen extends AppCompatActivity {
     private Button createAccount;
+
+    private Button createOwnerAccount;
 //    private View splash0;
 //    private View splash1;
     private Button signIn;
@@ -53,6 +56,7 @@ public class SplashScreen extends AppCompatActivity {
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
 
         createAccount = findViewById(R.id.btn_create_account);
+        createOwnerAccount = findViewById(R.id.btn_create_owner_account);
         signIn = findViewById(R.id.signup_button);
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
@@ -76,6 +80,13 @@ public class SplashScreen extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 startActivity(new Intent(SplashScreen.this, Register.class));
+            }
+        });
+
+        createOwnerAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(SplashScreen.this, RegisterRestaurant.class));
             }
         });
 

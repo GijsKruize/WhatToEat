@@ -74,6 +74,24 @@
         app:layout_constraintVertical_bias="1.0" />
 
 
+    <Button
+        android:id="@+id/btn_create_owner_account"
+        android:layout_width="166dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="328dp"
+        android:background="@android:color/transparent"
+        android:fontFamily="sans-serif-medium"
+        android:letterSpacing="0.02"
+        android:padding="16dp"
+        android:text="Create Owner Account"
+        android:textColor="#0000FF"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@+id/signup_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.44"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <View
         android:layout_width="183dp"
         android:layout_height="165dp"

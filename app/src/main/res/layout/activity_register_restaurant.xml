@@ -11,7 +11,7 @@
         android:id="@+id/registerRestaurantText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="82dp"
+        android:layout_marginTop="72dp"
         android:text="Welcome to"
         android:textSize="40dp"
         android:textStyle="bold"
@@ -33,19 +33,35 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <com.google.android.material.textfield.TextInputEditText
-        android:id="@+id/emailRestaurantRegister"
+        android:id="@+id/restaurantNameRestaurantRegister"
         android:layout_width="300dp"
         android:layout_height="48dp"
         android:layout_marginTop="112dp"
         android:background="@drawable/rounded_button_background_white"
         android:drawableLeft="@drawable/bolt"
         android:ems="10"
-        android:hint="@string/emailReg"
-        android:inputType="textEmailAddress"
+        android:hint="Restaurant Name"
         android:paddingLeft="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/emailRestaurantRegister"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/registerRestaurantText" />
+
+    <com.google.android.material.textfield.TextInputEditText
+        android:id="@+id/emailRestaurantRegister"
+        android:layout_width="300dp"
+        android:layout_height="48dp"
+        android:background="@drawable/rounded_button_background_white"
+        android:drawableLeft="@drawable/bolt"
+        android:ems="10"
+        android:hint="@string/emailReg"
+        android:inputType="textEmailAddress"
+        android:paddingLeft="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/nameRestaurantRegister"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/restaurantNameRestaurantRegister" />
 
     <com.google.android.material.textfield.TextInputEditText
         android:id="@+id/nameRestaurantRegister"
@@ -108,7 +124,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.507"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/emailRestaurantRegister" />
+        app:layout_constraintTop_toBottomOf="@+id/emailRestaurantRegister"
+        app:layout_constraintBottom_toTopOf="@+id/registerBtnRestaurant"/>
 
     <ProgressBar
         android:id="@+id/progressBarRestaurant"
