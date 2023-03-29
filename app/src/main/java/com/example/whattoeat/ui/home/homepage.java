@@ -17,6 +17,8 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import com.bumptech.glide.signature.ObjectKey;
 import com.example.whattoeat.R;
 import com.example.whattoeat.ui.account.Login;
 import com.google.firebase.auth.FirebaseAuth;
@@ -30,6 +32,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -37,6 +40,8 @@ public class homepage extends Fragment {
 
 
     private List<String> listNamesRec = new ArrayList<>();
+    private List<String> listStyleRec = new ArrayList<>();
+
     private List<String> listImagesRec = new ArrayList<>();
     private List<String> listIdsRec = new ArrayList<>();
     private List<String> listNamesRest = new ArrayList<>();
@@ -48,6 +53,9 @@ public class homepage extends Fragment {
     FirebaseDatabase database;
     private boolean isDataShuffled = false;
     protected DatabaseReference myRefRecipe, myRefRestaurant;
+//    String mood;
+//    HashMap<String, Integer> cuisines;
+//    public homepageFilters filter = new homepageFilters();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -82,6 +90,7 @@ public class homepage extends Fragment {
 
         //fetch data
         fetchFromDb();
+//        new GetMoodDataTask(this).execute();
     }
 
     public void fetchFromDb(){
@@ -91,16 +100,19 @@ public class homepage extends Fragment {
                 listIdsRec.clear();
                 listNamesRec.clear();
                 listImagesRec.clear();
+                listStyleRec.clear();
                 Log.d("Homepage: ", dataSnapshot.toString());
                 for(DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
                     // retrieve data for each recipe
                     String recipeId = recipeSnapshot.getKey();
                     String recipeName = recipeSnapshot.child("Name").getValue(String.class);
                     String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
+                    String style = recipeSnapshot.child("Style").getValue(String.class);
 
                     listIdsRec.add(recipeId);
                     listNamesRec.add(recipeName);
                     listImagesRec.add(recipeImage);
+                    listStyleRec.add(style);
                     Log.d("Firebase", "Recipe Name: " + recipeName +
                             ", Image source: " + recipeImage);
                 }
@@ -223,10 +235,19 @@ public class homepage extends Fragment {
         // Combine the recipe and restaurant data into a single list
         List<String[]> dataList = new ArrayList<>();
         for (int i = 0; i < listNamesRec.size(); i++) {
-            dataList.add(new String[] {listNamesRec.get(i), listImagesRec.get(i), listIdsRec.get(i)});
+            dataList.add(new String[] {
+                    listNamesRec.get(i),
+                    listImagesRec.get(i),
+                    listIdsRec.get(i),
+                    listStyleRec.get(i)
+            });
         }
         for (int i = 0; i < listNamesRest.size(); i++) {
-            dataList.add(new String[] {listNamesRest.get(i), listImagesRest.get(i), listIdsRest.get(i)});
+            dataList.add(new String[] {
+                    listNamesRest.get(i),
+                    listImagesRest.get(i),
+                    listIdsRest.get(i)
+            });
         }
 
         // Shuffle the list

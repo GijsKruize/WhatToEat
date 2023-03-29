@@ -192,29 +192,4 @@ public class AccountPageFragment extends Fragment {
 
         return view;
     }
-
-//    //Whenever we change fragments, we want to make sure that the back button
-//    //takes us back to the previous fragment
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        Log.d("Account Page: ", "onResume Called.");
-//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//        Fragment fragment = fragmentManager.findFragmentById(R.id.containerAccount);
-//        if (fragment != null) {
-//            fragmentManager.popBackStackImmediate();
-//        }
-//
-//    }
-//
-//    //Make sure we destroy the fragment when we leave the page
-//    @Override
-//    public void onDestroy() {
-//        super.onDestroy();
-//        Log.d("Account Page: ", "onDestroy Called.");
-//        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-//        Fragment fragment = fragmentManager.findFragmentById(R.id.containerAccount);
-//        fragmentManager.popBackStackImmediate();
-//    }
-
 }
