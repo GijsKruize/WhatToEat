@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -84,6 +85,7 @@ public class RegisterRestaurant extends AppCompatActivity {
         returnBtn = findViewById(R.id.existingUser);
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
+        Switch simpleSwitch = (Switch) findViewById(R.id.deliveryToggleButton);
 
 //        textView.setOnClickListener(view -> {
 //            Intent intent = new Intent(getApplicationContext(), Login.class);
