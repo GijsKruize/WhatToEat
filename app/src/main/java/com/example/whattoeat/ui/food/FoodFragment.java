@@ -147,12 +147,17 @@ public class FoodFragment extends Fragment {
                     Log.d("Firebase", "Recipe Name: " + recipeName +
                             ", Image source: " + recipeImage);
                 }
-                progressBar.setVisibility(View.GONE);
-                adapter = new SwipeAdapter(getContext(), recipeIds, recipeNames, recipeImages);
-                koloda.setAdapter(adapter);
-                listener = new SwipeListener(getContext(), recipeIds, recipeStyles, mood);
-                koloda.setKolodaListener(listener);
-                adapter.notifyDataSetChanged();
+                if (recipeIds.isEmpty()){
+                    Toast.makeText(getContext(), "There are no swipes for your current mood", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getContext(), "Swipe the foods just like you're on tinder!", Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                    adapter = new SwipeAdapter(getContext(), recipeIds, recipeNames, recipeImages);
+                    koloda.setAdapter(adapter);
+                    listener = new SwipeListener(getContext(), recipeIds, recipeStyles, mood);
+                    koloda.setKolodaListener(listener);
+                    adapter.notifyDataSetChanged();
+                }
             }
 
 

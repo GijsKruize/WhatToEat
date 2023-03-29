@@ -129,7 +129,7 @@ public class SwipeListener implements KolodaListener {
 
     @Override
     public void onEmptyDeck() {
-        Toast.makeText(context, "Sadly there is nothing to swipe", Toast.LENGTH_SHORT).show();
+        Toast.makeText(context, "That was all to swipe for now!", Toast.LENGTH_SHORT).show();
         ;
     }
 
