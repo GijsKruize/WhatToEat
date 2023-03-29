@@ -105,7 +105,6 @@ public class MapFragment extends Fragment {
         map.setMultiTouchControls(true);
 
         fetchData();
-        //setupMarkers();
 
         GeoPoint startPoint = new GeoPoint(51.442164898, 5.487164718);
         mapController.animateTo(startPoint);
@@ -114,7 +113,6 @@ public class MapFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 mapController.animateTo(locationOverlay.getMyLocation());
-                setupMarkers();
             }
         });
 
@@ -152,46 +150,22 @@ public class MapFragment extends Fragment {
     }
 
 
-    public void setupMarkers() {
+    public void setupMarkers(int i) {
 
         map = binding.mapView;
         mapController = map.getController();
         Log.d("Size", "Size: " + markerLats.size());
 
         Marker restaurantMarker = new Marker(map);
-        GeoPoint restaurantLocation = new GeoPoint(markerLats.get(0), markerLongs.get(0));
+        GeoPoint restaurantLocation = new GeoPoint(markerLats.get(i), markerLongs.get(i));
         restaurantMarker.setPosition(restaurantLocation);
         restaurantMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         restaurantMarker.setIcon(this.getResources().getDrawable(R.drawable.logo));
         //restaurantMarker.setImage(this.getResources().getDrawable(R.drawable.logo));
-        restaurantMarker.setTitle(markerNames.get(0));
-        restaurantMarker.setSubDescription("Phone: " + markerPhones.get(0) + "<br>Style: " + markerStyles.get(0) + "<br>Website: " + markerSites.get(0));
+        restaurantMarker.setTitle(markerNames.get(i));
+        restaurantMarker.setSubDescription("Phone: " + markerPhones.get(i) + "<br>Style: " + markerStyles.get(i) + "<br>Website: " + markerSites.get(i));
         map.getOverlays().add(restaurantMarker);
-
-        Marker restaurantMarker2 = new Marker(map);
-        GeoPoint restaurantLocation2 = new GeoPoint(markerLats.get(1), markerLongs.get(1));
-        restaurantMarker2.setPosition(restaurantLocation2);
-        restaurantMarker2.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        restaurantMarker2.setIcon(this.getResources().getDrawable(R.drawable.logo));
-        //restaurantMarker.setImage(this.getResources().getDrawable(R.drawable.logo));
-        restaurantMarker2.setTitle(markerNames.get(1));
-        restaurantMarker2.setSubDescription("Phone: " + markerPhones.get(1) + "<br>Style: " + markerStyles.get(1) + "<br>Website: " + markerSites.get(1));
-        map.getOverlays().add(restaurantMarker2);
-
-      /* for(int i=0; i == markerNames.size()-1; i++) {
-            Marker restaurantMarker = new Marker(map);
-            GeoPoint restaurantLocation = new GeoPoint(markerLats.get(i), markerLongs.get(i));
-            restaurantMarker.setPosition(restaurantLocation);
-            restaurantMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            restaurantMarker.setIcon(this.getResources().getDrawable(R.drawable.logo));
-            //restaurantMarker.setImage(this.getResources().getDrawable(R.drawable.logo));
-            restaurantMarker.setTitle(markerNames.get(i));
-            restaurantMarker.setSubDescription("Phone: " + markerPhones.get(i) + "<br>Style: " + markerStyles.get(i) + "<br>Website: " + markerSites.get(i));
-            map.getOverlays().add(restaurantMarker);
-            map.invalidate();
-            //markerList.add(restaurantMarker);
-        }*/
-
+        
     }
     private void fetchData(){
 
@@ -230,8 +204,12 @@ public class MapFragment extends Fragment {
                     Log.d("Firebase", "Recipe Name: " + markerName +
                             ", Image source: " + markerImage + markerLong + markerLat);
                 }
+                int i = 0;
+                for(String name : markerNames) {
+                    setupMarkers(i);
+                    i++;
+                }
                 //progressBar.setVisibility(View.GONE); // Hide the progress bar
-                setupMarkers();
             }
 
             @Override
