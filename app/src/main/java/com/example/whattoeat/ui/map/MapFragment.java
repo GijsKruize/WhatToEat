@@ -60,6 +60,7 @@ public class MapFragment extends Fragment {
     private List<Double> markerLats = new ArrayList<>();
     private List<String> markerPhones = new ArrayList<>();
     private List<String>  markerStyles = new ArrayList<>();
+    private List<Boolean> markerVerifiers = new ArrayList<>();
 
     private List<String>  markerSites = new ArrayList<>();
     private List<Marker> markerList = new ArrayList<>();
@@ -182,6 +183,12 @@ public class MapFragment extends Fragment {
                 markerIds.clear();
                 markerNames.clear();
                 markerImages.clear();
+                markerLongs.clear();
+                markerLats.clear();
+                markerPhones.clear();
+                markerStyles.clear();
+                markerSites.clear();
+                markerVerifiers.clear();
                 for(DataSnapshot restaurantSnapshot : dataSnapshot.getChildren()) {
                     // retrieve data for each recipe
                     String markerId = restaurantSnapshot.getKey();
@@ -192,6 +199,7 @@ public class MapFragment extends Fragment {
                     String markerPhone = restaurantSnapshot.child("Phone").getValue(String.class);
                     String markerStyle = restaurantSnapshot.child("Style").getValue(String.class);
                     String markerSite = restaurantSnapshot.child("Hyperlink").getValue(String.class);
+                    Boolean markerVerified = restaurantSnapshot.child("Delivers").getValue(Boolean.class);
 
                     markerIds.add(markerId);
                     markerNames.add(markerName);
@@ -201,12 +209,15 @@ public class MapFragment extends Fragment {
                     markerPhones.add(markerPhone);
                     markerStyles.add(markerStyle);
                     markerSites.add(markerSite);
+                    markerVerifiers.add(markerVerified);
                     Log.d("Firebase", "Recipe Name: " + markerName +
                             ", Image source: " + markerImage + markerLong + markerLat);
                 }
                 int i = 0;
                 for(String name : markerNames) {
-                    setupMarkers(i);
+                    if(markerVerifiers.get(i)) {
+                        setupMarkers(i);
+                    }
                     i++;
                 }
                 //progressBar.setVisibility(View.GONE); // Hide the progress bar
