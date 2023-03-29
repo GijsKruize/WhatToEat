@@ -1,10 +1,13 @@
 package com.example.whattoeat.ui.home;
 
+import static org.eazegraph.lib.utils.Utils.dpToPx;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -53,6 +56,21 @@ public class food_card extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_food_card, container, false);
+
+        View scrollView = view.findViewById(R.id.scrollviewFoodCard);
+
+        // Get the screen height in pixels
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        int screenHeight = displayMetrics.heightPixels;
+
+        // Calculate the desired height for the scroll view
+        int desiredHeight = (int) (screenHeight - dpToPx(200));
+
+        // Set the height of the scroll view
+        ViewGroup.LayoutParams layoutParams = scrollView.getLayoutParams();
+        layoutParams.height = desiredHeight;
+        scrollView.setLayoutParams(layoutParams);
 
         TextView mTitle = view.findViewById(R.id.textRecipeName);
         TextView mIngredients = view.findViewById(R.id.textRecipeIngredients);

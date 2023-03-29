@@ -27,6 +27,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -58,6 +59,7 @@ public class RegisterRestaurant extends AppCompatActivity {
     FirebaseAuth mAuth;
     FirebaseDatabase database;
     protected DatabaseReference myRef;
+    private FirebaseUser user;
 
     Boolean deliveryStatus;
 
@@ -90,6 +92,7 @@ public class RegisterRestaurant extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         Switch delivery = (Switch) findViewById(R.id.deliveryToggleButton);
+        user = FirebaseAuth.getInstance().getCurrentUser();
 
 //        textView.setOnClickListener(view -> {
 //            Intent intent = new Intent(getApplicationContext(), Login.class);
@@ -173,7 +176,8 @@ public class RegisterRestaurant extends AppCompatActivity {
                 HashMap<String, Object> mapRestUser = new HashMap<>();
                 mapRestUser.put("email", email);
                 mapRestUser.put("name", name);
-                mapRestUser.put("restaurant", restaurant);
+                mapRestUser.put("Restaurant", restaurant);
+                mapRestUser.put("Owner", true);
 
                 mapRestUser.put("last login", timestamp.toString());
 
@@ -196,7 +200,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                                 progressBar.setVisibility(View.INVISIBLE);
                                 final String UID = mAuth.getUid();
 
-                                myRef.child("Owner")
+                                myRef.child("User")
                                         .child(UID)
                                         .setValue(mapRestUser)
                                         .addOnSuccessListener(unused -> Log.d(
@@ -210,17 +214,28 @@ public class RegisterRestaurant extends AppCompatActivity {
                                 // If sign in fails, display a message to the user.
                                 Toast.makeText(RegisterRestaurant.this, "Account Created.",
                                         Toast.LENGTH_SHORT).show();
+                                String id = "Restaurant_";
                                 myRef.child("Restaurant")
-                                        .child(restaurant)
-                                        .setValue(mapRest)
-                                        .addOnSuccessListener(unused -> Log.d(
-                                                "Register Page Restaurant: ",
-                                                "Successfully sent data to database!"
-                                        ))
-                                        .addOnFailureListener(e -> Log.d(
-                                                "Register Page Restaurant: ",
-                                                "Failed to send data!" + e
-                                        ));
+                                                .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                                Long idNumber = task.getResult().getChildrenCount() + 1;
+                                                idNumber.toString();
+
+                                                myRef.child("Restaurant")
+                                                        .child(id+idNumber)
+                                                        .setValue(mapRest)
+                                                        .addOnSuccessListener(unused -> Log.d(
+                                                                "Register Page Restaurant: ",
+                                                                "Successfully sent data to database!"
+                                                        ))
+                                                        .addOnFailureListener(e -> Log.d(
+                                                                "Register Page Restaurant: ",
+                                                                "Failed to send data!" + e
+                                                        ));
+                                            }
+                                        });
+
                                 startActivity(new Intent(RegisterRestaurant.this, Login.class));
                             } else {
                                 // If sign in fails, display a message to the user.
