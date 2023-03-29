@@ -51,11 +51,15 @@ public class RegisterRestaurant extends AppCompatActivity {
 
     TextInputEditText editTextEmail, editTextPhone, editTextName, editTextPassword, editTextAddress, restaurantName;
     Button btnReg;
+
+    Switch delivery;
     TextView returnBtn;
     ProgressBar progressBar;
     FirebaseAuth mAuth;
     FirebaseDatabase database;
     protected DatabaseReference myRef;
+
+    Boolean deliveryStatus;
 
     @Override
     public void onStart() {
@@ -85,13 +89,14 @@ public class RegisterRestaurant extends AppCompatActivity {
         returnBtn = findViewById(R.id.existingUser);
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
-        Switch simpleSwitch = (Switch) findViewById(R.id.deliveryToggleButton);
+        Switch delivery = (Switch) findViewById(R.id.deliveryToggleButton);
 
 //        textView.setOnClickListener(view -> {
 //            Intent intent = new Intent(getApplicationContext(), Login.class);
 //            startActivity(intent);
 //            finish();
 //        });
+
 
         btnReg.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +107,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                 String password = String.valueOf(editTextPassword.getText());
                 String restaurant = String.valueOf(restaurantName.getText());
                 String address = String.valueOf(editTextAddress.getText());
-                Boolean delivers = false;
+                deliveryStatus = delivery.isChecked();
 
                 editTextName.setVisibility(View.INVISIBLE);
                 editTextAddress.setVisibility(View.INVISIBLE);
@@ -173,7 +178,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                 mapRestUser.put("last login", timestamp.toString());
 
                 HashMap<String, Object> mapRest = new HashMap<>();
-                mapRest.put("Delivers", delivers);
+                mapRest.put("Delivers", deliveryStatus);
                 mapRest.put("Hyperlink", "");
                 mapRest.put("Image", "");
                 mapRest.put("Latitude", latitude);
