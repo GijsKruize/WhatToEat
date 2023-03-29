@@ -90,7 +90,6 @@ public class homepage extends Fragment {
 
         //fetch data
         fetchFromDb();
-//        new GetMoodDataTask(this).execute();
     }
 
     public void fetchFromDb(){
@@ -142,9 +141,10 @@ public class homepage extends Fragment {
                             ", Image source: " + restaurantImage);
                 }
                 progressBar.setVisibility(View.GONE); // Hide the progress bar
+                Log.d("Homepage: ", "listrec : "+ listNamesRec.size() + " listrest: " + listNamesRest.size());
+                data = new String[listNamesRec.size() + listNamesRest.size()][3];
                 MyAdapter adapter = (MyAdapter) mListView.getAdapter();
                 adapter.notifyDataSetChanged(); // Refresh the adapter with new data
-                data = new String[listNamesRec.size() + listNamesRest.size()][3];
             }
 
             @Override
@@ -182,9 +182,12 @@ public class homepage extends Fragment {
             if(!isDataShuffled) {
                 shuffleData();
             }
-
-            mTextView.setText(data[i][0]);
-            Picasso.with(getActivity().getApplicationContext()).load(data[i][1]).into(mImageView);
+            try {
+                mTextView.setText(data[i][0]);
+                Picasso.with(getActivity().getApplicationContext()).load(data[i][1]).into(mImageView);
+            } catch (Exception e){
+                Log.e("Homepage: ", ""+ e);
+            }
 
             card.setOnClickListener(view1 -> {
                 // check if the food_card fragment is not already displayed
@@ -255,7 +258,11 @@ public class homepage extends Fragment {
 
         // Copy the shuffled data back into the data array
         for (int i = 0; i < dataList.size(); i++) {
-            data[i] = dataList.get(i);
+            try {
+                data[i] = dataList.get(i);
+            } catch (Exception e){
+                Log.e("Homepage : ", "" + e);
+            }
         }
         isDataShuffled = true;
     }
