@@ -17,6 +17,7 @@
         android:paddingTop="24dp"
         app:cardCornerRadius="12dp"
         app:cardElevation="8dp"
+
         android:elevation="5dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -63,6 +64,7 @@
                 <RelativeLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@color/light_grey"
                     >
 
                     <!--                <ImageView-->

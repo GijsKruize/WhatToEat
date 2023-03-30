@@ -1,6 +1,9 @@
 package com.example.whattoeat.ui.map;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.location.Address;
 import android.location.Geocoder; //convert from address to long/latt
 import android.location.LocationManager;
@@ -11,18 +14,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.R;
 import com.example.whattoeat.databinding.FragmentMapBinding;
 import com.example.whattoeat.ui.account.Login;
-import com.example.whattoeat.ui.home.homepage;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -31,14 +30,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import org.osmdroid.api.IMapController;
-import org.osmdroid.tileprovider.tilesource.ITileSource;
-import org.osmdroid.tileprovider.tilesource.OnlineTileSourceBase;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
-import org.osmdroid.tileprovider.tilesource.XYTileSource;
 import org.osmdroid.util.GeoPoint;
-import org.osmdroid.util.MapTileIndex;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
@@ -59,6 +56,7 @@ public class MapFragment extends Fragment {
     private List<Double> markerLongs = new ArrayList<>();
     private List<Double> markerLats = new ArrayList<>();
     private List<String> markerPhones = new ArrayList<>();
+
     private List<String>  markerStyles = new ArrayList<>();
     private List<Boolean> markerVerifiers = new ArrayList<>();
 
@@ -104,7 +102,6 @@ public class MapFragment extends Fragment {
         map.setScrollableAreaLimitLongitude(MapView.getTileSystem().getMinLongitude(), MapView.getTileSystem().getMaxLongitude(), 0);
         mapController.setZoom((long) 15);
         map.setMultiTouchControls(true);
-
         fetchData();
 
         GeoPoint startPoint = new GeoPoint(51.442164898, 5.487164718);
@@ -135,12 +132,14 @@ public class MapFragment extends Fragment {
     public void onPause() {
         super.onPause();
         map.onPause();
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
         map.onResume();
+        fetchData();
     }
 
 
@@ -151,7 +150,7 @@ public class MapFragment extends Fragment {
     }
 
 
-    public void setupMarkers(int i) {
+    public void setupMarkers(int i) throws ImagesNotLoaded{
 
         map = binding.mapView;
         mapController = map.getController();
@@ -161,8 +160,34 @@ public class MapFragment extends Fragment {
         GeoPoint restaurantLocation = new GeoPoint(markerLats.get(i), markerLongs.get(i));
         restaurantMarker.setPosition(restaurantLocation);
         restaurantMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        restaurantMarker.setIcon(this.getResources().getDrawable(R.drawable.logo));
-        //restaurantMarker.setImage(this.getResources().getDrawable(R.drawable.logo));
+        restaurantMarker.setIcon(this.getResources().getDrawable(R.drawable.logo_background_4));
+
+        // Create a new target to handle the loaded image
+        Target target = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                // Handle successful image loading
+                Drawable markerImage = new BitmapDrawable(getResources(), bitmap);
+                restaurantMarker.setImage(markerImage);
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+                Log.d("Map Page", "Picasso failed to load image: " + errorDrawable);
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+                // Handle image loading in progress
+            }
+        };
+        // Use Picasso to load the image asynchronously and pass the target as a parameter
+        try {
+            Picasso.with(getContext()).load(markerImages.get(i)).into(target);
+        } catch (Exception e){
+            Log.e("Map Page: ", "Error on the loading : " + e);
+            throw new ImagesNotLoaded("Map Page");
+        }
         restaurantMarker.setTitle(markerNames.get(i));
         restaurantMarker.setSubDescription("Phone: " + markerPhones.get(i) + "<br>Style: " + markerStyles.get(i) + "<br>Website: " + markerSites.get(i));
         map.getOverlays().add(restaurantMarker);
@@ -214,10 +239,19 @@ public class MapFragment extends Fragment {
                             ", Image source: " + markerImage + markerLong + markerLat);
                 }
                 int i = 0;
-                for(String name : markerNames) {
-                    setupMarkers(i);
+                for (String name : markerNames) {
+                    boolean markerSetupSuccessful = false;
+                    while (!markerSetupSuccessful) {
+                        try {
+                            setupMarkers(i);
+                            markerSetupSuccessful = true;
+                        } catch (Exception ImageNotLoaded) {
+                            i = 0; // reset index to retry from beginning
+                        }
+                    }
                     i++;
                 }
+
                /* for(String name : markerNames) {
                     if(markerVerifiers.get(i) == true) {
                         setupMarkers(i);

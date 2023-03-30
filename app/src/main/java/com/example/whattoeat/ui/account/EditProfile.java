@@ -95,8 +95,10 @@ public class EditProfile extends Fragment {
 
         mUpdateProfileBtn = view.findViewById(R.id.updateProfileBtn);
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("User");
-        getRestaurantName(ref, user);
+        if(isUserOwner) {
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("User");
+            getRestaurantName(ref, user);
+        }
 //        getRestaurantId(restaurantName);
 
         // Set the top part correct with user data.

@@ -82,6 +82,11 @@ public class homepage extends Fragment {
         }
         fetchData();
     }
+
+    /**
+     * This method is used to fetch data from the database.
+     * It will be called when the user first opens the app or when the user returns to the homepage.
+     */
     private void fetchData(){
 
         progressBar.setVisibility(View.VISIBLE);
@@ -96,6 +101,10 @@ public class homepage extends Fragment {
         fetchFromDb(prefMood, prefLocation);
     }
 
+    /**
+     * This method is used to get the user's preference from the database.
+     * If the user has not set any preference, the default values will be used.
+     */
     private void getPreference(){
         DatabaseReference preferences = database.getReference("Preference");
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -103,21 +112,42 @@ public class homepage extends Fragment {
 
         preferences.child(UID).get()
                 .addOnCompleteListener(task -> {
-                String mood = task.getResult().child("Mood").getValue().toString();
-                String location = task.getResult().child("Location").getValue().toString();
+                    String mood = "Happy";
+                    String location = "both";
+                    try {
+                        mood = task.getResult().child("Mood").getValue().toString();
+                        location = task.getResult().child("Location").getValue().toString();
+                    } catch (NullPointerException e){
+                        Log.d("Homepage: ",
+                                "No location or mood data found for user. " +
+                                        "User must set this in preferences page! " +
+                                        "Default values chosen.");
+                    }
+
                 setPreference(mood, location);
         }).addOnFailureListener(task2 ->{
-                    Log.d("Homepage: ", "TASK2 " +  task2);
+                    Log.e("Homepage: ",
+                            "Error getting data from database! " +  task2);
 
         });
     }
 
+    /**
+     * This method is used to set the user's preference.
+     * @param mood The user's mood
+     * @param location The user's location
+     */
     private void setPreference(String mood, String location){
         this.prefMood = mood;
         this.prefLocation = location;
         Log.d("Homepage: ", "Preferences saved!");
     }
 
+    /**
+     * This method is used to fetch data from the database.
+     * @param mood The user's mood
+     * @param pref The user's location
+     */
     public void fetchFromDb(String mood, String pref){
         try{
             Log.e("Preference", pref);
@@ -125,6 +155,8 @@ public class homepage extends Fragment {
         } catch (Exception e){
             Log.e("EXCEPTION:", e.toString());
         }
+
+        // fetch data from recipe table
         myRefRecipe.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -156,6 +188,7 @@ public class homepage extends Fragment {
                 Log.e("Firebase", "Homepage could not fetch data from recipes: " + databaseError.getMessage());
             }
         });
+        //fetch data from restaurants table
         myRefRestaurant.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot1) {
@@ -273,6 +306,11 @@ public class homepage extends Fragment {
         }
     }
 
+    /**
+     * Shuffles the data in the data array.
+     * This is done by combining the recipe and restaurant data into a single list,
+     * shuffling the list, and then copying the shuffled data back into the data array.
+     */
     private void shuffleData() {
         // Combine the recipe and restaurant data into a single list
         List<String[]> dataList = new ArrayList<>();
