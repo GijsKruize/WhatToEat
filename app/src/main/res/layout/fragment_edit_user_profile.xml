@@ -8,104 +8,225 @@
     android:id="@+id/EditUserProfile"
     tools:context=".ui.account.EditProfile">
 
+<!--    <Button-->
+<!--        android:id="@+id/updateProfileBtn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="24dp"-->
+<!--        android:drawableLeft="@drawable/confirm_edit"-->
+<!--        android:text="Update Profile"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/scrollView" />-->
+
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="1dp">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="48dp"
+                        android:src="@drawable/avatar" />
+
+                    <TextView
+                        android:id="@+id/editProfileUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textAlignment="center"
+                        android:textSize="18dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/editProfileUserEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Profile@email.com"
+                        android:textAlignment="center"
+                        android:textColor="@color/second_grey" />
+
+                </LinearLayout>
+            </FrameLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="12dp"
+                android:background="@drawable/gray_bar_background">
+
+                <EditText
+                    android:id="@+id/editProfileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="Your Name"
+                    android:inputType="textPersonName"
+                    android:padding="12dp"
+                    app:cardCornerRadius="12dp" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="12dp"
+                android:background="@drawable/gray_bar_background">
+
+                <EditText
+                    android:id="@+id/editProfilePhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="Your Phone"
+                    android:inputType="phone"
+                    android:padding="12dp"
+                    app:cardCornerRadius="12dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/editProfileRestNameContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="12dp"
+                android:background="@drawable/gray_bar_background">
+
+                <EditText
+                    android:id="@+id/editProfileRestName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="Restaurant Name"
+                    android:padding="12dp"
+                    app:cardCornerRadius="12dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/editProfileWebsiteContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="12dp"
+                android:background="@drawable/gray_bar_background">
+
+                <EditText
+                    android:id="@+id/editProfileWebsite"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="Restaurant Website"
+                    android:padding="12dp"
+                    app:cardCornerRadius="12dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/editProfileAddressContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="12dp"
+                android:background="@drawable/gray_bar_background">
+
+                <EditText
+                    android:id="@+id/editProfileAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="Restaurant Address"
+                    android:padding="12dp"
+                    app:cardCornerRadius="12dp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/editProfileStyleContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="12dp"
+                android:background="@drawable/gray_bar_background">
+
+                <EditText
+                    android:id="@+id/editProfileStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="Restaurant Style"
+                    android:padding="12dp"
+                    app:cardCornerRadius="12dp" />
+
+            </RelativeLayout>
+            <RelativeLayout
+                android:id="@+id/editProfilePhoneRestContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="12dp"
+                android:background="@drawable/gray_bar_background">
+
+                <EditText
+                    android:id="@+id/editProfilePhoneRest"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@android:color/transparent"
+                    android:ems="10"
+                    android:hint="Restaurant Phone"
+                    android:inputType="phone"
+                    android:padding="12dp"
+                    app:cardCornerRadius="12dp" />
+
+            </RelativeLayout>
+        </LinearLayout>
+    </ScrollView>
+
+
     <Button
         android:id="@+id/updateProfileBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/confirm_edit"
         android:text="Update Profile"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="1dp">
-
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="250dp">
+        app:layout_constraintEnd_toEndOf="@+id/scrollView"
+        app:layout_constraintStart_toStartOf="@+id/scrollView"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView" />
 
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="64dp"
-                    android:src="@drawable/avatar" />
-
-                <TextView
-                    android:id="@+id/editProfileUserName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textAlignment="center"
-                    android:hint="Profile Name"
-                    android:textSize="18dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/editProfileUserEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textAlignment="center"
-                    android:text="Profile@email.com"
-                    android:textColor="@color/second_grey" />
-
-            </LinearLayout>
-        </FrameLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="12dp"
-            android:background="@drawable/gray_bar_background">
-
-            <EditText
-                android:id="@+id/editProfileName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/transparent"
-                android:ems="10"
-                android:hint="Name"
-                android:inputType="textPersonName"
-                android:padding="12dp"
-                app:cardCornerRadius="12dp" />
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="12dp"
-            android:background="@drawable/gray_bar_background">
-
-            <EditText
-                android:id="@+id/editProfilePhone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:backgroundTint="@android:color/transparent"
-                android:ems="10"
-                android:hint="Phone"
-                android:inputType="phone"
-                android:padding="12dp"
-                app:cardCornerRadius="12dp" />
-
-        </RelativeLayout>
-
-    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

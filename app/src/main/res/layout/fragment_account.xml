@@ -96,6 +96,18 @@
                     android:minWidth="300mm"
                     />
                 <Button
+                    android:id="@+id/statisticsBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/gray_bar_background"
+                    android:backgroundTint="@color/light_grey"
+                    android:text="Statisctics"
+                    android:visibility="gone"
+                    android:layout_margin="12dp"
+                    android:layout_gravity="center"
+                    android:minWidth="300mm"
+                    />
+                <Button
                     android:id="@+id/changePreferencesBtn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

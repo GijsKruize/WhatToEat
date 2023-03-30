@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginBottom="60dp"
-    android:scrollbars="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <!-- Title -->
@@ -207,7 +206,7 @@
     <RelativeLayout
         android:id="@+id/relativeLayout"
         android:layout_width="350dp"
-        android:layout_height="200dp"
+        android:layout_height="wrap_content"
         android:gravity="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -216,8 +215,8 @@
         <View
             android:id="@+id/view3"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginVertical="12dp"
+            android:layout_height="120dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/gray_bar_background"
             app:layout_constraintTop_toBottomOf="@+id/tableRow2"
             tools:ignore="NotSibling" />
@@ -226,14 +225,16 @@
             android:id="@+id/app_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/view3"
+            android:layout_alignBottom="@+id/view3"
             android:layout_centerHorizontal="true"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="12dp"
             android:text="Inspired by the idea of finding what to eat in a matter of a few clicks, the group is developing WHAT TO EAT? This way users can save time and energy while selecting dinner."
             android:textColor="#FF000000"
-            android:textSize="20sp"
+            android:textSize="16sp"
             android:textStyle="bold"
             app:layout_constraintTop_toBottomOf="@+id/view3" />
     </RelativeLayout>
