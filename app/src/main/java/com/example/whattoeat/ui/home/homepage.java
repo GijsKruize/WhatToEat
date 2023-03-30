@@ -207,7 +207,7 @@ public class homepage extends Fragment {
                             listIdsRest.add(restaurantId);
                             listNamesRest.add(restaurantName);
                             listImagesRest.add(restaurantImage);
-                            Log.d("Firebase", "Recipe Name: " + restaurantName +
+                            Log.d("Firebase", "Restaurant Name: " + restaurantName +
                                     ", Image source: " + restaurantImage);
                         }
                     }
