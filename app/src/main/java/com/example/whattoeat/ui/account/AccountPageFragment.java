@@ -100,7 +100,7 @@ public class AccountPageFragment extends Fragment {
                 Boolean result = (Boolean) task.getResult().getValue();
                 isUserOwner = result;
                 if (Boolean.TRUE.equals(result)) {
-                    Log.e("Edit profile", "user is not an owner.");
+                    Log.e("Edit profile", "user is owner.");
                     mStatistics.setVisibility(View.VISIBLE);
 
                 }

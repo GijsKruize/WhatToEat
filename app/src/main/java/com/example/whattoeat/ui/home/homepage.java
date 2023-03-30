@@ -18,7 +18,6 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.signature.ObjectKey;
 import com.example.whattoeat.R;
 import com.example.whattoeat.ui.account.Login;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,7 +31,6 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 
 
@@ -49,6 +47,7 @@ public class homepage extends Fragment {
     private List<String> listIdsRest = new ArrayList<>();
     private ProgressBar progressBar;
     private ListView mListView;
+    private String prefLocation, prefMood;
     private String[][] data;
     FirebaseDatabase database;
     private boolean isDataShuffled = false;
@@ -76,6 +75,11 @@ public class homepage extends Fragment {
     public void onResume() {
         super.onResume();
         isDataShuffled = false; // Reset the variable to false
+        try{
+            getPreference();
+        }catch (Exception e){
+            Log.e("Exception homepage", e.toString());
+        }
         fetchData();
     }
     private void fetchData(){
@@ -89,10 +93,38 @@ public class homepage extends Fragment {
         Log.d("Homepage: ", "Loading data........");
 
         //fetch data
-        fetchFromDb();
+        fetchFromDb(prefMood, prefLocation);
     }
 
-    public void fetchFromDb(){
+    private void getPreference(){
+        DatabaseReference preferences = database.getReference("Preference");
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        final String UID = user.getUid();
+
+        preferences.child(UID).get()
+                .addOnCompleteListener(task -> {
+                String mood = task.getResult().child("Mood").getValue().toString();
+                String location = task.getResult().child("Location").getValue().toString();
+                setPreference(mood, location);
+        }).addOnFailureListener(task2 ->{
+                    Log.d("Homepage: ", "TASK2 " +  task2);
+
+        });
+    }
+
+    private void setPreference(String mood, String location){
+        this.prefMood = mood;
+        this.prefLocation = location;
+        Log.d("Homepage: ", "Preferences saved!");
+    }
+
+    public void fetchFromDb(String mood, String pref){
+        try{
+            Log.e("Preference", pref);
+
+        } catch (Exception e){
+            Log.e("EXCEPTION:", e.toString());
+        }
         myRefRecipe.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -100,20 +132,22 @@ public class homepage extends Fragment {
                 listNamesRec.clear();
                 listImagesRec.clear();
                 listStyleRec.clear();
-                Log.d("Homepage: ", dataSnapshot.toString());
-                for(DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
-                    // retrieve data for each recipe
-                    String recipeId = recipeSnapshot.getKey();
-                    String recipeName = recipeSnapshot.child("Name").getValue(String.class);
-                    String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
-                    String style = recipeSnapshot.child("Style").getValue(String.class);
+                if(pref == null || !pref.equals("out")) {
+                    Log.d("Homepage: ", dataSnapshot.toString());
+                    for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
+                        // retrieve data for each recipe
+                        String recipeId = recipeSnapshot.getKey();
+                        String recipeName = recipeSnapshot.child("Name").getValue(String.class);
+                        String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
+                        String style = recipeSnapshot.child("Style").getValue(String.class);
 
-                    listIdsRec.add(recipeId);
-                    listNamesRec.add(recipeName);
-                    listImagesRec.add(recipeImage);
-                    listStyleRec.add(style);
-                    Log.d("Firebase", "Recipe Name: " + recipeName +
-                            ", Image source: " + recipeImage);
+                        listIdsRec.add(recipeId);
+                        listNamesRec.add(recipeName);
+                        listImagesRec.add(recipeImage);
+                        listStyleRec.add(style);
+                        Log.d("Firebase", "Recipe Name: " + recipeName +
+                                ", Image source: " + recipeImage);
+                    }
                 }
             }
 
@@ -128,19 +162,21 @@ public class homepage extends Fragment {
                 listIdsRest.clear();
                 listNamesRest.clear();
                 listImagesRest.clear();
-                for(DataSnapshot Restaurant : dataSnapshot1.getChildren()) {
-                    // retrieve data for each recipe
-                    String restaurantId = Restaurant.getKey();
-                    String restaurantName = Restaurant.child("Name").getValue(String.class);
-                    String restaurantImage = Restaurant.child("Image").getValue(String.class);
-                    Boolean verified = Restaurant.child("Verified").getValue(Boolean.class);
+                if(pref == null || !pref.equals("home")) {
+                    for(DataSnapshot Restaurant : dataSnapshot1.getChildren()) {
+                        // retrieve data for each recipe
+                        String restaurantId = Restaurant.getKey();
+                        String restaurantName = Restaurant.child("Name").getValue(String.class);
+                        String restaurantImage = Restaurant.child("Image").getValue(String.class);
+                        Boolean verified = Restaurant.child("Verified").getValue(Boolean.class);
 
-                    if(verified) {
-                        listIdsRest.add(restaurantId);
-                        listNamesRest.add(restaurantName);
-                        listImagesRest.add(restaurantImage);
-                        Log.d("Firebase", "Recipe Name: " + restaurantName +
-                                ", Image source: " + restaurantImage);
+                        if (verified) {
+                            listIdsRest.add(restaurantId);
+                            listNamesRest.add(restaurantName);
+                            listImagesRest.add(restaurantImage);
+                            Log.d("Firebase", "Recipe Name: " + restaurantName +
+                                    ", Image source: " + restaurantImage);
+                        }
                     }
                 }
                 progressBar.setVisibility(View.GONE); // Hide the progress bar
@@ -280,9 +316,12 @@ public class homepage extends Fragment {
 
         MyAdapter adapter = new MyAdapter();
         mListView.setAdapter(adapter);
-
-        fetchData(); // Load the data
-
+        try {
+            getPreference();
+            fetchData(); // Load the data
+        } catch (Exception e){
+            Log.e("Exception Homepage: ", e.toString());
+        }
         return view;
     }
 
