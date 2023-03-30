@@ -13,4 +13,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center" />
+    <TextView
+        android:id="@+id/noCardsMessage"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="There are no cards to swipe for your most recent mood. Feeling different? Change your preferences under the account page!"
+        android:gravity="center"
+        android:layout_marginRight="50dp"
+        android:layout_marginLeft="50dp"
+        android:textSize="18dp"/>
 </com.yalantis.library.Koloda>
