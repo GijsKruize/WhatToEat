@@ -1,11 +1,14 @@
 package com.example.whattoeat.ui.account;
 
+import android.app.AlertDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,34 +22,39 @@ import com.example.whattoeat.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.whygraphics.multilineradiogroup.MultiLineRadioGroup;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
 public class PreferencesPage extends Fragment {
 
-    Button mOut, mHome, mBoth, mSubmit;
-    private String mood = "happy";
-
-    RadioGroup radioGroup;
-
-    RadioButton radioButton;
-
-    CheckBox mItalian, mFrench, mMexican, mGreek, mChinese, mAmerican, mTurkish;
+    Button mOut, mHome, mBoth, mSubmit, mReset;
+    private String mood = "NONE";
 
     FirebaseDatabase database;
     DatabaseReference preferencesRef;
-
+    DatabaseReference historyRef;
     FirebaseAuth auth;
-
     String uid;
     private String selectedLocation;
+    private List<String> moods = new ArrayList<>();
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        moods.add(0, "Happy");
+        moods.add(1, "Sad");
+        moods.add(2, "Angry");
+        moods.add(3, "Tired");
+        moods.add(4, "Romantic");
+        moods.add(5, "Stressed");
+        moods.add(6, "Excited");
+        moods.add(7, "Funky");
 
     }
 
@@ -56,113 +64,70 @@ public class PreferencesPage extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_preferences, container, false);
-
-
         //Out-Home-Both buttons
         mOut = view.findViewById(R.id.outButton);
         mHome = view.findViewById(R.id.homeButton);
         mBoth = view.findViewById(R.id.bothButton);
         mSubmit = view.findViewById(R.id.submitButton);
-
-        //Radio group
-        radioGroup = view.findViewById(R.id.emotions_radio_group);
-
-        //Cuisine check boxes
-        mItalian = view.findViewById(R.id.checkBox8);
-        mFrench = view.findViewById(R.id.checkBox9);
-        mMexican = view.findViewById(R.id.checkBox10);
-        mGreek = view.findViewById(R.id.checkBox11);
-        mChinese = view.findViewById(R.id.checkBox12);
-        mAmerican = view.findViewById(R.id.checkBox13);
-        mTurkish = view.findViewById(R.id.checkBox14);
+        mReset = view.findViewById(R.id.resetHistoryButton);
 
         //Database
-
         database = FirebaseDatabase.getInstance();
         auth = FirebaseAuth.getInstance();
+        uid = auth.getCurrentUser().getUid();
+        historyRef = FirebaseDatabase.getInstance().getReference().child("Swipe History");
+        preferencesRef = FirebaseDatabase.getInstance().getReference().child("Preference");
+        preferencesRef.child(uid).child("Location")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    } else {
+                        Log.d("firebase return", String.valueOf(task.getResult().getValue()));
+                        String location = (String) task.getResult().getValue();
+                        mOut.setBackgroundColor(Color.TRANSPARENT);
+                        mHome.setBackgroundColor(Color.TRANSPARENT);
+                        mBoth.setBackgroundColor(Color.TRANSPARENT);
+                        if (location.equals("both")) {
+                            mBoth.setBackgroundColor(Color.parseColor("#0FB652"));
+                        } else if (location.equals("out")){
+                            mOut.setBackgroundColor(Color.parseColor("#0FB652"));
+                        } else if (location.equals("home")){
+                            mHome.setBackgroundColor(Color.parseColor("#0FB652"));
+                        }
+                    }
+                });
 
-        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
-                // checkedId is the RadioButton selected
 
-                switch(checkedId) {
-                    case R.id.radio_happy:
-                        mood = "Happy";
-                        break;
-                    case R.id.radio_sad:
-                        mood = "Sad";
-                        break;
-                    case R.id.radio_excited:
-                        mood = "Excited";
-                        break;
-                    case R.id.radio_tired:
-                        mood = "Tired";
-                        break;
-                }
+        MultiLineRadioGroup mMultiLineRadioGroup = (MultiLineRadioGroup) view.findViewById(R.id.main_activity_multi_line_radio_group);
+
+        mMultiLineRadioGroup.setOnCheckedChangeListener(new MultiLineRadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(ViewGroup group, RadioButton button) {
+                int buttonID = ((button.getId()-1) % 8);
+                mood = moods.get(buttonID);
             }
+        });
+
+        mReset.setOnClickListener(view1 -> {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setTitle("Are you sure?");
+            dialog.setMessage("Deleting your accounts swiping history" +
+                    " cannot be undone.");
+            dialog.setPositiveButton("Delete", (dialogInterface, i) -> historyRef.child(uid).removeValue());
+
+            dialog.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
+            AlertDialog alertDialog = dialog.create();
+            alertDialog.show();
         });
 
         mSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                uid = auth.getCurrentUser().getUid();
-                preferencesRef = FirebaseDatabase.getInstance().getReference().child("Preference");
-
-                //Clear all the previous preferences
-                Map<String, Boolean> cuisineMap = new HashMap<>();
-                cuisineMap.put("Italian", false);
-                cuisineMap.put("French", false);
-                cuisineMap.put("Mexican", false);
-                cuisineMap.put("Chinese", false);
-                cuisineMap.put("American", false);
-                cuisineMap.put("Greek", false);
-                cuisineMap.put("Turkish", false);
-                preferencesRef.child(uid).child("Cuisine").setValue(cuisineMap);
-
-                if (mItalian.isChecked()) {
-                    preferencesRef.child(uid).child("Cuisine").child("Italian").setValue(true);
-                }
-//
-                if (mFrench.isChecked()) {
-                    preferencesRef.child(uid).child("Cuisine").child("French").setValue(true);
-                }
-//
-                if (mMexican.isChecked()) {
-                    preferencesRef.child(uid).child("Cuisine").child("Mexican").setValue(true);
-                }
-//
-                if (mChinese.isChecked()) {
-                    preferencesRef.child(uid).child("Cuisine").child("Chinese").setValue(true);
-                }
-//
-                if (mAmerican.isChecked()) {
-                    preferencesRef.child(uid).child("Cuisine").child("American").setValue(true);
-                }
-
-                if (mGreek.isChecked()) {
-                    preferencesRef.child(uid).child("Cuisine").child("Greek").setValue(true);
-                }
-//
-                if (mTurkish.isChecked()) {
-                    preferencesRef.child(uid).child("Cuisine").child("Turkish").setValue(true);
-                }
-
-
-                int radioId = radioGroup.getCheckedRadioButtonId();
-                DatabaseReference otherPreferences = FirebaseDatabase
-                        .getInstance()
-                        .getReference()
-                        .child("Preference");
-
                 //Set the mood and location in the database
-                otherPreferences.child(uid).child("Location").setValue(selectedLocation);
-                otherPreferences.child(uid).child("Mood").setValue(mood);
-
-                radioButton = view.findViewById(radioId);
-
-
-                Toast.makeText(getContext(), "Saved: "+ radioButton.getText(), Toast.LENGTH_SHORT).show();
+                preferencesRef.child(uid).child("Location").setValue(selectedLocation);
+                preferencesRef.child(uid).child("Mood").setValue(mood);
+                Toast.makeText(getContext(), "Saved: "+ mood, Toast.LENGTH_SHORT).show();
             }
         });
 

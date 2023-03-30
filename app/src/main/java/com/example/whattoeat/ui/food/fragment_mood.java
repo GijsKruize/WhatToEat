@@ -1,5 +1,7 @@
 package com.example.whattoeat.ui.food;
 
+import static androidx.core.view.KeyEventDispatcher.dispatchKeyEvent;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,6 +10,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +41,7 @@ import java.util.Map;
 
 
 public class fragment_mood extends Fragment {
-    RadioGroup radioGroup;
     Button mSubmit;
-    RadioButton radioButton;
     private String mood;
     FirebaseAuth auth;
     FirebaseUser user;
@@ -66,7 +67,16 @@ public class fragment_mood extends Fragment {
         moods.add(5, "Stressed");
         moods.add(6, "Excited");
         moods.add(7, "Funky");
+    }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView(){
+        super.onDestroyView();
     }
 
     @Override
@@ -115,13 +125,12 @@ public class fragment_mood extends Fragment {
                 }
 
                 //Get the new fragment
-                Fragment fragment2 = new FoodFragment(mood);
+                Fragment fragment2 = new FoodFragment();
 
                 //Change it
                 fragmentManager.beginTransaction()
                         .replace(R.id.fragment_mood, fragment2, null)
                         .setReorderingAllowed(true)
-                        .addToBackStack("mood selector")
                         .commit();
             }
 
