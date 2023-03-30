@@ -27,7 +27,7 @@ import java.util.List;
 public class PreferencesPage extends Fragment {
 
     Button mOut, mHome, mBoth, mSubmit, mReset;
-    private String mood = "NONE";
+    private String mood;
 
     FirebaseDatabase database;
     DatabaseReference preferencesRef;
@@ -71,6 +71,16 @@ public class PreferencesPage extends Fragment {
         uid = auth.getCurrentUser().getUid();
         historyRef = FirebaseDatabase.getInstance().getReference().child("Swipe History");
         preferencesRef = FirebaseDatabase.getInstance().getReference().child("Preference");
+        preferencesRef.child(uid).child("Mood")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) {
+                        Log.e("firebase", "Error getting data", task.getException());
+                    } else {
+                        Log.d("firebase return", String.valueOf(task.getResult().getValue()));
+                        this.mood = (String) task.getResult().getValue();
+                    }
+                });
         preferencesRef.child(uid).child("Location")
                 .get()
                 .addOnCompleteListener(task -> {
