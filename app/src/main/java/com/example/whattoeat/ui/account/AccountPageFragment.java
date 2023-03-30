@@ -44,6 +44,7 @@ public class AccountPageFragment extends Fragment {
 
     private FirebaseUser user;
     private Context context;
+    private Boolean isUserOwner;
 
     FirebaseDatabase database;
     protected DatabaseReference myRef;
@@ -55,6 +56,7 @@ public class AccountPageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_account, container, false);
         FragmentManager fragmentManager = getChildFragmentManager();
         Fragment fragment = new homepage();
+        EditProfile eP = new EditProfile();
 
         //Assign items to their visual button
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -63,6 +65,7 @@ public class AccountPageFragment extends Fragment {
         Button changePrefBtn = view.findViewById(R.id.changePreferencesBtn);
         Button logoutButton = view.findViewById(R.id.logOutBtn);
         Button deleteUserBtn = view.findViewById(R.id.deleteAccountBtn);
+        Button mStatistics = view.findViewById(R.id.statisticsBtn);
         TextView textView = view.findViewById(R.id.userDetails);
 
         //Database and user setup
@@ -88,6 +91,41 @@ public class AccountPageFragment extends Fragment {
                         }
                     });
         }
+
+        // Save the user inputs to the Firebase database
+        DatabaseReference myRefOwner = myRef.child("User").child(user.getUid()).child("Owner");
+        myRefOwner.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Log.e("Edit Profile: ", "result: " + task.getResult().getValue());
+                Boolean result = (Boolean) task.getResult().getValue();
+                isUserOwner = result;
+                if (Boolean.TRUE.equals(result)) {
+                    Log.e("Edit profile", "user is not an owner.");
+                    mStatistics.setVisibility(View.VISIBLE);
+
+                }
+            } else {
+                Log.e("firebase", "Error getting data", task.getException());
+            }
+        });
+
+        mStatistics.setOnClickListener(view3 -> {
+            Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
+            if (currentFragment instanceof StatisticFragment) {
+                return; // do nothing if EditProfile fragment is already displayed
+            }
+
+//            ConstraintLayout accountPageContainer = view.findViewById(R.id.containerAccount);
+//            accountPageContainer.setVisibility(View.GONE);
+            //Get the new fragment
+            Fragment fragment1 = new StatisticFragment();
+            //Change it
+            fragmentManager.beginTransaction()
+                    .replace(R.id.containerAccount, fragment1, null)
+                    .setReorderingAllowed(true)
+                    .addToBackStack("account1")
+                    .commit();
+        });
 
         resetPwBtn.setOnClickListener(view1 -> {
             String email = user.getEmail();
@@ -192,5 +230,13 @@ public class AccountPageFragment extends Fragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        Log.d("Resumed Accountpage", "Success!");
+        ConstraintLayout accountPageContainer = this.getView().findViewById(R.id.containerAccount);
+        accountPageContainer.setVisibility(View.VISIBLE);
     }
 }

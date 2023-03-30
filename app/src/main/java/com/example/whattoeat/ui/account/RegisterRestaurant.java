@@ -170,6 +170,8 @@ public class RegisterRestaurant extends AppCompatActivity {
                     e.printStackTrace();
                 } catch (MessagingException e) {
                     e.printStackTrace();
+                } catch (Exception e){
+                    Log.e("Email service: ", ""+e);
                 }
                 Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 

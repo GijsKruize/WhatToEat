@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.whattoeat.R;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -39,11 +40,11 @@ public class StatisticFragment extends Fragment {
 
     PieChart pieChart;
     TextView mostLinkedMood, totalLikes;
-    FirebaseDatabase database;
     DatabaseReference statsRef;
     String uid;
     Integer trueCount, totLikes, sumOfLikes;
     String mostFrequentMood;
+    FirebaseUser user;
     HashMap<String, Integer> map = new HashMap<>();
 
     @Override
@@ -57,6 +58,7 @@ public class StatisticFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_statistic, container, false);
 
+        uid = FirebaseAuth.getInstance().getUid();
         pieChart = view.findViewById(R.id.piechart);
         mostLinkedMood = view.findViewById(R.id.mostLinkedMood);
         totalLikes = view.findViewById(R.id.textTotalLikes);
@@ -69,7 +71,7 @@ public class StatisticFragment extends Fragment {
      * Adds data to textviews and piechart
      */
     private void addData() {
-        statsRef = database.getReference("Restaurant");
+        statsRef = FirebaseDatabase.getInstance().getReference("Restaurant");
 
         //gets likes of the restaurant and adds it to textView
         getStats(statsRef.getKey());
@@ -95,7 +97,7 @@ public class StatisticFragment extends Fragment {
      */
     public HashMap<String,Integer> getStats(String restaurantKey) {
 //
-        statsRef = database.getReference("Swipe History").child(uid);
+        statsRef = FirebaseDatabase.getInstance().getReference("Swipe History").child(uid);
         statsRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
