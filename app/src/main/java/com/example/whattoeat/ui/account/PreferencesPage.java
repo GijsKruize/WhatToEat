@@ -1,21 +1,17 @@
 package com.example.whattoeat.ui.account;
 
 import android.app.AlertDialog;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Toast;
 
 import com.example.whattoeat.R;
@@ -25,10 +21,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.whygraphics.multilineradiogroup.MultiLineRadioGroup;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+
 
 public class PreferencesPage extends Fragment {
 
@@ -88,6 +82,10 @@ public class PreferencesPage extends Fragment {
                         mOut.setBackgroundColor(Color.TRANSPARENT);
                         mHome.setBackgroundColor(Color.TRANSPARENT);
                         mBoth.setBackgroundColor(Color.TRANSPARENT);
+                        if (location == null){
+                            location = "both";
+                            selectedLocation = "both";
+                        }
                         if (location.equals("both")) {
                             mBoth.setBackgroundColor(Color.parseColor("#0FB652"));
                         } else if (location.equals("out")){
