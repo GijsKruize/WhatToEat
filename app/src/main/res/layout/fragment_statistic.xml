@@ -30,32 +30,32 @@
 
     </androidx.cardview.widget.CardView>
 
-    <View
-        android:layout_width="21dp"
-        android:layout_height="24dp"
-        android:id="@+id/pieChartSkipped"
-        android:background="@drawable/gray_rectangle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.605"
-        app:layout_constraintVertical_bias="0.21"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+<!--    <View-->
+<!--        android:layout_width="21dp"-->
+<!--        android:layout_height="24dp"-->
+<!--        android:id="@+id/pieChartSkipped"-->
+<!--        android:background="@drawable/gray_rectangle"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.605"-->
+<!--        app:layout_constraintVertical_bias="0.21"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        />-->
 
-    <TextView
-        android:id="@+id/textSkipped"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Skipped"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.734"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.21" />
+<!--    <TextView-->
+<!--        android:id="@+id/textSkipped"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Skipped"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="15sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.734"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.21" />-->
     <TextView
         android:id="@+id/statiscticsText"
         android:layout_width="wrap_content"
@@ -69,6 +69,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.58"
         app:layout_constraintHorizontal_bias="0.15"
+
+        />
+
+
+    <LinearLayout
+        android:id="@+id/legend_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintBottom_toTopOf="@id/cardViewGraph"
+        app:layout_constraintLeft_toRightOf="@id/piechart"
 
         />
 
@@ -101,20 +113,7 @@
         app:layout_constraintVertical_bias="0.72"
         app:layout_constraintHorizontal_bias="0.15"
         tools:ignore="HardcodedText" />
-    <TextView
-        android:id="@+id/textInteractionsPerDay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Page skips per day:"
-        android:textColor="@color/black"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.79"
-        app:layout_constraintHorizontal_bias="0.15"
-        />
+
 
 
     <org.eazegraph.lib.charts.PieChart
@@ -133,36 +132,36 @@
 
 
 
-    <View
-        android:id="@+id/pieChartLiked"
-        android:layout_width="21dp"
-        android:layout_height="24dp"
-        android:background="@drawable/green_rectangle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.605"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.267" />
+<!--    <View-->
+<!--        android:id="@+id/pieChartLiked"-->
+<!--        android:layout_width="21dp"-->
+<!--        android:layout_height="24dp"-->
+<!--        android:background="@drawable/green_rectangle"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.605"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.267" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/textLiked"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Liked"-->
+<!--        android:textColor="@color/black"-->
+<!--        android:textSize="15sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.704"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent"-->
+<!--        app:layout_constraintVertical_bias="0.27" />-->
 
     <TextView
-        android:id="@+id/textLiked"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Liked"
-        android:textColor="@color/black"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.704"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.27" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/viewCount"
+        android:id="@+id/frequentMood"
         android:text=""
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -178,7 +177,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/likesCount"
-        android:text="0"
+        android:text=""
         android:textColor="@color/black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -189,19 +188,6 @@
 
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/skipCount"
-        android:text="0"
-        android:textColor="@color/black"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.6"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.79"
-        />
 
 
 

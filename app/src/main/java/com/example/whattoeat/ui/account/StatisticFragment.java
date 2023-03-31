@@ -1,6 +1,7 @@
 package com.example.whattoeat.ui.account;
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,6 +11,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -31,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,13 +42,18 @@ import java.util.Map;
 public class StatisticFragment extends Fragment {
 
     PieChart pieChart;
-    TextView mostLinkedMood, totalLikes;
-    DatabaseReference statsRef;
+    TextView mostLinkedMood, totalLikes, fieldMood, fieldLikes;
+    DatabaseReference statsRef, ownerRef;
     String uid;
     Integer trueCount, totLikes, sumOfLikes;
     String mostFrequentMood;
     FirebaseUser user;
+    LinearLayout graphLegend;
     HashMap<String, Integer> map = new HashMap<>();
+
+    public interface StatsCallback {
+        void onStatsReceived(HashMap<String, Integer> stats);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,8 +70,10 @@ public class StatisticFragment extends Fragment {
         pieChart = view.findViewById(R.id.piechart);
         mostLinkedMood = view.findViewById(R.id.mostLinkedMood);
         totalLikes = view.findViewById(R.id.textTotalLikes);
+        fieldLikes = view.findViewById(R.id.likesCount);
+        fieldMood = view.findViewById(R.id.frequentMood);
+        graphLegend = view.findViewById(R.id.legend_container);
         addData();
-
         return view;
     }
 
@@ -71,22 +81,47 @@ public class StatisticFragment extends Fragment {
      * Adds data to textviews and piechart
      */
     private void addData() {
-        statsRef = FirebaseDatabase.getInstance().getReference("Restaurant");
+//        statsRef = FirebaseDatabase.getInstance().getReference("Restaurant");
+        statsRef = FirebaseDatabase.getInstance().getReference("Swipe History");
+        ownerRef = FirebaseDatabase.getInstance().getReference("User").child(uid);
+//        map.clear();
+//        pieChart.clearChart();
+//        graphLegend.removeAllViews();
 
-        //gets likes of the restaurant and adds it to textView
-        getStats(statsRef.getKey());
-        mostFrequentMood = getMostFrequentMood(map);
-        mostLinkedMood.setText(mostFrequentMood);
+        // replace ownerRef.child("Restaurant").getKey() with "Restaurant_1" if there is no result
+        // some restaurants haven't been swiped yet so there might be no data.
+        getStats(ownerRef.child("Restaurant").getKey(), new StatsCallback() {
+            @Override
+            public void onStatsReceived(HashMap<String, Integer> stats) {
+                mostFrequentMood = getMostFrequentMood(map);
+                fieldMood.setText(mostFrequentMood);
 
-        //gets the total like and adds it to textView
-        sumOfLikes = getTotalLikes(map);
-        totalLikes.setText(String.valueOf(sumOfLikes));
+                //gets the total like and adds it to textView
+                sumOfLikes = getTotalLikes(map);
+                fieldLikes.setText(String.valueOf(sumOfLikes));
 
-        //Adding values to piechart
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            pieChart.addPieSlice(new PieModel(entry.getKey(), entry.getValue(),
-                    Color.parseColor("#" + Integer.toHexString((int) (Math.random() * 16777215)))));
-        }
+                //Adding values to piechart
+                for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                    if(!map.isEmpty()) {
+                        int color = Color.parseColor("#" + Integer.toHexString((int) (Math.random() * 16777215)));
+                        pieChart.addPieSlice(new PieModel(entry.getKey(), entry.getValue(), color));
+                        TextView legendItem = new TextView(getContext());
+                        legendItem.setText(entry.getKey());
+                        legendItem.setTextSize(16);
+                        legendItem.setTextColor(color);
+                        graphLegend.addView(legendItem);
+                    }
+                    else {
+                        Log.d("Statistics", "There is no data to show right now.");
+                    }
+
+                }
+
+            }
+
+        });
+
+
     }
 
     /**
@@ -95,24 +130,28 @@ public class StatisticFragment extends Fragment {
      * @return  map
      *
      */
-    public HashMap<String,Integer> getStats(String restaurantKey) {
-//
-        statsRef = FirebaseDatabase.getInstance().getReference("Swipe History").child(uid);
-        statsRef.addValueEventListener(new ValueEventListener() {
+    public HashMap<String,Integer> getStats(String restaurantKey, StatsCallback callback) {
+        statsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                for (DataSnapshot moodSnapshot : snapshot.getChildren()) {
-                    trueCount = 0;
-                    for (DataSnapshot restaurantSnapshot : moodSnapshot.getChildren()) {
-                        if (restaurantSnapshot.getKey().equals(restaurantKey)
-                                && Boolean.TRUE.equals(restaurantSnapshot.getValue(Boolean.class))) {
-                            trueCount++;
+                for(DataSnapshot userSnapshot : snapshot.getChildren()) {
+
+                    for (DataSnapshot moodSnapshot : userSnapshot.getChildren()) {
+                        trueCount = 0;
+                        for (DataSnapshot restaurantSnapshot : moodSnapshot.getChildren()) {
+                            if (Objects.equals(restaurantSnapshot.getKey(), restaurantKey)
+                                    && Boolean.TRUE.equals(restaurantSnapshot.getValue(Boolean.class))) {
+                                trueCount++;
+                                map.put(moodSnapshot.getKey(), trueCount);
+                            }
                         }
+
+                        Log.d("Firebase", "moods: " + moodSnapshot.getKey() + " - true count: " + trueCount);
                     }
-                    map.put(moodSnapshot.getKey(), trueCount);
-                    Log.d("Firebase", "moods: " + moodSnapshot.getKey() + " - true count: " + trueCount);
                 }
+
+                callback.onStatsReceived(map);
             }
 
             @Override
@@ -123,13 +162,19 @@ public class StatisticFragment extends Fragment {
     }
 
     public String getMostFrequentMood(HashMap<String, Integer> map) {
-        String mostFrequentMood = null;
+        String mostFrequentMood = "";
         int maxCount = 0;
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            if (entry.getValue() > maxCount) {
-                maxCount = entry.getValue();
-                mostFrequentMood = entry.getKey();
+        if(!map.isEmpty()) {
+            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                if (entry.getValue() > maxCount) {
+                    maxCount = entry.getValue();
+                    mostFrequentMood = entry.getKey();
+                }
             }
+        }
+        else {
+            mostFrequentMood = "No data yet";
+
         }
         return mostFrequentMood;
     }

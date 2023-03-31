@@ -29,7 +29,6 @@ public class InfoFragment extends Fragment {
             startActivity(intent);
             getActivity().finish();
         }
-
     }
 
     @Override
