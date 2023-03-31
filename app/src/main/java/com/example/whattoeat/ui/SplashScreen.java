@@ -14,8 +14,10 @@ import android.util.Log;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.whattoeat.MainActivity;
@@ -33,9 +35,9 @@ import java.util.HashMap;
 import org.osmdroid.config.Configuration;
 
 public class SplashScreen extends AppCompatActivity {
-    private Button createAccount;
+    private TextView createAccount;
 
-    private Button createOwnerAccount;
+    private TextView createOwnerAccount;
 //    private View splash0;
 //    private View splash1;
     private Button signIn;
@@ -47,7 +49,10 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getSupportActionBar().hide();
         setContentView(R.layout.activity_splash_screen);
+
 
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
         StrictMode.setThreadPolicy(policy);

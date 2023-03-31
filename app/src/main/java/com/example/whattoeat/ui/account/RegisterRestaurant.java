@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Switch;
@@ -77,6 +78,8 @@ public class RegisterRestaurant extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register_restaurant);
         mAuth = FirebaseAuth.getInstance();
@@ -120,7 +123,8 @@ public class RegisterRestaurant extends AppCompatActivity {
                 restaurantName.setVisibility(View.INVISIBLE);
                 btnReg.setVisibility(View.INVISIBLE);
 
-                Toast.makeText(RegisterRestaurant.this, "Request for verification sent!\nYou will hear from us soon.",
+                Toast.makeText(RegisterRestaurant.this,
+                        "Request for verification sent!\nYou will hear from us soon.",
                         Toast.LENGTH_LONG).show();
 
                 LatLng location = getLocationFromAddress(getApplicationContext(), address);

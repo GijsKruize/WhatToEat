@@ -55,30 +55,39 @@
         app:layout_constraintVertical_bias="0.613" />
 
 
-    <Button
-        android:id="@+id/btn_create_account"
-        android:layout_width="166dp"
-        android:layout_height="72dp"
-        android:layout_marginTop="456dp"
-        android:background="@android:color/transparent"
-        android:fontFamily="sans-serif-medium"
-        android:letterSpacing="0.02"
-        android:padding="16dp"
-        android:text="Create Account"
-        android:textColor="#0000FF"
-        android:textSize="13sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.583"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/signup_button"
+        app:layout_constraintStart_toStartOf="@+id/signup_button"
+        app:layout_constraintTop_toBottomOf="@+id/signup_button">
+
+        <TextView
+            android:id="@+id/splashTop1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:text="New user?"
+            android:textSize="13sp" />
+
+        <TextView
+            android:id="@+id/btn_create_account"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:fontFamily="sans-serif-medium"
+            android:letterSpacing="0.02"
+            android:text="Create Account"
+            android:textColor="#0000FF"
+            android:textSize="13sp" />
 
 
-    <Button
+    </LinearLayout>
+
+    <TextView
         android:id="@+id/btn_create_owner_account"
-        android:layout_width="166dp"
-        android:layout_height="72dp"
-        android:layout_marginTop="328dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:background="@android:color/transparent"
         android:fontFamily="sans-serif-medium"
         android:letterSpacing="0.02"
@@ -87,10 +96,8 @@
         android:textColor="#0000FF"
         android:textSize="13sp"
         app:layout_constraintBottom_toTopOf="@+id/signup_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.44"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/signup_button"
+        app:layout_constraintStart_toStartOf="@+id/signup_button" />
 
     <View
         android:layout_width="183dp"
@@ -100,17 +107,6 @@
         tools:layout_editor_absoluteX="-3dp"
         tools:ignore="MissingConstraints" />
 
-    <TextView
-        android:id="@+id/splashTop1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="New user?"
-        android:padding="4dp"
-        android:textSize="13sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.291"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signup_button" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
