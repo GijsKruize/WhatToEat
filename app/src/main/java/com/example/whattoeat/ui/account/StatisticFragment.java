@@ -43,7 +43,7 @@ public class StatisticFragment extends Fragment {
 
     PieChart pieChart;
     TextView mostLinkedMood, totalLikes, fieldMood, fieldLikes;
-    DatabaseReference statsRef;
+    DatabaseReference statsRef, ownerRef;
     String uid;
     Integer trueCount, totLikes, sumOfLikes;
     String mostFrequentMood;
@@ -83,13 +83,14 @@ public class StatisticFragment extends Fragment {
     private void addData() {
 //        statsRef = FirebaseDatabase.getInstance().getReference("Restaurant");
         statsRef = FirebaseDatabase.getInstance().getReference("Swipe History");
+        ownerRef = FirebaseDatabase.getInstance().getReference("User").child(uid);
 //        map.clear();
 //        pieChart.clearChart();
 //        graphLegend.removeAllViews();
 
-        //gets likes of the restaurant and adds it to textView
-//        getStats(statsRef.getKey());
-        getStats("Restaurant_1", new StatsCallback() {
+        // replace ownerRef.child("Restaurant").getKey() with "Restaurant_1" if there is no result
+        // some restaurants haven't been swiped yet so there might be no data.
+        getStats(ownerRef.child("Restaurant").getKey(), new StatsCallback() {
             @Override
             public void onStatsReceived(HashMap<String, Integer> stats) {
                 mostFrequentMood = getMostFrequentMood(map);
