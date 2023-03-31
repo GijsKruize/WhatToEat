@@ -24,6 +24,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
@@ -63,7 +64,6 @@ public class RegisterRestaurant extends AppCompatActivity {
     private List<String> restNames;
     private List<String> userNames;
     private Boolean allowedToRegister = true;
-    Register register = new Register();
 
     Boolean deliveryStatus;
 
@@ -330,7 +330,13 @@ public class RegisterRestaurant extends AppCompatActivity {
                                         "Authentication failed: " + Error,
                                         Toast.LENGTH_LONG).show();
                             }
-                        }).addOnFailureListener(e -> Log.e("Register Error", e.toString()));
+                        }).addOnFailureListener(e -> {
+                            if (e instanceof FirebaseAuthUserCollisionException) {
+                                // Handle the email already in use exception here
+                                Toast.makeText(getApplicationContext(), "Email already in use", Toast.LENGTH_SHORT).show();
+                                Log.e("Register Error", e.toString());
+                            }
+                        });
             }
         });
 
@@ -346,7 +352,6 @@ public class RegisterRestaurant extends AppCompatActivity {
                     String nameRest = list.child("Name").getValue().toString();
                     nameRest = nameRest.toLowerCase(Locale.ROOT);
                     restaurantNames.add(nameRest);
-                    Log.d("Register: ", nameRest);
                 } catch (Exception e){
                     Log.e("Register: ", "error finding restaurant name");
                 }

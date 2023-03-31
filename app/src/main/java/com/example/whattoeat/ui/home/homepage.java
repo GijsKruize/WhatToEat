@@ -45,6 +45,7 @@ public class homepage extends Fragment {
     private List<String> listNamesRest = new ArrayList<>();
     private List<String> listImagesRest = new ArrayList<>();
     private List<String> listIdsRest = new ArrayList<>();
+    private List<String> prefStyles = new ArrayList<>();
     private ProgressBar progressBar;
     private ListView mListView;
     private String prefLocation, prefMood;
@@ -77,8 +78,11 @@ public class homepage extends Fragment {
         isDataShuffled = false; // Reset the variable to false
         try{
             getPreference();
+            prefStyles = getStyles(prefMood);
+            Log.d("Style array:", prefStyles.toString());
+
         }catch (Exception e){
-            Log.e("Exception homepage", e.toString());
+            Log.e("Exception homepage", e.getMessage());
         }
         fetchData();
     }
@@ -140,7 +144,7 @@ public class homepage extends Fragment {
     private void setPreference(String mood, String location){
         this.prefMood = mood;
         this.prefLocation = location;
-        Log.d("Homepage: ", "Preferences saved!");
+        Log.d("Homepage: ", "Preferences saved!" + mood + location);
     }
 
     /**
@@ -149,12 +153,6 @@ public class homepage extends Fragment {
      * @param pref The user's location
      */
     public void fetchFromDb(String mood, String pref){
-        try{
-            Log.e("Preference", pref);
-
-        } catch (Exception e){
-            Log.e("EXCEPTION:", e.toString());
-        }
 
         // fetch data from recipe table
         myRefRecipe.addValueEventListener(new ValueEventListener() {
@@ -165,20 +163,21 @@ public class homepage extends Fragment {
                 listImagesRec.clear();
                 listStyleRec.clear();
                 if(pref == null || !pref.equals("out")) {
-                    Log.d("Homepage: ", dataSnapshot.toString());
                     for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
                         // retrieve data for each recipe
-                        String recipeId = recipeSnapshot.getKey();
-                        String recipeName = recipeSnapshot.child("Name").getValue(String.class);
-                        String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
-                        String style = recipeSnapshot.child("Style").getValue(String.class);
+                        if(!prefStyles.contains(recipeSnapshot.child("Style").getValue(String.class))) {
+                            String recipeId = recipeSnapshot.getKey();
+                            String recipeName = recipeSnapshot.child("Name").getValue(String.class);
+                            String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
+                            String style = recipeSnapshot.child("Style").getValue(String.class);
 
-                        listIdsRec.add(recipeId);
-                        listNamesRec.add(recipeName);
-                        listImagesRec.add(recipeImage);
-                        listStyleRec.add(style);
-                        Log.d("Firebase", "Recipe Name: " + recipeName +
-                                ", Image source: " + recipeImage);
+                            listIdsRec.add(recipeId);
+                            listNamesRec.add(recipeName);
+                            listImagesRec.add(recipeImage);
+                            listStyleRec.add(style);
+//                        Log.d("Firebase", "Recipe Name: " + recipeName +
+//                                ", Image source: " + recipeImage);
+                        }
                     }
                 }
             }
@@ -213,7 +212,6 @@ public class homepage extends Fragment {
                     }
                 }
                 progressBar.setVisibility(View.GONE); // Hide the progress bar
-                Log.d("Homepage: ", "listrec : "+ listNamesRec.size() + " listrest: " + listNamesRest.size());
                 data = new String[listNamesRec.size() + listNamesRest.size()][3];
                 MyAdapter adapter = (MyAdapter) mListView.getAdapter();
                 adapter.notifyDataSetChanged(); // Refresh the adapter with new data
@@ -224,6 +222,25 @@ public class homepage extends Fragment {
                 Log.e("Firebase", "Homepage could not fetch data from recipes: " + databaseError.getMessage());
             }
         });
+    }
+
+    private List<String> getStyles(String mood){
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("General Relation");
+        List<String> styles = new ArrayList<>();
+        ref.child(mood).get().addOnCompleteListener(result -> {
+            for(DataSnapshot data: result.getResult().getChildren()){
+//                Log.d("Potential child: ", data.getValue().toString());
+                Integer value = Integer.parseInt(data.getValue().toString());
+//                Log.e("Value", value.toString());
+                if (value >= 0) {
+//                    Log.d("Added : ", data.getKey());
+                    styles.add(data.getKey());
+                }
+            }
+        }).addOnFailureListener(failed ->{
+
+        });
+        return styles;
     }
 
     public class MyAdapter extends BaseAdapter {
@@ -356,9 +373,11 @@ public class homepage extends Fragment {
         mListView.setAdapter(adapter);
         try {
             getPreference();
+            prefStyles = getStyles(prefMood);
+            Log.d("Style array:", prefStyles.toString());
             fetchData(); // Load the data
         } catch (Exception e){
-            Log.e("Exception Homepage: ", e.toString());
+            Log.e("Exception Homepage: ", e.getMessage());
         }
         return view;
     }

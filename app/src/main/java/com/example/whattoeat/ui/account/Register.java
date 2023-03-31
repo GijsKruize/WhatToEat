@@ -19,14 +19,17 @@ import com.example.whattoeat.R;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthUserCollisionException;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class Register extends AppCompatActivity {
@@ -37,6 +40,7 @@ public class Register extends AppCompatActivity {
     ProgressBar progressBar;
     FirebaseAuth mAuth;
     private List<String> userNames;
+    private Boolean allowedToRegister;
     FirebaseDatabase database;
     protected DatabaseReference myRef;
 
@@ -81,13 +85,16 @@ public class Register extends AppCompatActivity {
 //            startActivity(intent);
 //            finish();
 //        });
-
+        allowedToRegister = true;
         editTextName.setOnFocusChangeListener((view, b) -> {
             if (!b) {
                 String name = String.valueOf(editTextName.getText());
-                if (userNames.contains(name)) {
+                if (userNames.contains(name.toLowerCase(Locale.ROOT))) {
                     Log.e("Register: ", "non valid username");
-                    Toast.makeText(Register.this, "Username already exists", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Register.this,
+                            "Username already exists",
+                            Toast.LENGTH_SHORT).show();
+                    allowedToRegister = false;
                 }
             }
         });
@@ -108,54 +115,62 @@ public class Register extends AppCompatActivity {
             map.put("last login", timestamp.toString());
 
             //Check the users entries.
-            if(!emptyEntries(email, name, phone, password)){
+            if (!emptyEntries(email, name, phone, password)) {
                 Log.e("Register: ", "empty entry!");
-                return;
+                allowedToRegister = false;
             }
 
-            if(!validEntries(name, password)){
+            if (!validEntries(name, password)) {
                 Log.e("Register: ", "non valid entry!");
-                return;
+                allowedToRegister = false;
             }
 
-            Log.e("Register: ", ""+userNames.contains(name));
-            if(userNames.contains(name)){
+            Log.e("Register: ", "name " + userNames.contains(name.toLowerCase(Locale.ROOT)) + "List:" + userNames);
+            if (userNames.contains(name.toLowerCase(Locale.ROOT))) {
                 Toast.makeText(Register.this,
                         "Please chose a different username!",
                         Toast.LENGTH_SHORT).show();
                 Log.e("Register: ", "non valid username");
-                return;
+                allowedToRegister = false;
             }
 
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            progressBar.setVisibility(View.INVISIBLE);
-                            final String UID = mAuth.getUid();
+            if(allowedToRegister) {
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                progressBar.setVisibility(View.INVISIBLE);
+                                final String UID = mAuth.getUid();
 
-                            myRef.child("User")
-                                    .child(UID)
-                                    .setValue(map)
-                                    .addOnSuccessListener(unused -> Log.d(
-                                            "Register Page: ",
-                                            "Successfully sent data to database!"
-                                    ))
-                                    .addOnFailureListener(e -> Log.d(
-                                            "Register Page: ",
-                                            "Failed to send data!" + e
-                                    ));
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(Register.this, "Account Created.",
-                                    Toast.LENGTH_SHORT).show();
-                            startActivity(new Intent(Register.this, Login.class));
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            String Error = task.getException().getMessage();
-                            Log.d("Register Page: ", Error);
-                            Toast.makeText(Register.this, "Authentication failed: " + Error,
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    });
+                                myRef.child("User")
+                                        .child(UID)
+                                        .setValue(map)
+                                        .addOnSuccessListener(unused -> Log.d(
+                                                "Register Page: ",
+                                                "Successfully sent data to database!"
+                                        ))
+                                        .addOnFailureListener(e -> Log.d(
+                                                "Register Page: ",
+                                                "Failed to send data!" + e
+                                        ));
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(Register.this, "Account Created.",
+                                        Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(Register.this, Login.class));
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                String Error = task.getException().getMessage();
+                                Log.d("Register Page: ", Error);
+                                Toast.makeText(Register.this, "Authentication failed: " + Error,
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener( task2 -> {
+                            if (task2 instanceof FirebaseAuthUserCollisionException) {
+                                // Handle the email already in use exception here
+                                Toast.makeText(getApplicationContext(), "Email already in use", Toast.LENGTH_SHORT).show();
+                            }
+                            Log.e("Register: ", task2.getMessage() + "AAA");
+                        });
+            }
         });
     }
 
@@ -195,6 +210,8 @@ public class Register extends AppCompatActivity {
     public List<String> loadUsernames() {
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("User");
+        List<String> usernamesTemp = new ArrayList<>();
+
         ref.get().addOnCompleteListener(task -> {
             for(DataSnapshot list: task.getResult().getChildren()){
                 try{
@@ -203,14 +220,10 @@ public class Register extends AppCompatActivity {
                             .getValue()
                             .toString()
                             .toLowerCase();
-                    Log.e("Register: ", nameToAdd);
-                    userNames.add(nameToAdd);
-                    Log.d("Register: ", nameToAdd);
+                    usernamesTemp.add(nameToAdd);
                 } catch (Exception e){
                     Log.e("Register: ", "User without name found. Continuing..");
                 }
-
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -218,7 +231,8 @@ public class Register extends AppCompatActivity {
                 Log.e("Register:", "error");
             }
         });
-        return userNames;
+        Log.e("USERNAMES LIST: ", "" + usernamesTemp);
+        return usernamesTemp;
     }
 
 
