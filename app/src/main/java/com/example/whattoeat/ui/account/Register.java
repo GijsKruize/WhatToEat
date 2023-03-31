@@ -32,6 +32,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -43,9 +45,9 @@ public class Register extends AppCompatActivity {
     TextView returnBtn;
     ProgressBar progressBar;
     FirebaseAuth mAuth;
+    private List<String> userNames;
     FirebaseDatabase database;
     protected DatabaseReference myRef;
-    private Boolean result = false;
 
     @Override
     public void onStart() {
@@ -62,6 +64,13 @@ public class Register extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        try{
+            userNames = loadUsernames();
+        } catch (Exception e){
+            Log.e("Error", "Error");
+        }
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_register);
@@ -85,7 +94,7 @@ public class Register extends AppCompatActivity {
         editTextName.setOnFocusChangeListener((view, b) -> {
             if (!b) {
                 String name = String.valueOf(editTextName.getText());
-                if (!checkIfUsernameExists(name)) {
+                if (userNames.contains(name)) {
                     Log.e("Register: ", "non valid username");
                     Toast.makeText(Register.this, "Username already exists", Toast.LENGTH_SHORT).show();
                 }
@@ -118,8 +127,11 @@ public class Register extends AppCompatActivity {
                 return;
             }
 
-            Log.e("Register: ", ""+checkIfUsernameExists(name));
-            if(!checkIfUsernameExists(name)){
+            Log.e("Register: ", ""+userNames.contains(name));
+            if(userNames.contains(name)){
+                Toast.makeText(Register.this,
+                        "Please chose a different username!",
+                        Toast.LENGTH_SHORT).show();
                 Log.e("Register: ", "non valid username");
                 return;
             }
@@ -166,7 +178,7 @@ public class Register extends AppCompatActivity {
      * @return true if entries are not empty, false otherwise.
      */
 
-    private boolean emptyEntries(String email, String name, String phone, String password){
+    public boolean emptyEntries(String email, String name, String phone, String password){
         if(TextUtils.isEmpty(email)){
             Toast.makeText(Register.this, "Enter Email", Toast.LENGTH_SHORT).show();
             return false;
@@ -189,35 +201,38 @@ public class Register extends AppCompatActivity {
         return true;
     }
 
-    private boolean checkIfUsernameExists(String username) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("users");
-        Query query = ref.orderByChild("username").equalTo(username);
-        AtomicReference<Boolean> exists = new AtomicReference<>(false);
-        query.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
-                    exists.set(true);
-                    break;
+    public List<String> loadUsernames() {
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("User");
+        ref.get().addOnCompleteListener(task -> {
+            for(DataSnapshot list: task.getResult().getChildren()){
+                try{
+                    String nameToAdd = list
+                            .child("name")
+                            .getValue()
+                            .toString()
+                            .toLowerCase();
+                    Log.e("Register: ", nameToAdd);
+                    userNames.add(nameToAdd);
+                    Log.d("Register: ", nameToAdd);
+                } catch (Exception e){
+                    Log.e("Register: ", "User without name found. Continuing..");
                 }
-                if (exists.get()) {
-                    result = false;
-                } else {
-                    result = true;
-                }
-            }
 
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onCancelled(DatabaseError databaseError) {
-                // Handle error
+            public void onFailure(@NonNull Exception e) {
+                Log.e("Register:", "error");
             }
         });
-        return result;
+        return userNames;
     }
 
 
     /**
-     * Method checks what the user enterd. Returns false if it is not what we want.
+     * Method checks what the user entered. Returns false if it is not what we want.
      * @param name name of the user
      * @param password password of the user
      * @return true when entries are valid. False otherwise.

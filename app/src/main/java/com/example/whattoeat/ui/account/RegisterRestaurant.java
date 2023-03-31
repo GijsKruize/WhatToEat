@@ -23,20 +23,25 @@ import com.example.whattoeat.R;
 import com.example.whattoeat.ui.SplashScreen;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Properties;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -47,7 +52,6 @@ import javax.mail.Transport;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import com.google.android.gms.maps.model.LatLng;
 
 public class RegisterRestaurant extends AppCompatActivity {
 
@@ -61,6 +65,9 @@ public class RegisterRestaurant extends AppCompatActivity {
     FirebaseDatabase database;
     protected DatabaseReference myRef;
     private FirebaseUser user;
+    private List<String> restNames;
+    private List<String> userNames;
+    Register register = new Register();
 
     Boolean deliveryStatus;
 
@@ -81,6 +88,14 @@ public class RegisterRestaurant extends AppCompatActivity {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
+
+        try{
+            restNames = loadRestaurantNames();
+            userNames = loadUsernames();
+
+        } catch (Exception e){
+            Log.e("Error", "Error");
+        }
         setContentView(R.layout.activity_register_restaurant);
         mAuth = FirebaseAuth.getInstance();
         editTextEmail = findViewById(R.id.emailRestaurantRegister);
@@ -97,135 +112,199 @@ public class RegisterRestaurant extends AppCompatActivity {
         Switch delivery = (Switch) findViewById(R.id.deliveryToggleButton);
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-//        textView.setOnClickListener(view -> {
-//            Intent intent = new Intent(getApplicationContext(), Login.class);
-//            startActivity(intent);
-//            finish();
-//        });
 
-
-        btnReg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String email = String.valueOf(editTextEmail.getText());
+        editTextName.setOnFocusChangeListener((view, b) -> {
+            if (!b) {
                 String name = String.valueOf(editTextName.getText());
-                String phone = String.valueOf(editTextPhone.getText());
-                String password = String.valueOf(editTextPassword.getText());
-                String restaurant = String.valueOf(restaurantName.getText());
-                String address = String.valueOf(editTextAddress.getText());
-                deliveryStatus = delivery.isChecked();
+                if (userNames.contains(name.toLowerCase(Locale.ROOT))) {
+                    Log.e("Register: ", "non valid username");
+                    Toast.makeText(RegisterRestaurant.this,
+                            "Username already exists",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
-                editTextName.setVisibility(View.INVISIBLE);
-                editTextAddress.setVisibility(View.INVISIBLE);
-                editTextEmail.setVisibility(View.INVISIBLE);
-                editTextPassword.setVisibility(View.INVISIBLE);
-                editTextPhone.setVisibility(View.INVISIBLE);
-                restaurantName.setVisibility(View.INVISIBLE);
-                btnReg.setVisibility(View.INVISIBLE);
+        restaurantName.setOnFocusChangeListener((view, b) -> {
+            if (!b) {
+                String name = String.valueOf(restaurantName.getText());
+                Log.e("Register:", "Checking : " + name);
+                if (restNames.contains(name.toLowerCase(Locale.ROOT))) {
+                    Log.e("Register: ", "non valid restaurant name");
+                    Toast.makeText(RegisterRestaurant.this,
+                            "Restaurant already registered!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
+        btnReg.setOnClickListener(view -> {
+            String email = String.valueOf(editTextEmail.getText());
+            String name = String.valueOf(editTextName.getText());
+            String phone = String.valueOf(editTextPhone.getText());
+            String password = String.valueOf(editTextPassword.getText());
+            String restaurant = String.valueOf(restaurantName.getText());
+            String address = String.valueOf(editTextAddress.getText());
+            deliveryStatus = delivery.isChecked();
+
+//                editTextName.setVisibility(View.INVISIBLE);
+//                editTextAddress.setVisibility(View.INVISIBLE);
+//                editTextEmail.setVisibility(View.INVISIBLE);
+//                editTextPassword.setVisibility(View.INVISIBLE);
+//                editTextPhone.setVisibility(View.INVISIBLE);
+//                restaurantName.setVisibility(View.INVISIBLE);
+//                btnReg.setVisibility(View.INVISIBLE);
+
+            //Check the entries.
+            if(!register.emptyEntries(email, name, phone, password)){
+                Log.e("Register: ", "empty entry!");
+                return;
+            }
+
+            //Check owner specific entries
+            if(!ownerEntries(restaurant, address)){
+                Log.e("Register Restaurant:", "owner entry empty");
+            }
+
+            if(!register.validEntries(name, password)){
+                Log.e("Register: ", "non valid entry!");
+                return;
+            }
+
+            if (userNames.contains(name)) {
+                Log.e("Register: ", "non valid username");
                 Toast.makeText(RegisterRestaurant.this,
-                        "Request for verification sent!\nYou will hear from us soon.",
-                        Toast.LENGTH_LONG).show();
+                        "Username already exists",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                LatLng location = getLocationFromAddress(getApplicationContext(), address);
-                double latitude = location.latitude;
-                double longitude = location.longitude;
+            Log.e("Register:", "Checking : " + name);
+            if (restNames.contains(name.toLowerCase(Locale.ROOT))) {
+                Log.e("Register: ", "non valid restaurant name");
+                Toast.makeText(RegisterRestaurant.this,
+                        "Restaurant already registered!", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                try {
-                    String stringSenderEmail = "whattoeattue@gmail.com";
-                    String stringReceiverEmail = "rikjanssen1@hotmail.com";
-                    String stringPasswordSenderEmail = "hxctyygnjfydqswa";
+            Log.d("LIST USERNAMES : ", userNames.toString());
+            if(!userNames.contains(name.toLowerCase(Locale.ROOT))){
+                Toast.makeText(RegisterRestaurant.this,
+                        "Please chose a different username!",
+                        Toast.LENGTH_SHORT).show();
+                Log.e("Register: ", "non valid username");
+                return;
+            }
 
-                    String stringHost = "smtp.gmail.com";
+            LatLng location = getLocationFromAddress(getApplicationContext(), address);
+            double latitude = location.latitude;
+            double longitude = location.longitude;
 
-                    Properties properties = System.getProperties();
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-                    properties.put("mail.smtp.host", stringHost);
-                    properties.put("mail.smtp.port", "465");
-                    properties.put("mail.smtp.ssl.enable", "true");
-                    properties.put("mail.smtp.auth", "true");
+            HashMap<String, Object> mapRestUser = new HashMap<>();
+            mapRestUser.put("email", email);
+            mapRestUser.put("name", name);
+            mapRestUser.put("Restaurant", restaurant);
+            mapRestUser.put("Owner", true);
 
-                    javax.mail.Session session = Session.getInstance(properties, new Authenticator() {
-                        @Override
-                        protected PasswordAuthentication getPasswordAuthentication() {
-                            return new PasswordAuthentication(stringSenderEmail, stringPasswordSenderEmail);
-                        }
-                    });
+            mapRestUser.put("last login", timestamp.toString());
 
-                    MimeMessage mimeMessage = new MimeMessage(session);
-                    mimeMessage.addRecipient(Message.RecipientType.TO, new InternetAddress(stringReceiverEmail));
+            HashMap<String, Object> mapRest = new HashMap<>();
+            mapRest.put("Delivers", deliveryStatus);
+            mapRest.put("Hyperlink", "");
+            mapRest.put("Image", "");
+            mapRest.put("Latitude", latitude);
+            mapRest.put("Longitude", longitude);
+            mapRest.put("Name", restaurant);
+            mapRest.put("Phone", phone);
+            mapRest.put("Location", address);
+            mapRest.put("Style", "");
+            mapRest.put("Verified", false);
 
-                    mimeMessage.setSubject("Restaurant verification for: " + restaurant);
-                    mimeMessage.setText("Hello WhatToEat team, \n\n" + name + " would like to verify their restaurant.\n\nPhone: " + phone + "\n\nEmail: " + email + "\n\nAddress: " + address);
+            mAuth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(RegisterRestaurant.this,
+                                    "Request for verification sent!" +
+                                            "\nYou will hear from us soon.",
+                                    Toast.LENGTH_LONG).show();
 
-                    Thread thread = new Thread(new Runnable() {
-                        @Override
-                        public void run() {
                             try {
-                                Transport.send(mimeMessage);
+                                String stringSenderEmail = "whattoeattue@gmail.com";
+                                String stringReceiverEmail = "rikjanssen1@hotmail.com";
+                                String stringPasswordSenderEmail = "hxctyygnjfydqswa";
+                                String stringHost = "smtp.gmail.com";
+
+                                Properties properties = System.getProperties();
+
+                                properties.put("mail.smtp.host", stringHost);
+                                properties.put("mail.smtp.port", "465");
+                                properties.put("mail.smtp.ssl.enable", "true");
+                                properties.put("mail.smtp.auth", "true");
+
+                                Session session = Session.getInstance(properties,
+                                        new Authenticator() {
+                                    @Override
+                                    protected PasswordAuthentication getPasswordAuthentication(){
+                                        return new PasswordAuthentication(stringSenderEmail,
+                                                stringPasswordSenderEmail);
+                                    }
+                                });
+
+                                MimeMessage mimeMessage = new MimeMessage(session);
+                                mimeMessage.addRecipient(Message.RecipientType.TO,
+                                        new InternetAddress(stringReceiverEmail));
+
+                                mimeMessage.setSubject("Restaurant verification for: "
+                                        + restaurant);
+                                mimeMessage.setText("Hello WhatToEat team, \n\n" + name +
+                                        " would like to verify their restaurant.\n\nPhone: "
+                                        + phone + "\n\nEmail: " + email + "\n\nAddress: "
+                                        + address);
+
+                                Thread thread = new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        try {
+                                            Transport.send(mimeMessage);
+                                        } catch (MessagingException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+                                thread.start();
+
+                            } catch (AddressException e) {
+                                e.printStackTrace();
                             } catch (MessagingException e) {
                                 e.printStackTrace();
+                            } catch (Exception e){
+                                Log.e("Email service: ", ""+e);
                             }
-                        }
-                    });
-                    thread.start();
 
-                } catch (AddressException e) {
-                    e.printStackTrace();
-                } catch (MessagingException e) {
-                    e.printStackTrace();
-                } catch (Exception e){
-                    Log.e("Email service: ", ""+e);
-                }
-                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+                            progressBar.setVisibility(View.INVISIBLE);
+                            final String UID = mAuth.getUid();
 
-                HashMap<String, Object> mapRestUser = new HashMap<>();
-                mapRestUser.put("email", email);
-                mapRestUser.put("name", name);
-                mapRestUser.put("Restaurant", restaurant);
-                mapRestUser.put("Owner", true);
-
-                mapRestUser.put("last login", timestamp.toString());
-
-                HashMap<String, Object> mapRest = new HashMap<>();
-                mapRest.put("Delivers", deliveryStatus);
-                mapRest.put("Hyperlink", "");
-                mapRest.put("Image", "");
-                mapRest.put("Latitude", latitude);
-                mapRest.put("Longitude", longitude);
-                mapRest.put("Name", restaurant);
-                mapRest.put("Phone", phone);
-                mapRest.put("Location", address);
-                mapRest.put("Style", "");
-                mapRest.put("Verified", false);
-                
-
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(task -> {
-                            if (task.isSuccessful()) {
-                                progressBar.setVisibility(View.INVISIBLE);
-                                final String UID = mAuth.getUid();
-
-                                myRef.child("User")
-                                        .child(UID)
-                                        .setValue(mapRestUser)
-                                        .addOnSuccessListener(unused -> Log.d(
-                                                "Register Page Restaurant: ",
-                                                "Successfully sent data to database!"
-                                        ))
-                                        .addOnFailureListener(e -> Log.d(
-                                                "Register Page Restaurant: ",
-                                                "Failed to send data!" + e
-                                        ));
-                                // If sign in fails, display a message to the user.
-                                Toast.makeText(RegisterRestaurant.this, "Account Created.",
-                                        Toast.LENGTH_SHORT).show();
-                                String id = "Restaurant_";
-                                myRef.child("Restaurant")
-                                                .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                                Long idNumber = task.getResult().getChildrenCount() + 1;
+                            myRef.child("User")
+                                    .child(UID)
+                                    .setValue(mapRestUser)
+                                    .addOnSuccessListener(unused -> Log.d(
+                                            "Register Page Restaurant: ",
+                                            "Successfully sent data to database!"
+                                    ))
+                                    .addOnFailureListener(e -> Log.d(
+                                            "Register Page Restaurant: ",
+                                            "Failed to send data!" + e
+                                    ));
+                            // If sign in fails, display a message to the user.
+                            Toast.makeText(RegisterRestaurant.this,
+                                    "Account Created.",
+                                    Toast.LENGTH_SHORT).show();
+                            String id = "Restaurant_";
+                            myRef.child("Restaurant")
+                                            .get().addOnCompleteListener(task1 -> {
+                                                Long idNumber = task1.getResult()
+                                                        .getChildrenCount() + 1;
                                                 idNumber.toString();
 
                                                 myRef.child("Restaurant")
@@ -239,22 +318,67 @@ public class RegisterRestaurant extends AppCompatActivity {
                                                                 "Register Page Restaurant: ",
                                                                 "Failed to send data!" + e
                                                         ));
-                                            }
-                                        });
+                                            });
 
-                                startActivity(new Intent(RegisterRestaurant.this, Login.class));
-                            } else {
-                                // If sign in fails, display a message to the user.
-                                String Error = task.getException().getMessage();
-                                Log.d("Register Page: ", Error);
-                                Toast.makeText(RegisterRestaurant.this, "Authentication failed: " + Error,
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        });
-            }
+                            startActivity(new Intent(RegisterRestaurant.this,
+                                    Login.class));
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            String Error = task.getException().getMessage();
+                            Log.d("Register Page: ", Error);
+                            Toast.makeText(RegisterRestaurant.this,
+                                    "Authentication failed: " + Error,
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.e("Register Error", e.toString());
+                        }
+                    });
         });
 
     }
+
+    private List<String> loadRestaurantNames() {
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("Restaurant");
+        List<String> restaurantNames = new ArrayList<>();
+        ref.get().addOnCompleteListener(task -> {
+            for(DataSnapshot list: task.getResult().getChildren()){
+                try {
+                    String nameRest = list.child("Name").getValue().toString();
+                    nameRest = nameRest.toLowerCase(Locale.ROOT);
+                    restaurantNames.add(nameRest);
+                    Log.d("Register: ", nameRest);
+                } catch (Exception e){
+                    Log.e("Register: ", "error finding restaurant name");
+                }
+            }
+        }).addOnFailureListener(e -> Log.e("Register:", "error"));
+        return restaurantNames;
+    }
+
+    public List<String> loadUsernames() {
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("User");
+        List<String> usernamesTemp = new ArrayList<>();
+        ref.get().addOnCompleteListener(task -> {
+            for(DataSnapshot list: task.getResult().getChildren()){
+                try{
+                    String nameToAdd = list.child("name").getValue().toString();
+                    nameToAdd = nameToAdd.toLowerCase(Locale.ROOT);
+                    usernamesTemp.add(nameToAdd);
+                    Log.e("Register: ", nameToAdd);
+                } catch (Exception e){
+                    Log.e("Register: ", "User without name found. Continuing..");
+                }
+            }
+        }).addOnFailureListener(e -> Log.e("Register:", "error"));
+        return usernamesTemp;
+    }
+
+
     public LatLng getLocationFromAddress(Context context, String strAddress) {
 
         Geocoder coder = new Geocoder(context);
@@ -278,4 +402,52 @@ public class RegisterRestaurant extends AppCompatActivity {
 
         return p1;
     }
+
+    /**
+     * Check whether the entries of owner registration are empty
+     * @param restName the restaurants name
+     * @param address the address of a restaurant
+     * @return boolean depending on whether they are empty
+     */
+    private boolean ownerEntries(String restName, String address){
+        if(TextUtils.isEmpty(restName)){
+            Toast.makeText(RegisterRestaurant.this,
+                    "Enter a restaurant name!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        if(TextUtils.isEmpty(address)){
+            Toast.makeText(RegisterRestaurant.this,
+                    "Enter an address!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+
+//    private boolean ownerValidEntries(String restName, String address){
+//        DatabaseReference ref = FirebaseDatabase.getInstance()
+//                .getReference().child("restaurants");
+//        Query query = ref.orderByChild("username").equalTo(restName);
+//        AtomicReference<Boolean> exists = new AtomicReference<>(false);
+//        query.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
+//                    exists.set(true);
+//                    break;
+//                }
+//                if (exists.get()) {
+//                    result = false;
+//                } else {
+//                    result = true;
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//                // Handle error
+//            }
+//        });
+//        return result;
+//    }
 }
