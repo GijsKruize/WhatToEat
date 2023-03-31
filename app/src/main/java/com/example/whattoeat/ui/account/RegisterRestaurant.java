@@ -20,17 +20,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.R;
-import com.example.whattoeat.ui.SplashScreen;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -41,7 +36,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
