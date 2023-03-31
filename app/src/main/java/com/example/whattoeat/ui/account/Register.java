@@ -169,7 +169,7 @@ public class Register extends AppCompatActivity {
      * @return true if entries are not empty, false otherwise.
      */
 
-    public boolean emptyEntries(String email, String name, String phone, String password){
+    private boolean emptyEntries(String email, String name, String phone, String password){
         if(TextUtils.isEmpty(email)){
             Toast.makeText(Register.this, "Enter Email", Toast.LENGTH_SHORT).show();
             return false;
@@ -228,25 +228,25 @@ public class Register extends AppCompatActivity {
      * @param password password of the user
      * @return true when entries are valid. False otherwise.
      */
-    public boolean validEntries(String name, String password){
+    private boolean validEntries(String name, String password){
         Pattern pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
 
         if(name.length() > 16){
-            Toast.makeText(Register.this,
+            Toast.makeText(getApplicationContext(),
                     "Username needs to be 16 characters or shorter!",
                     Toast.LENGTH_LONG).show();
             return false;
         }
 
         if(!pattern.matcher(password).find()){
-            Toast.makeText(Register.this,
+            Toast.makeText(getApplicationContext(),
                     "Password needs to contain a special character!",
                     Toast.LENGTH_LONG).show();
             return false;
         }
 
         if (password.length() <= 8){
-            Toast.makeText(Register.this,
+            Toast.makeText(getApplicationContext(),
                     "Password needs to be at least 8 characters long",
                     Toast.LENGTH_LONG).show();
             return false;

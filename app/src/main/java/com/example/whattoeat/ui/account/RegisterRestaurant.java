@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import javax.mail.Authenticator;
 import javax.mail.Message;
@@ -61,6 +62,7 @@ public class RegisterRestaurant extends AppCompatActivity {
     private FirebaseUser user;
     private List<String> restNames;
     private List<String> userNames;
+    private Boolean allowedToRegister = true;
     Register register = new Register();
 
     Boolean deliveryStatus;
@@ -149,50 +151,42 @@ public class RegisterRestaurant extends AppCompatActivity {
 //                btnReg.setVisibility(View.INVISIBLE);
 
             //Check the entries.
-            if(!register.emptyEntries(email, name, phone, password)){
+            allowedToRegister = true;
+            if(!emptyEntries(email, name, phone, password)){
                 Log.e("Register: ", "empty entry!");
-                return;
+                allowedToRegister = false;
             }
 
             //Check owner specific entries
             if(!ownerEntries(restaurant, address)){
                 Log.e("Register Restaurant:", "owner entry empty");
+                allowedToRegister = false;
+
             }
 
-            if(!register.validEntries(name, password)){
+            if(!validEntries(name, password)){
                 Log.e("Register: ", "non valid entry!");
-                return;
+                allowedToRegister = false;
+
             }
 
-            if (userNames.contains(name)) {
-                Log.e("Register: ", "non valid username");
-                Toast.makeText(RegisterRestaurant.this,
-                        "Username already exists",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            Log.e("Register:", "Checking : " + name);
-            if (restNames.contains(name.toLowerCase(Locale.ROOT))) {
+            Log.e("Register:", "Checking : " + restaurant);
+            if (restNames.contains(restaurant.toLowerCase(Locale.ROOT))) {
                 Log.e("Register: ", "non valid restaurant name");
                 Toast.makeText(RegisterRestaurant.this,
                         "Restaurant already registered!", Toast.LENGTH_SHORT).show();
-                return;
+                allowedToRegister = false;
+
             }
 
-            Log.d("LIST USERNAMES : ", userNames.toString());
-            if(!userNames.contains(name.toLowerCase(Locale.ROOT))){
+            if(userNames.contains(name.toLowerCase(Locale.ROOT))){
                 Toast.makeText(RegisterRestaurant.this,
                         "Please chose a different username!",
                         Toast.LENGTH_SHORT).show();
                 Log.e("Register: ", "non valid username");
-                return;
+                allowedToRegister = false;
+
             }
-
-            LatLng location = getLocationFromAddress(getApplicationContext(), address);
-            double latitude = location.latitude;
-            double longitude = location.longitude;
-
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
             HashMap<String, Object> mapRestUser = new HashMap<>();
@@ -207,129 +201,137 @@ public class RegisterRestaurant extends AppCompatActivity {
             mapRest.put("Delivers", deliveryStatus);
             mapRest.put("Hyperlink", "");
             mapRest.put("Image", "");
-            mapRest.put("Latitude", latitude);
-            mapRest.put("Longitude", longitude);
+            try {
+                LatLng location = getLocationFromAddress(getApplicationContext(), address);
+                double latitude = location.latitude;
+                double longitude = location.longitude;
+                mapRest.put("Latitude", latitude);
+                mapRest.put("Longitude", longitude);
+            } catch (Exception e){
+                Log.e("Register: ", "Empty address");
+                Toast.makeText(this,
+                        "Address not valid try another address!",
+                        Toast.LENGTH_SHORT).show();
+                allowedToRegister = false;
+            }
             mapRest.put("Name", restaurant);
             mapRest.put("Phone", phone);
             mapRest.put("Location", address);
             mapRest.put("Style", "");
             mapRest.put("Verified", false);
 
-            mAuth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Toast.makeText(RegisterRestaurant.this,
-                                    "Request for verification sent!" +
-                                            "\nYou will hear from us soon.",
-                                    Toast.LENGTH_LONG).show();
+            if(allowedToRegister) {
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(RegisterRestaurant.this,
+                                        "Request for verification sent!" +
+                                                "\nYou will hear from us soon.",
+                                        Toast.LENGTH_LONG).show();
 
-                            try {
-                                String stringSenderEmail = "whattoeattue@gmail.com";
-                                String stringReceiverEmail = "rikjanssen1@hotmail.com";
-                                String stringPasswordSenderEmail = "hxctyygnjfydqswa";
-                                String stringHost = "smtp.gmail.com";
+                                try {
+                                    String stringSenderEmail = "whattoeattue@gmail.com";
+                                    String stringReceiverEmail = "rikjanssen1@hotmail.com";
+                                    String stringPasswordSenderEmail = "hxctyygnjfydqswa";
+                                    String stringHost = "smtp.gmail.com";
 
-                                Properties properties = System.getProperties();
+                                    Properties properties = System.getProperties();
 
-                                properties.put("mail.smtp.host", stringHost);
-                                properties.put("mail.smtp.port", "465");
-                                properties.put("mail.smtp.ssl.enable", "true");
-                                properties.put("mail.smtp.auth", "true");
+                                    properties.put("mail.smtp.host", stringHost);
+                                    properties.put("mail.smtp.port", "465");
+                                    properties.put("mail.smtp.ssl.enable", "true");
+                                    properties.put("mail.smtp.auth", "true");
 
-                                Session session = Session.getInstance(properties,
-                                        new Authenticator() {
-                                    @Override
-                                    protected PasswordAuthentication getPasswordAuthentication(){
-                                        return new PasswordAuthentication(stringSenderEmail,
-                                                stringPasswordSenderEmail);
-                                    }
-                                });
-
-                                MimeMessage mimeMessage = new MimeMessage(session);
-                                mimeMessage.addRecipient(Message.RecipientType.TO,
-                                        new InternetAddress(stringReceiverEmail));
-
-                                mimeMessage.setSubject("Restaurant verification for: "
-                                        + restaurant);
-                                mimeMessage.setText("Hello WhatToEat team, \n\n" + name +
-                                        " would like to verify their restaurant.\n\nPhone: "
-                                        + phone + "\n\nEmail: " + email + "\n\nAddress: "
-                                        + address);
-
-                                Thread thread = new Thread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        try {
-                                            Transport.send(mimeMessage);
-                                        } catch (MessagingException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                });
-                                thread.start();
-
-                            } catch (AddressException e) {
-                                e.printStackTrace();
-                            } catch (MessagingException e) {
-                                e.printStackTrace();
-                            } catch (Exception e){
-                                Log.e("Email service: ", ""+e);
-                            }
-
-                            progressBar.setVisibility(View.INVISIBLE);
-                            final String UID = mAuth.getUid();
-
-                            myRef.child("User")
-                                    .child(UID)
-                                    .setValue(mapRestUser)
-                                    .addOnSuccessListener(unused -> Log.d(
-                                            "Register Page Restaurant: ",
-                                            "Successfully sent data to database!"
-                                    ))
-                                    .addOnFailureListener(e -> Log.d(
-                                            "Register Page Restaurant: ",
-                                            "Failed to send data!" + e
-                                    ));
-                            // If sign in fails, display a message to the user.
-                            Toast.makeText(RegisterRestaurant.this,
-                                    "Account Created.",
-                                    Toast.LENGTH_SHORT).show();
-                            String id = "Restaurant_";
-                            myRef.child("Restaurant")
-                                            .get().addOnCompleteListener(task1 -> {
-                                                Long idNumber = task1.getResult()
-                                                        .getChildrenCount() + 1;
-                                                idNumber.toString();
-
-                                                myRef.child("Restaurant")
-                                                        .child(id+idNumber)
-                                                        .setValue(mapRest)
-                                                        .addOnSuccessListener(unused -> Log.d(
-                                                                "Register Page Restaurant: ",
-                                                                "Successfully sent data to database!"
-                                                        ))
-                                                        .addOnFailureListener(e -> Log.d(
-                                                                "Register Page Restaurant: ",
-                                                                "Failed to send data!" + e
-                                                        ));
+                                    Session session = Session.getInstance(properties,
+                                            new Authenticator() {
+                                                @Override
+                                                protected PasswordAuthentication getPasswordAuthentication() {
+                                                    return new PasswordAuthentication(stringSenderEmail,
+                                                            stringPasswordSenderEmail);
+                                                }
                                             });
 
-                            startActivity(new Intent(RegisterRestaurant.this,
-                                    Login.class));
-                        } else {
-                            // If sign in fails, display a message to the user.
-                            String Error = task.getException().getMessage();
-                            Log.d("Register Page: ", Error);
-                            Toast.makeText(RegisterRestaurant.this,
-                                    "Authentication failed: " + Error,
-                                    Toast.LENGTH_LONG).show();
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.e("Register Error", e.toString());
-                        }
-                    });
+                                    MimeMessage mimeMessage = new MimeMessage(session);
+                                    mimeMessage.addRecipient(Message.RecipientType.TO,
+                                            new InternetAddress(stringReceiverEmail));
+
+                                    mimeMessage.setSubject("Restaurant verification for: "
+                                            + restaurant);
+                                    mimeMessage.setText("Hello WhatToEat team, \n\n" + name +
+                                            " would like to verify their restaurant.\n\nPhone: "
+                                            + phone + "\n\nEmail: " + email + "\n\nAddress: "
+                                            + address);
+
+                                    Thread thread = new Thread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            try {
+                                                Transport.send(mimeMessage);
+                                            } catch (MessagingException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+                                    thread.start();
+
+                                } catch (AddressException e) {
+                                    e.printStackTrace();
+                                } catch (MessagingException e) {
+                                    e.printStackTrace();
+                                } catch (Exception e) {
+                                    Log.e("Email service: ", "" + e);
+                                }
+
+                                progressBar.setVisibility(View.INVISIBLE);
+                                final String UID = mAuth.getUid();
+
+                                myRef.child("User")
+                                        .child(UID)
+                                        .setValue(mapRestUser)
+                                        .addOnSuccessListener(unused -> Log.d(
+                                                "Register Page Restaurant: ",
+                                                "Successfully sent data to database!"
+                                        ))
+                                        .addOnFailureListener(e -> Log.d(
+                                                "Register Page Restaurant: ",
+                                                "Failed to send data!" + e
+                                        ));
+                                // If sign in fails, display a message to the user.
+                                Toast.makeText(RegisterRestaurant.this,
+                                        "Account Created.",
+                                        Toast.LENGTH_SHORT).show();
+                                String id = "Restaurant_";
+                                myRef.child("Restaurant")
+                                        .get().addOnCompleteListener(task1 -> {
+                                            Long idNumber = task1.getResult()
+                                                    .getChildrenCount() + 1;
+                                            idNumber.toString();
+
+                                            myRef.child("Restaurant")
+                                                    .child(id + idNumber)
+                                                    .setValue(mapRest)
+                                                    .addOnSuccessListener(unused -> Log.d(
+                                                            "Register Page Restaurant: ",
+                                                            "Successfully sent data to database!"
+                                                    ))
+                                                    .addOnFailureListener(e -> Log.d(
+                                                            "Register Page Restaurant: ",
+                                                            "Failed to send data!" + e
+                                                    ));
+                                        });
+
+                                startActivity(new Intent(RegisterRestaurant.this,
+                                        Login.class));
+                            } else {
+                                // If sign in fails, display a message to the user.
+                                String Error = task.getException().getMessage();
+                                Log.d("Register Page: ", Error);
+                                Toast.makeText(RegisterRestaurant.this,
+                                        "Authentication failed: " + Error,
+                                        Toast.LENGTH_LONG).show();
+                            }
+                        }).addOnFailureListener(e -> Log.e("Register Error", e.toString()));
+            }
         });
 
     }
@@ -391,7 +393,7 @@ public class RegisterRestaurant extends AppCompatActivity {
 
         } catch (IOException ex) {
 
-            ex.printStackTrace();
+            Log.e("RegisterRestaurant: ", ex.getMessage());
         }
 
         return p1;
@@ -412,6 +414,55 @@ public class RegisterRestaurant extends AppCompatActivity {
         if(TextUtils.isEmpty(address)){
             Toast.makeText(RegisterRestaurant.this,
                     "Enter an address!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validEntries(String name, String password){
+        Pattern pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+
+        if(name.length() > 16){
+            Toast.makeText(getApplicationContext(),
+                    "Username needs to be 16 characters or shorter!",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if(!pattern.matcher(password).find()){
+            Toast.makeText(getApplicationContext(),
+                    "Password needs to contain a special character!",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if (password.length() <= 8){
+            Toast.makeText(getApplicationContext(),
+                    "Password needs to be at least 8 characters long",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+        return true;
+    }
+
+    private boolean emptyEntries(String email, String name, String phone, String password){
+        if(TextUtils.isEmpty(email)){
+            Toast.makeText(getApplicationContext(), "Enter Email", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(TextUtils.isEmpty(name)){
+            Toast.makeText(getApplicationContext(), "Enter Name", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if(TextUtils.isEmpty(phone)){
+            Toast.makeText(getApplicationContext(), "Enter Phone number", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (TextUtils.isEmpty(password)){
+            Toast.makeText(getApplicationContext(), "Enter Password", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
