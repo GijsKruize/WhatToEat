@@ -88,38 +88,54 @@ public class StatisticFragment extends Fragment {
 //        pieChart.clearChart();
 //        graphLegend.removeAllViews();
 
-        // replace ownerRef.child("Restaurant").getKey() with "Restaurant_1" if there is no result
+        // replace restaurantValue with "Restaurant_1" if there is no result
         // some restaurants haven't been swiped yet so there might be no data.
-        getStats(ownerRef.child("Restaurant").getKey(), new StatsCallback() {
+
+        ownerRef.child("Restaurant").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onStatsReceived(HashMap<String, Integer> stats) {
-                mostFrequentMood = getMostFrequentMood(map);
-                fieldMood.setText(mostFrequentMood);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    String restaurantValue = snapshot.getValue(String.class);
+                    getStats(restaurantValue, new StatsCallback() {
+                        @Override
+                        public void onStatsReceived(HashMap<String, Integer> stats) {
+                            mostFrequentMood = getMostFrequentMood(map);
+                            fieldMood.setText(mostFrequentMood);
 
-                //gets the total like and adds it to textView
-                sumOfLikes = getTotalLikes(map);
-                fieldLikes.setText(String.valueOf(sumOfLikes));
+                            //gets the total like and adds it to textView
+                            sumOfLikes = getTotalLikes(map);
+                            fieldLikes.setText(String.valueOf(sumOfLikes));
 
-                //Adding values to piechart
-                for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                    if(!map.isEmpty()) {
-                        int color = Color.parseColor("#" + Integer.toHexString((int) (Math.random() * 16777215)));
-                        pieChart.addPieSlice(new PieModel(entry.getKey(), entry.getValue(), color));
-                        TextView legendItem = new TextView(getContext());
-                        legendItem.setText(entry.getKey());
-                        legendItem.setTextSize(16);
-                        legendItem.setTextColor(color);
-                        graphLegend.addView(legendItem);
-                    }
-                    else {
-                        Log.d("Statistics", "There is no data to show right now.");
-                    }
+                            //Adding values to piechart
+                            for (Map.Entry<String, Integer> entry : map.entrySet()) {
+                                if(!map.isEmpty()) {
+                                    int color = Color.parseColor("#" + Integer.toHexString((int) (Math.random() * 16777215)));
+                                    pieChart.addPieSlice(new PieModel(entry.getKey(), entry.getValue(), color));
+                                    TextView legendItem = new TextView(getContext());
+                                    legendItem.setText(entry.getKey());
+                                    legendItem.setTextSize(16);
+                                    legendItem.setTextColor(color);
+                                    graphLegend.addView(legendItem);
+                                }
+                                else {
+                                    Log.d("Statistics", "There is no data to show right now.");
+                                }
+
+                            }
+
+                        }
+
+                    });
 
                 }
-
             }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
         });
+
 
 
     }
