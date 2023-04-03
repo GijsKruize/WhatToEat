@@ -48,7 +48,8 @@ public class homepage extends Fragment {
     private List<String> prefStyles = new ArrayList<>();
     private ProgressBar progressBar;
     private ListView mListView;
-    private String prefLocation, prefMood;
+    private String prefLocation = "both";
+    private String prefMood = "Happy";
     private String[][] data;
     FirebaseDatabase database;
     private boolean isDataShuffled = false;
@@ -70,10 +71,10 @@ public class homepage extends Fragment {
         try {
             getPreference();
             prefStyles = getStyles(prefMood);
-            fetchData(); // Load the data
         } catch (Exception e){
             Log.e("Exception Homepage: ", "Data was empty in onCreate");
         }
+        fetchData(); // Load the data
         return view;
     }
     @Override
@@ -184,6 +185,7 @@ public class homepage extends Fragment {
                 if(pref == null || !pref.equals("out")) {
                     for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
                         // retrieve data for each recipe
+//                        Log.e("Homepage", finalStyles.toString() + recipeSnapshot.child("Style").getValue(String.class));
                         if(finalStyles.contains(recipeSnapshot.child("Style").getValue(String.class))) {
 
                             String recipeId = recipeSnapshot.getKey();
