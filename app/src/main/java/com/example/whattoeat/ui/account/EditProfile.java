@@ -99,18 +99,20 @@ public class EditProfile extends Fragment {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("User");
             getRestaurantName(ref, user);
         }
-//        getRestaurantId(restaurantName);
+
 
         // Set the top part correct with user data.
         mName = view.findViewById(R.id.editProfileUserName);
-        mDatabaseRef.child("User").child(user.getUid()).child("name")
+        mDatabaseRef.child("User").child(user.getUid())
                 .get()
                 .addOnCompleteListener(task -> {
                     if (!task.isSuccessful()) {
                         Log.e("firebase", "Error getting data", task.getException());
                     } else {
-                        Log.d("firebase return", String.valueOf(task.getResult().getValue()));
-                        mName.setText(String.valueOf(task.getResult().getValue()));
+                        mName.setText(String.valueOf(task.getResult().child("name").getValue()));
+                        String rest = String.valueOf(task.getResult().child("Restaurant").getValue());
+                        setRestaurant(rest);
+                        getRestaurantId(rest);
                     }
                 });
 
@@ -140,7 +142,6 @@ public class EditProfile extends Fragment {
         DatabaseReference myRef = mDatabaseRef.child("User").child(user.getUid()).child("Owner");
         myRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Log.e("Edit Profile: ", "result: " + task.getResult().getValue());
                 Boolean result = (Boolean) task.getResult().getValue();
                 isUserOwner = result;
                 if (Boolean.FALSE.equals(result) || result == null) {
@@ -209,7 +210,8 @@ public class EditProfile extends Fragment {
                                 "Account data failed to update : " + error));
 
         DatabaseReference restRef = mDatabaseRef.child("Restaurant");
-        restRef.child(getRestaurantId())
+        String restaurantID = getRestaurantId();
+        restRef.child(restaurantID)
                 .updateChildren(mapRest)
                 .addOnSuccessListener(unused ->
                         Log.d("Edit user profile: ",
@@ -232,7 +234,7 @@ public class EditProfile extends Fragment {
                     if (!task.isSuccessful()) {
                         Log.e("firebase", "Error getting data", task.getException());
                     } else {
-                        Log.d("Restaurant", "Logged name " + task.getResult().getValue());
+                        Log.e("Restaurant", "Logged name " + task.getResult().getValue());
                         getRestaurantId(task.getResult().getValue().toString());
                     }
                 });
@@ -242,6 +244,7 @@ public class EditProfile extends Fragment {
         this.restaurantName = value.toString();
     }
     private void setRestaurantId(Object value) {
+        Log.e("Set restid", " yes" + value);
         this.restaurantId = value.toString();
     }
 
@@ -274,7 +277,6 @@ public class EditProfile extends Fragment {
         processData(phone, "Phone", map);
 
 
-        Log.d("Edit User Profile: ", "data from text"+ name + " | " +phone);
         mDatabaseRef.child("User")
                 .child(UID)
                 .updateChildren(map)

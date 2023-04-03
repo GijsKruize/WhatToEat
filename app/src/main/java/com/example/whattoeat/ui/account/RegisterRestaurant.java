@@ -194,7 +194,6 @@ public class RegisterRestaurant extends AppCompatActivity {
             mapRestUser.put("name", name);
             mapRestUser.put("Restaurant", restaurant);
             mapRestUser.put("Owner", true);
-
             mapRestUser.put("last login", timestamp.toString());
 
             HashMap<String, Object> mapRest = new HashMap<>();
