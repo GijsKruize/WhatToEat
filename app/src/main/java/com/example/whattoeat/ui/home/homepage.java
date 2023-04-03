@@ -58,6 +58,26 @@ public class homepage extends Fragment {
 //    public homepageFilters filter = new homepageFilters();
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_homepage, container, false);
+
+        mListView = view.findViewById(R.id.listview);
+        progressBar = view.findViewById(R.id.progressBarHome);
+
+        MyAdapter adapter = new MyAdapter();
+        mListView.setAdapter(adapter);
+        try {
+            getPreference();
+            prefStyles = getStyles(prefMood);
+            Log.d("Style array:", prefStyles.toString());
+            fetchData(); // Load the data
+        } catch (Exception e){
+            Log.e("Exception Homepage: ", "Data was empty in onCreate");
+        }
+        return view;
+    }
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
@@ -79,10 +99,9 @@ public class homepage extends Fragment {
         try{
             getPreference();
             prefStyles = getStyles(prefMood);
-            Log.d("Style array:", prefStyles.toString());
 
         }catch (Exception e){
-            Log.e("Exception homepage", e.getMessage());
+            Log.e("Exception homepage", "Data was empty in onResume");
         }
         fetchData();
     }
@@ -92,7 +111,6 @@ public class homepage extends Fragment {
      * It will be called when the user first opens the app or when the user returns to the homepage.
      */
     private void fetchData(){
-
         progressBar.setVisibility(View.VISIBLE);
         //Connect to the database
         database = FirebaseDatabase.getInstance();
@@ -102,7 +120,7 @@ public class homepage extends Fragment {
         Log.d("Homepage: ", "Loading data........");
 
         //fetch data
-        fetchFromDb(prefMood, prefLocation);
+        fetchFromDb(prefStyles, prefLocation);
     }
 
     /**
@@ -121,19 +139,18 @@ public class homepage extends Fragment {
                     try {
                         mood = task.getResult().child("Mood").getValue().toString();
                         location = task.getResult().child("Location").getValue().toString();
-                    } catch (NullPointerException e){
+                    } catch (NullPointerException e) {
                         Log.d("Homepage: ",
                                 "No location or mood data found for user. " +
                                         "User must set this in preferences page! " +
                                         "Default values chosen.");
                     }
-
-                setPreference(mood, location);
-        }).addOnFailureListener(task2 ->{
+                    setPreference(mood, location);
+                }).addOnFailureListener(task2 ->{
                     Log.e("Homepage: ",
                             "Error getting data from database! " +  task2);
 
-        });
+                });
     }
 
     /**
@@ -149,12 +166,17 @@ public class homepage extends Fragment {
 
     /**
      * This method is used to fetch data from the database.
-     * @param mood The user's mood
+     * @param styles List of styles bound to mood
      * @param pref The user's location
      */
-    public void fetchFromDb(String mood, String pref){
+    public void fetchFromDb(List styles, String pref){
 
+        if(styles == null){
+            styles = new ArrayList();
+        }
+        Log.d("Homepage: ", "Looking for dishes with styles :" + styles.toString());
         // fetch data from recipe table
+        List finalStyles = styles;
         myRefRecipe.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -165,7 +187,9 @@ public class homepage extends Fragment {
                 if(pref == null || !pref.equals("out")) {
                     for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
                         // retrieve data for each recipe
-                        if(!prefStyles.contains(recipeSnapshot.child("Style").getValue(String.class))) {
+                        if(finalStyles.contains(recipeSnapshot.child("Style").getValue(String.class))) {
+                            Log.e("AAA", "Recipe style found in list" + finalStyles);
+
                             String recipeId = recipeSnapshot.getKey();
                             String recipeName = recipeSnapshot.child("Name").getValue(String.class);
                             String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
@@ -180,6 +204,11 @@ public class homepage extends Fragment {
                         }
                     }
                 }
+//                //Adapter goes hier!!!
+                MyAdapter adapter = (MyAdapter) mListView.getAdapter();
+                adapter.notifyDataSetChanged(); // Refresh the adapter with new data
+//                progressBar.setVisibility(View.GONE); // Hide the progress bar
+
             }
 
             @Override
@@ -197,24 +226,27 @@ public class homepage extends Fragment {
                 if(pref == null || !pref.equals("home")) {
                     for(DataSnapshot Restaurant : dataSnapshot1.getChildren()) {
                         // retrieve data for each recipe
-                        String restaurantId = Restaurant.getKey();
-                        String restaurantName = Restaurant.child("Name").getValue(String.class);
-                        String restaurantImage = Restaurant.child("Image").getValue(String.class);
-                        Boolean verified = Restaurant.child("Verified").getValue(Boolean.class);
+                        if(finalStyles.contains(Restaurant.child("Style").getValue(String.class))) {
+                            Log.e("AAA", "Restaurant style found in list" + finalStyles);
+                            String restaurantId = Restaurant.getKey();
+                            String restaurantName = Restaurant.child("Name").getValue(String.class);
+                            String restaurantImage = Restaurant.child("Image").getValue(String.class);
+                            Boolean verified = Restaurant.child("Verified").getValue(Boolean.class);
 
-                        if (verified) {
-                            listIdsRest.add(restaurantId);
-                            listNamesRest.add(restaurantName);
-                            listImagesRest.add(restaurantImage);
-                            Log.d("Firebase", "Restaurant Name: " + restaurantName +
-                                    ", Image source: " + restaurantImage);
+                            if (verified) {
+                                listIdsRest.add(restaurantId);
+                                listNamesRest.add(restaurantName);
+                                listImagesRest.add(restaurantImage);
+                                Log.d("Firebase", "Restaurant Name: " + restaurantName +
+                                        ", Image source: " + restaurantImage);
+                            }
                         }
                     }
                 }
-                progressBar.setVisibility(View.GONE); // Hide the progress bar
                 data = new String[listNamesRec.size() + listNamesRest.size()][3];
                 MyAdapter adapter = (MyAdapter) mListView.getAdapter();
                 adapter.notifyDataSetChanged(); // Refresh the adapter with new data
+                progressBar.setVisibility(View.GONE); // Hide the progress bar
             }
 
             @Override
@@ -237,6 +269,11 @@ public class homepage extends Fragment {
                     styles.add(data.getKey());
                 }
             }
+            Log.d("Style Array after shits", styles.toString());
+            prefStyles = styles;
+            Log.d("Style Array after shits", prefStyles.toString());
+            fetchFromDb(styles, prefLocation);
+
         }).addOnFailureListener(failed ->{
 
         });
@@ -295,7 +332,6 @@ public class homepage extends Fragment {
                 //send data to the card
                 Bundle args = new Bundle();
                 args.putString("cardType", data[i][2]);
-                Log.d("Homepage: ", "send data to card" + data[i][2]);
 
                 //change the fragment
                 Fragment fragment;
@@ -314,9 +350,6 @@ public class homepage extends Fragment {
                         .setReorderingAllowed(true)
                         .addToBackStack("home")
                         .commit();
-
-
-                Log.d("Cards", "Pressed on the card: " + data[i][0]);
             });
 
             return view;
@@ -360,26 +393,4 @@ public class homepage extends Fragment {
         }
         isDataShuffled = true;
     }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_homepage, container, false);
-
-        mListView = view.findViewById(R.id.listview);
-        progressBar = view.findViewById(R.id.progressBarHome);
-
-        MyAdapter adapter = new MyAdapter();
-        mListView.setAdapter(adapter);
-        try {
-            getPreference();
-            prefStyles = getStyles(prefMood);
-            Log.d("Style array:", prefStyles.toString());
-            fetchData(); // Load the data
-        } catch (Exception e){
-            Log.e("Exception Homepage: ", e.getMessage());
-        }
-        return view;
-    }
-
 }

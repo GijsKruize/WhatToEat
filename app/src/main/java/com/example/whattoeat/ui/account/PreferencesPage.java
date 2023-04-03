@@ -89,9 +89,9 @@ public class PreferencesPage extends Fragment {
                     } else {
                         Log.d("firebase return", String.valueOf(task.getResult().getValue()));
                         String location = (String) task.getResult().getValue();
-                        mOut.setBackgroundColor(Color.TRANSPARENT);
-                        mHome.setBackgroundColor(Color.TRANSPARENT);
-                        mBoth.setBackgroundColor(Color.TRANSPARENT);
+                        mOut.setBackgroundColor(Color.LTGRAY);
+                        mHome.setBackgroundColor(Color.LTGRAY);
+                        mBoth.setBackgroundColor(Color.LTGRAY);
                         if (location == null){
                             location = "both";
                             selectedLocation = "both";
@@ -145,8 +145,8 @@ public class PreferencesPage extends Fragment {
 
                 selectedLocation = "out";
                 mOut.setBackgroundColor(Color.parseColor("#0FB652"));
-                mHome.setBackgroundColor(Color.TRANSPARENT);
-                mBoth.setBackgroundColor(Color.TRANSPARENT);
+                mHome.setBackgroundColor(Color.LTGRAY);
+                mBoth.setBackgroundColor(Color.LTGRAY);
 
             }
         });
@@ -156,9 +156,9 @@ public class PreferencesPage extends Fragment {
             public void onClick(View v) {
 
                 selectedLocation = "home";
-                mOut.setBackgroundColor(Color.TRANSPARENT);
+                mOut.setBackgroundColor(Color.LTGRAY);
                 mHome.setBackgroundColor(Color.parseColor("#0FB652"));
-                mBoth.setBackgroundColor(Color.TRANSPARENT);
+                mBoth.setBackgroundColor(Color.LTGRAY);
 
             }
         });
@@ -167,12 +167,20 @@ public class PreferencesPage extends Fragment {
             @Override
             public void onClick(View v) {
                 selectedLocation = "both";
-                mOut.setBackgroundColor(Color.TRANSPARENT);
-                mHome.setBackgroundColor(Color.TRANSPARENT);
+                mOut.setBackgroundColor(Color.LTGRAY);
+                mHome.setBackgroundColor(Color.LTGRAY);
                 mBoth.setBackgroundColor(Color.parseColor("#0FB652"));
 
             }
         });
         return view;
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        mBoth.setBackgroundColor(Color.LTGRAY);
+        mOut.setBackgroundColor(Color.LTGRAY);
+        mHome.setBackgroundColor(Color.LTGRAY);
+
     }
 }
