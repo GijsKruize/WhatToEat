@@ -138,10 +138,11 @@ public class FoodFragment extends Fragment {
                 for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
                     // retrieve data for each recipe
                     String recipeId = recipeSnapshot.getKey();
+                    System.out.println(recipeSnapshot.getKey());
                     String recipeName = recipeSnapshot.child("Name").getValue(String.class);
                     String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
                     String recipeStyle = recipeSnapshot.child("Style").getValue(String.class);
-                    boolean verified = recipeSnapshot.child("Verified").getValue(Boolean.class);
+                    boolean verified = (Boolean) recipeSnapshot.child("Verified").getValue(Boolean.class);
                     boolean wanted = location.equals("both") || location.equals("out");
                     if (!historyFilter.contains(recipeId) && verified == true && wanted ) {
                         recipeIds.add(recipeId);
