@@ -70,7 +70,6 @@ public class homepage extends Fragment {
         try {
             getPreference();
             prefStyles = getStyles(prefMood);
-            Log.d("Style array:", prefStyles.toString());
             fetchData(); // Load the data
         } catch (Exception e){
             Log.e("Exception Homepage: ", "Data was empty in onCreate");
@@ -161,7 +160,6 @@ public class homepage extends Fragment {
     private void setPreference(String mood, String location){
         this.prefMood = mood;
         this.prefLocation = location;
-        Log.d("Homepage: ", "Preferences saved!" + mood + location);
     }
 
     /**
@@ -174,7 +172,6 @@ public class homepage extends Fragment {
         if(styles == null){
             styles = new ArrayList();
         }
-        Log.d("Homepage: ", "Looking for dishes with styles :" + styles.toString());
         // fetch data from recipe table
         List finalStyles = styles;
         myRefRecipe.addValueEventListener(new ValueEventListener() {
@@ -188,7 +185,6 @@ public class homepage extends Fragment {
                     for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
                         // retrieve data for each recipe
                         if(finalStyles.contains(recipeSnapshot.child("Style").getValue(String.class))) {
-                            Log.e("AAA", "Recipe style found in list" + finalStyles);
 
                             String recipeId = recipeSnapshot.getKey();
                             String recipeName = recipeSnapshot.child("Name").getValue(String.class);
@@ -199,8 +195,6 @@ public class homepage extends Fragment {
                             listNamesRec.add(recipeName);
                             listImagesRec.add(recipeImage);
                             listStyleRec.add(style);
-//                        Log.d("Firebase", "Recipe Name: " + recipeName +
-//                                ", Image source: " + recipeImage);
                         }
                     }
                 }
@@ -227,7 +221,6 @@ public class homepage extends Fragment {
                     for(DataSnapshot Restaurant : dataSnapshot1.getChildren()) {
                         // retrieve data for each recipe
                         if(finalStyles.contains(Restaurant.child("Style").getValue(String.class))) {
-                            Log.e("AAA", "Restaurant style found in list" + finalStyles);
                             String restaurantId = Restaurant.getKey();
                             String restaurantName = Restaurant.child("Name").getValue(String.class);
                             String restaurantImage = Restaurant.child("Image").getValue(String.class);
@@ -237,8 +230,6 @@ public class homepage extends Fragment {
                                 listIdsRest.add(restaurantId);
                                 listNamesRest.add(restaurantName);
                                 listImagesRest.add(restaurantImage);
-                                Log.d("Firebase", "Restaurant Name: " + restaurantName +
-                                        ", Image source: " + restaurantImage);
                             }
                         }
                     }
@@ -261,17 +252,12 @@ public class homepage extends Fragment {
         List<String> styles = new ArrayList<>();
         ref.child(mood).get().addOnCompleteListener(result -> {
             for(DataSnapshot data: result.getResult().getChildren()){
-//                Log.d("Potential child: ", data.getValue().toString());
                 Integer value = Integer.parseInt(data.getValue().toString());
-//                Log.e("Value", value.toString());
                 if (value >= 0) {
-//                    Log.d("Added : ", data.getKey());
                     styles.add(data.getKey());
                 }
             }
-            Log.d("Style Array after shits", styles.toString());
             prefStyles = styles;
-            Log.d("Style Array after shits", prefStyles.toString());
             fetchFromDb(styles, prefLocation);
 
         }).addOnFailureListener(failed ->{
