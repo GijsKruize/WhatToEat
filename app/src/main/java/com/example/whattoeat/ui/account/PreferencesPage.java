@@ -92,6 +92,7 @@ public class PreferencesPage extends Fragment {
                         mOut.setBackgroundColor(Color.LTGRAY);
                         mHome.setBackgroundColor(Color.LTGRAY);
                         mBoth.setBackgroundColor(Color.LTGRAY);
+                        selectedLocation = location;
                         if (location == null){
                             location = "both";
                             selectedLocation = "both";
@@ -175,12 +176,12 @@ public class PreferencesPage extends Fragment {
         });
         return view;
     }
-    @Override
-    public void onResume() {
-        super.onResume();
-        mBoth.setBackgroundColor(Color.LTGRAY);
-        mOut.setBackgroundColor(Color.LTGRAY);
-        mHome.setBackgroundColor(Color.LTGRAY);
-
-    }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        mBoth.setBackgroundColor(Color.LTGRAY);
+//        mOut.setBackgroundColor(Color.LTGRAY);
+//        mHome.setBackgroundColor(Color.LTGRAY);
+//
+//    }
 }
