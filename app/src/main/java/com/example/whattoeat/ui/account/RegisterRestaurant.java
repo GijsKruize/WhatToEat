@@ -72,7 +72,7 @@ public class RegisterRestaurant extends AppCompatActivity {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
@@ -85,11 +85,11 @@ public class RegisterRestaurant extends AppCompatActivity {
         getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
 
-        try{
+        try {
             restNames = loadRestaurantNames();
             userNames = loadUsernames();
 
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e("Error", "Error");
         }
         setContentView(R.layout.activity_register_restaurant);
@@ -152,19 +152,19 @@ public class RegisterRestaurant extends AppCompatActivity {
 
             //Check the entries.
             allowedToRegister = true;
-            if(!emptyEntries(email, name, phone, password)){
+            if (!emptyEntries(email, name, phone, password)) {
                 Log.e("Register: ", "empty entry!");
                 allowedToRegister = false;
             }
 
             //Check owner specific entries
-            if(!ownerEntries(restaurant, address)){
+            if (!ownerEntries(restaurant, address)) {
                 Log.e("Register Restaurant:", "owner entry empty");
                 allowedToRegister = false;
 
             }
 
-            if(!validEntries(name, password)){
+            if (!validEntries(name, password)) {
                 Log.e("Register: ", "non valid entry!");
                 allowedToRegister = false;
 
@@ -179,7 +179,7 @@ public class RegisterRestaurant extends AppCompatActivity {
 
             }
 
-            if(userNames.contains(name.toLowerCase(Locale.ROOT))){
+            if (userNames.contains(name.toLowerCase(Locale.ROOT))) {
                 Toast.makeText(RegisterRestaurant.this,
                         "Please chose a different username!",
                         Toast.LENGTH_SHORT).show();
@@ -206,7 +206,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                 double longitude = location.longitude;
                 mapRest.put("Latitude", latitude);
                 mapRest.put("Longitude", longitude);
-            } catch (Exception e){
+            } catch (Exception e) {
                 Log.e("Register: ", "Empty address");
                 Toast.makeText(this,
                         "Address not valid try another address!",
@@ -219,7 +219,7 @@ public class RegisterRestaurant extends AppCompatActivity {
             mapRest.put("Style", "");
             mapRest.put("Verified", false);
 
-            if(allowedToRegister) {
+            if (allowedToRegister) {
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
@@ -346,12 +346,12 @@ public class RegisterRestaurant extends AppCompatActivity {
                 .getReference("Restaurant");
         List<String> restaurantNames = new ArrayList<>();
         ref.get().addOnCompleteListener(task -> {
-            for(DataSnapshot list: task.getResult().getChildren()){
+            for (DataSnapshot list : task.getResult().getChildren()) {
                 try {
                     String nameRest = list.child("Name").getValue().toString();
                     nameRest = nameRest.toLowerCase(Locale.ROOT);
                     restaurantNames.add(nameRest);
-                } catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Register: ", "error finding restaurant name");
                 }
             }
@@ -364,13 +364,13 @@ public class RegisterRestaurant extends AppCompatActivity {
                 .getReference("User");
         List<String> usernamesTemp = new ArrayList<>();
         ref.get().addOnCompleteListener(task -> {
-            for(DataSnapshot list: task.getResult().getChildren()){
-                try{
+            for (DataSnapshot list : task.getResult().getChildren()) {
+                try {
                     String nameToAdd = list.child("name").getValue().toString();
                     nameToAdd = nameToAdd.toLowerCase(Locale.ROOT);
                     usernamesTemp.add(nameToAdd);
                     Log.e("Register: ", nameToAdd);
-                } catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Register: ", "User without name found. Continuing..");
                 }
             }
@@ -393,7 +393,7 @@ public class RegisterRestaurant extends AppCompatActivity {
             }
 
             Address location = address.get(0);
-            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+            p1 = new LatLng(location.getLatitude(), location.getLongitude());
 
         } catch (IOException ex) {
 
@@ -405,17 +405,18 @@ public class RegisterRestaurant extends AppCompatActivity {
 
     /**
      * Check whether the entries of owner registration are empty
+     *
      * @param restName the restaurants name
-     * @param address the address of a restaurant
+     * @param address  the address of a restaurant
      * @return boolean depending on whether they are empty
      */
-    private boolean ownerEntries(String restName, String address){
-        if(TextUtils.isEmpty(restName)){
+    private boolean ownerEntries(String restName, String address) {
+        if (TextUtils.isEmpty(restName)) {
             Toast.makeText(RegisterRestaurant.this,
                     "Enter a restaurant name!", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(TextUtils.isEmpty(address)){
+        if (TextUtils.isEmpty(address)) {
             Toast.makeText(RegisterRestaurant.this,
                     "Enter an address!", Toast.LENGTH_SHORT).show();
             return false;
@@ -423,24 +424,24 @@ public class RegisterRestaurant extends AppCompatActivity {
         return true;
     }
 
-    public boolean validEntries(String name, String password){
+    public boolean validEntries(String name, String password) {
         Pattern pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
 
-        if(name.length() > 16){
+        if (name.length() > 16) {
             Toast.makeText(getApplicationContext(),
                     "Username needs to be 16 characters or shorter!",
                     Toast.LENGTH_LONG).show();
             return false;
         }
 
-        if(!pattern.matcher(password).find()){
+        if (!pattern.matcher(password).find()) {
             Toast.makeText(getApplicationContext(),
                     "Password needs to contain a special character!",
                     Toast.LENGTH_LONG).show();
             return false;
         }
 
-        if (password.length() <= 8){
+        if (password.length() <= 8) {
             Toast.makeText(getApplicationContext(),
                     "Password needs to be at least 8 characters long",
                     Toast.LENGTH_LONG).show();
@@ -449,23 +450,23 @@ public class RegisterRestaurant extends AppCompatActivity {
         return true;
     }
 
-    private boolean emptyEntries(String email, String name, String phone, String password){
-        if(TextUtils.isEmpty(email)){
+    private boolean emptyEntries(String email, String name, String phone, String password) {
+        if (TextUtils.isEmpty(email)) {
             Toast.makeText(getApplicationContext(), "Enter Email", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if(TextUtils.isEmpty(name)){
+        if (TextUtils.isEmpty(name)) {
             Toast.makeText(getApplicationContext(), "Enter Name", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if(TextUtils.isEmpty(phone)){
+        if (TextUtils.isEmpty(phone)) {
             Toast.makeText(getApplicationContext(), "Enter Phone number", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             Toast.makeText(getApplicationContext(), "Enter Password", Toast.LENGTH_SHORT).show();
             return false;
         }
