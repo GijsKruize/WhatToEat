@@ -51,6 +51,7 @@ public class homepage extends Fragment {
     private String prefLocation = "both";
     private String prefMood = "Happy";
     private String[][] data;
+    private TextView moodText;
     FirebaseDatabase database;
     private boolean isDataShuffled = false;
     protected DatabaseReference myRefRecipe, myRefRestaurant;
@@ -69,6 +70,7 @@ public class homepage extends Fragment {
         // Initialize the views
         mListView = view.findViewById(R.id.listview);
         progressBar = view.findViewById(R.id.progressBarHome);
+        moodText = view.findViewById(R.id.moodText);
 
         MyAdapter adapter = new MyAdapter();
         mListView.setAdapter(adapter);
@@ -167,6 +169,8 @@ public class homepage extends Fragment {
                                 "Default values chosen.");
                     }
                     // Set the user's preferences in the app
+                    String displayText = "Recommendations for the mood : " + mood;
+                    moodText.setText(displayText);
                     setPreference(mood, location);
                 }).addOnFailureListener(task2 -> {
                     // Log an error message if there is a problem retrieving the data from the database
