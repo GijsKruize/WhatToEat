@@ -143,7 +143,16 @@ public class FoodFragment extends Fragment {
                     String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
                     String recipeStyle = recipeSnapshot.child("Style").getValue(String.class);
                     boolean verified = (Boolean) recipeSnapshot.child("Verified").getValue(Boolean.class);
-                    boolean wanted = location.equals("both") || location.equals("out");
+                    boolean wanted = false;
+                    try {
+                        wanted = location.equals("both") || location.equals("out");
+                    } catch (Exception e){
+                        Log.e("FoodFragment", "no location data found!");
+                        Toast.makeText(getContext().getApplicationContext(),
+                                "No preferences set! " +
+                                        "Try setting them in the account page first!",
+                                Toast.LENGTH_LONG).show();
+                    }
                     if (!historyFilter.contains(recipeId) && verified == true && wanted ) {
                         recipeIds.add(recipeId);
                         recipeNames.add(recipeName);
