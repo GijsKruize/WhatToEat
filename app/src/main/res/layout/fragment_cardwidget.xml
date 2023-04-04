@@ -131,6 +131,7 @@
                     android:layout_height="wrap_content"
                     android:paddingHorizontal="8dp"
                     android:textSize="16dp"
+                    android:autoLink="web"
                     android:text="Eindhoven@dadawan.nl\nWebsite"
                     />
             </LinearLayout>
