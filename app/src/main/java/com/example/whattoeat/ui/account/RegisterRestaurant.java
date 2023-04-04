@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,6 +67,8 @@ public class RegisterRestaurant extends AppCompatActivity {
     private Boolean allowedToRegister = true;
 
     Boolean deliveryStatus;
+    private List<String> phoneNumbers = new ArrayList<>();
+
 
     @Override
     public void onStart() {
@@ -88,9 +91,10 @@ public class RegisterRestaurant extends AppCompatActivity {
         try {
             restNames = loadRestaurantNames();
             userNames = loadUsernames();
-
+            phoneNumbers = loadPhones();
+            phoneNumbers.addAll(loadRestPhones());
         } catch (Exception e) {
-            Log.e("Error", "Error");
+            Log.e("Error", "Error loading data!");
         }
         setContentView(R.layout.activity_register_restaurant);
         mAuth = FirebaseAuth.getInstance();
@@ -133,6 +137,18 @@ public class RegisterRestaurant extends AppCompatActivity {
             }
         });
 
+        editTextPhone.setOnFocusChangeListener((view, b) -> {
+            if (!b) {
+                String phone = String.valueOf(editTextPhone.getText());
+                Log.e("Register:", "Checking : " + phone+ " in " + phoneNumbers);
+                if (phoneNumbers.contains(phone)) {
+                    Log.e("Register: ", "non valid restaurant phoneNumbers");
+                    Toast.makeText(RegisterRestaurant.this,
+                            "Phone number already registered!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         btnReg.setOnClickListener(view -> {
             String email = String.valueOf(editTextEmail.getText());
             String name = String.valueOf(editTextName.getText());
@@ -164,7 +180,7 @@ public class RegisterRestaurant extends AppCompatActivity {
 
             }
 
-            if (!validEntries(name, password)) {
+            if (!validEntries(name, password, phone)) {
                 Log.e("Register: ", "non valid entry!");
                 allowedToRegister = false;
 
@@ -341,6 +357,11 @@ public class RegisterRestaurant extends AppCompatActivity {
 
     }
 
+    private void addPhones(List<String> map){
+        this.phoneNumbers.addAll(map);
+        Log.e("Phones:", phoneNumbers+"");
+    }
+
     private List<String> loadRestaurantNames() {
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("Restaurant");
@@ -376,6 +397,53 @@ public class RegisterRestaurant extends AppCompatActivity {
             }
         }).addOnFailureListener(e -> Log.e("Register:", "error"));
         return usernamesTemp;
+    }
+
+    public List<String> loadPhones() {
+        DatabaseReference refUser = FirebaseDatabase.getInstance()
+                .getReference("User");
+        List<String> phonesTemp = new ArrayList<>();
+
+        refUser.get().addOnCompleteListener(task -> {
+            for(DataSnapshot list: task.getResult().getChildren()){
+                try{
+                    String phoneToAdd = list
+                            .child("phone")
+                            .getValue()
+                            .toString()
+                            .toLowerCase();
+                    phonesTemp.add(phoneToAdd);
+                } catch (Exception e){
+                    Log.e("Register: ", "Phones error");
+                }
+            }
+        }).addOnFailureListener(e -> Log.e("Register:", "error"));
+        return phonesTemp;
+    }
+
+    private List<String> loadRestPhones(){
+        DatabaseReference refRest = FirebaseDatabase.getInstance()
+                .getReference("Restaurant");
+        List<String> phonesTemp = new ArrayList<>();
+
+        refRest.get().addOnCompleteListener(task -> {
+            for(DataSnapshot list: task.getResult().getChildren()){
+                try{
+                    String phoneToAdd = list
+                            .child("Phone")
+                            .getValue()
+                            .toString()
+                            .toLowerCase();
+                    Log.e("Phone rest", phoneToAdd);
+                    phonesTemp.add(phoneToAdd);
+                } catch (Exception e){
+                    Log.e("Register: ", "Phones error");
+                }
+            }
+        }).addOnFailureListener(e -> Log.e("Register:", "error"));
+
+        Log.e("PHones LIST: ", "" + phonesTemp);
+        return phonesTemp;
     }
 
 
@@ -424,12 +492,19 @@ public class RegisterRestaurant extends AppCompatActivity {
         return true;
     }
 
-    public boolean validEntries(String name, String password) {
+    public boolean validEntries(String name, String password, String phone) {
         Pattern pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
 
         if (name.length() > 16) {
             Toast.makeText(getApplicationContext(),
                     "Username needs to be 16 characters or shorter!",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if(phoneNumbers.contains(phone)){
+            Toast.makeText(getApplicationContext(),
+                    "Phone number already in use!",
                     Toast.LENGTH_LONG).show();
             return false;
         }
