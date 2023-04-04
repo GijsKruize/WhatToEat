@@ -75,7 +75,7 @@ public class StatisticFragment extends Fragment {
         fieldMood = view.findViewById(R.id.frequentMood);
         graphLegend = view.findViewById(R.id.legend_container);
         statsRef = FirebaseDatabase.getInstance().getReference("Swipe History");
-        ownerRef = FirebaseDatabase.getInstance().getReference("User").child(uid);
+        ownerRef = FirebaseDatabase.getInstance().getReference("User");
         restaurantRef = FirebaseDatabase.getInstance().getReference("Restaurant");
         addData();
         return view;
@@ -97,7 +97,7 @@ public class StatisticFragment extends Fragment {
 
 
 
-        ownerRef.child("Restaurant").addListenerForSingleValueEvent(new ValueEventListener() {
+        ownerRef.child(uid).child("Restaurant").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()) {
@@ -179,9 +179,9 @@ public class StatisticFragment extends Fragment {
                                 trueCount++;
                             }
                         }
-                        if(trueCount > 0) {
-                            map.put(moodSnapshot.getKey(), trueCount);
-                        }
+                        String mood = moodSnapshot.getKey();
+                        int count = map.getOrDefault(mood, 0);
+                        map.put(mood, count + trueCount);
 
                         Log.d("Firebase", "moods: " + moodSnapshot.getKey() + " - true count: " + trueCount);
                     }
