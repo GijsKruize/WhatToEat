@@ -95,6 +95,19 @@ public class StatisticFragment extends Fragment {
         // replace restaurantValue with "Restaurant_1" if there is no result
         // some restaurants haven't been swiped yet so there might be no data.
 
+        int[] colorArray = new int[]{
+                Color.parseColor("#ff595e"),
+                Color.parseColor("#ff924c"),
+                Color.parseColor("#ffca3a"),
+                Color.parseColor("#8ac926"),
+                Color.parseColor("#52a675"),
+                Color.parseColor("#1982c4"),
+                Color.parseColor("#4267ac"),
+                Color.parseColor("#6a4c93"),
+
+                // Add more colors if needed
+        };
+
 
 
         ownerRef.child(uid).child("Restaurant").addListenerForSingleValueEvent(new ValueEventListener() {
@@ -106,7 +119,6 @@ public class StatisticFragment extends Fragment {
                     getRestaurantIndex(restaurantValue, new RestaurantKeyCallback() {
                         @Override
                         public void onRestaurantKeyReceived(String restaurantKey) {
-
                             getStats(restaurantKey, new StatsCallback() {
                                 @Override
                                 public void onStatsReceived(HashMap<String, Integer> stats) {
@@ -118,15 +130,18 @@ public class StatisticFragment extends Fragment {
                                     fieldLikes.setText(String.valueOf(sumOfLikes));
 
                                     //Adding values to piechart
+                                    int colorIndex = 0;
+
                                     for (Map.Entry<String, Integer> entry : map.entrySet()) {
                                         if(!map.isEmpty()) {
-                                            int color = Color.parseColor("#" + Integer.toHexString((int) (Math.random() * 16777215)));
+                                            int color = colorArray[colorIndex % colorArray.length];
                                             pieChart.addPieSlice(new PieModel(entry.getKey(), entry.getValue(), color));
                                             TextView legendItem = new TextView(getContext());
                                             legendItem.setText(entry.getKey());
                                             legendItem.setTextSize(16);
                                             legendItem.setTextColor(color);
                                             graphLegend.addView(legendItem);
+                                            colorIndex++;
                                         }
                                         else {
                                             Log.d("Statistics", "There is no data to show right now.");
@@ -182,7 +197,6 @@ public class StatisticFragment extends Fragment {
                         String mood = moodSnapshot.getKey();
                         int count = map.getOrDefault(mood, 0);
                         map.put(mood, count + trueCount);
-
                         Log.d("Firebase", "moods: " + moodSnapshot.getKey() + " - true count: " + trueCount);
                     }
                 }
