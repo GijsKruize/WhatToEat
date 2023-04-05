@@ -142,7 +142,11 @@ public class EditProfile extends Fragment {
         DatabaseReference myRef = mDatabaseRef.child("User").child(user.getUid()).child("Owner");
         myRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Boolean result = (Boolean) task.getResult().getValue();
+                Boolean result = false;
+                if(task.getResult().getValue() != null){
+                    result = (Boolean) task.getResult().getValue();
+                }
+                
                 isUserOwner = result;
                 if (Boolean.FALSE.equals(result) || result == null) {
                     Log.e("Edit profile", "user is not an owner.");
