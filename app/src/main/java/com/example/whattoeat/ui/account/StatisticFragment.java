@@ -74,7 +74,7 @@ public class StatisticFragment extends Fragment {
         fieldLikes = view.findViewById(R.id.likesCount);
         fieldMood = view.findViewById(R.id.frequentMood);
         graphLegend = view.findViewById(R.id.legend_container);
-        statsRef = FirebaseDatabase.getInstance().getReference("Swipe History");
+        statsRef = FirebaseDatabase.getInstance().getReference("Personal Relation");
         ownerRef = FirebaseDatabase.getInstance().getReference("User");
         restaurantRef = FirebaseDatabase.getInstance().getReference("Restaurant");
         addData();
