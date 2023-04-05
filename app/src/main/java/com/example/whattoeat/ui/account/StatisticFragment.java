@@ -96,11 +96,14 @@ public class StatisticFragment extends Fragment {
         // some restaurants haven't been swiped yet so there might be no data.
 
         int[] colorArray = new int[]{
-                Color.parseColor("#FF0000"), // Red
-                Color.parseColor("#FFA500"), // Orange
-                Color.parseColor("#FFFF00"), // Yellow
-                Color.parseColor("#008000"), // Green
-                Color.parseColor("#0000FF"), // Blue
+                Color.parseColor("#ff595e"),
+                Color.parseColor("#ff924c"),
+                Color.parseColor("#ffca3a"),
+                Color.parseColor("#8ac926"),
+                Color.parseColor("#52a675"),
+                Color.parseColor("#1982c4"),
+                Color.parseColor("#4267ac"),
+                Color.parseColor("#6a4c93"),
 
                 // Add more colors if needed
         };
