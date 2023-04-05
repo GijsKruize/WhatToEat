@@ -28,7 +28,9 @@ import com.yalantis.library.Koloda;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 public class FoodFragment extends Fragment {
@@ -195,7 +197,7 @@ public class FoodFragment extends Fragment {
                 }
                 progressBar.setVisibility(View.GONE);
                 if (!recipeIds.isEmpty()) {
-                    adapter = new SwipeAdapter(getContext(), recipeIds, recipeNames, recipeImages);
+                    adapter = new SwipeAdapter(getContext(), recipeIds, recipeNames, recipeImages, recipeStyles);
                     koloda.setAdapter(adapter);
                     listener = new SwipeListener(getContext(), recipeIds, recipeStyles, mood);
                     koloda.setKolodaListener(listener);

@@ -28,12 +28,13 @@ public class SwipeAdapter extends RecyclerView.Adapter<SwipeAdapter.ViewHolder> 
 
 
 
-    public SwipeAdapter(Context context, List<String> IDs, List<String> name, List<String> img ) {
+    public SwipeAdapter(Context context, List<String> IDs, List<String> name, List<String> img, List<String> styles) {
         this.context = context;
         long seed = System.nanoTime();
         Collections.shuffle(img, new Random(seed));
         Collections.shuffle(name, new Random(seed));
         Collections.shuffle(IDs, new Random(seed));
+        Collections.shuffle(styles, new Random(seed));
         this.img = img;
         this.name = name;
         this.IDs = IDs;
