@@ -110,9 +110,11 @@ public class EditProfile extends Fragment {
                         Log.e("firebase", "Error getting data", task.getException());
                     } else {
                         mName.setText(String.valueOf(task.getResult().child("name").getValue()));
-                        String rest = String.valueOf(task.getResult().child("Restaurant").getValue());
-                        setRestaurant(rest);
-                        getRestaurantId(rest);
+                        if(isUserOwner){
+                            String rest = String.valueOf(task.getResult().child("Restaurant").getValue());
+                            setRestaurant(rest);
+                            getRestaurantId(rest);
+                        }
                     }
                 });
 

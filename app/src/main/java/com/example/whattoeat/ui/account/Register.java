@@ -127,6 +127,7 @@ public class Register extends AppCompatActivity {
             map.put("email", email);
             map.put("name", name);
             map.put("phone", phone);
+            map.put("Owner", false);
             map.put("last login", timestamp.toString());
 
             //Check the users entries.
