@@ -224,7 +224,7 @@ public class MapFragment extends Fragment {
                     String markerPhone = restaurantSnapshot.child("Phone").getValue(String.class);
                     String markerStyle = restaurantSnapshot.child("Style").getValue(String.class);
                     String markerSite = restaurantSnapshot.child("Hyperlink").getValue(String.class);
-                    Boolean markerVerified = restaurantSnapshot.child("Delivers").getValue(Boolean.class);
+                    Boolean markerVerified = restaurantSnapshot.child("Verified").getValue(Boolean.class);
 
                     markerIds.add(markerId);
                     markerNames.add(markerName);
@@ -240,16 +240,18 @@ public class MapFragment extends Fragment {
                 }
                 int i = 0;
                 for (String name : markerNames) {
-                    boolean markerSetupSuccessful = false;
-                    while (!markerSetupSuccessful) {
-                        try {
-                            setupMarkers(i);
-                            markerSetupSuccessful = true;
-                        } catch (Exception ImageNotLoaded) {
-                            i = 0; // reset index to retry from beginning
+                    if (markerVerifiers.get(i)) {
+                        boolean markerSetupSuccessful = false;
+                        while (!markerSetupSuccessful) {
+                            try {
+                                setupMarkers(i);
+                                markerSetupSuccessful = true;
+                            } catch (Exception ImageNotLoaded) {
+                                i = 0; // reset index to retry from beginning
+                            }
                         }
+                        i++;
                     }
-                    i++;
                 }
 
                /* for(String name : markerNames) {
