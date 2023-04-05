@@ -43,6 +43,7 @@ public class Register extends AppCompatActivity {
     private Boolean allowedToRegister;
     FirebaseDatabase database;
     protected DatabaseReference myRef;
+    private List<String> phoneNumbers;
 
     @Override
     public void onStart() {
@@ -62,6 +63,7 @@ public class Register extends AppCompatActivity {
 
         try{
             userNames = loadUsernames();
+            phoneNumbers = loadPhones();
         } catch (Exception e){
             Log.e("Error", "Error");
         }
@@ -99,9 +101,22 @@ public class Register extends AppCompatActivity {
             }
         });
 
+        editTextPhone.setOnFocusChangeListener((view, b) -> {
+            if (!b) {
+                String phone = String.valueOf(editTextPhone.getText());
+                Log.e("Register:", "Checking : " + phone+ " in " + phoneNumbers);
+                if (phoneNumbers.contains(phone)) {
+                    Log.e("Register: ", "non valid restaurant phoneNumbers");
+                    Toast.makeText(Register.this,
+                            "Phone number already registered!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         returnBtn.setOnClickListener(view -> startActivity(new Intent(Register.this, Login.class)));
         btnReg.setOnClickListener(view -> {
             progressBar.setVisibility(View.VISIBLE);
+
             String email = String.valueOf(editTextEmail.getText());
             String name = String.valueOf(editTextName.getText());
             String phone = String.valueOf(editTextPhone.getText());
@@ -115,12 +130,18 @@ public class Register extends AppCompatActivity {
             map.put("last login", timestamp.toString());
 
             //Check the users entries.
+            allowedToRegister = true;
             if (!emptyEntries(email, name, phone, password)) {
                 Log.e("Register: ", "empty entry!");
                 allowedToRegister = false;
             }
 
-            if (!validEntries(name, password)) {
+            if (!validEntries(name, password, phone)) {
+                Log.e("Register: ", "non valid entry!");
+                allowedToRegister = false;
+            }
+
+            if (phoneNumbers.contains(phone)) {
                 Log.e("Register: ", "non valid entry!");
                 allowedToRegister = false;
             }
@@ -235,6 +256,35 @@ public class Register extends AppCompatActivity {
         return usernamesTemp;
     }
 
+    public List<String> loadPhones() {
+        DatabaseReference ref = FirebaseDatabase.getInstance()
+                .getReference("User");
+        List<String> phonesTemp = new ArrayList<>();
+
+        ref.get().addOnCompleteListener(task -> {
+            for(DataSnapshot list: task.getResult().getChildren()){
+                try{
+                    String nameToAdd = list
+                            .child("phone")
+                            .getValue()
+                            .toString()
+                            .toLowerCase();
+                    phonesTemp.add(nameToAdd);
+                } catch (Exception e){
+                    Log.e("Register: ", "Phones error");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e("Register:", "error");
+            }
+        });
+        Log.e("PHones LIST: ", "" + phonesTemp);
+        return phonesTemp;
+    }
+
+
 
     /**
      * Method checks what the user entered. Returns false if it is not what we want.
@@ -242,12 +292,19 @@ public class Register extends AppCompatActivity {
      * @param password password of the user
      * @return true when entries are valid. False otherwise.
      */
-    private boolean validEntries(String name, String password){
+    private boolean validEntries(String name, String password, String phone){
         Pattern pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
 
         if(name.length() > 16){
             Toast.makeText(getApplicationContext(),
                     "Username needs to be 16 characters or shorter!",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if(phoneNumbers.contains(phone)){
+            Toast.makeText(getApplicationContext(),
+                    "Phone number already in use!",
                     Toast.LENGTH_LONG).show();
             return false;
         }

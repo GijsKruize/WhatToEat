@@ -51,6 +51,7 @@ public class homepage extends Fragment {
     private String prefLocation = "both";
     private String prefMood = "Happy";
     private String[][] data;
+    private TextView moodText;
     FirebaseDatabase database;
     private boolean isDataShuffled = false;
     protected DatabaseReference myRefRecipe, myRefRestaurant;
@@ -69,6 +70,7 @@ public class homepage extends Fragment {
         // Initialize the views
         mListView = view.findViewById(R.id.listview);
         progressBar = view.findViewById(R.id.progressBarHome);
+        moodText = view.findViewById(R.id.moodText);
 
         MyAdapter adapter = new MyAdapter();
         mListView.setAdapter(adapter);
@@ -77,7 +79,7 @@ public class homepage extends Fragment {
             getPreference();
             // Get the styles that match the user's mood
             prefStyles = getStyles(prefMood);
-        } catch (Exception e){
+        } catch (Exception e) {
             Log.e("Exception Homepage: ", "Data was empty in onCreate");
         }
         fetchData(); // Load the data
@@ -93,7 +95,7 @@ public class homepage extends Fragment {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
 
-        if (user == null){
+        if (user == null) {
             Intent intent = new Intent(getActivity(), Login.class);
             startActivity(intent);
             getActivity().finish();
@@ -108,13 +110,13 @@ public class homepage extends Fragment {
     public void onResume() {
         super.onResume();
         isDataShuffled = false; // Reset the variable to false
-        try{
+        try {
             // Get the user's preferences
             getPreference();
             // Get the styles that match the user's mood
             prefStyles = getStyles(prefMood);
 
-        }catch (Exception e){
+        } catch (Exception e) {
             Log.e("Exception homepage", "Data was empty in onResume");
         }
         fetchData();
@@ -124,7 +126,7 @@ public class homepage extends Fragment {
      * This method is used to fetch data from the database.
      * It will be called when the user first opens the app or when the user returns to the homepage.
      */
-    private void fetchData(){
+    private void fetchData() {
         progressBar.setVisibility(View.VISIBLE);
         //Connect to the database
         database = FirebaseDatabase.getInstance();
@@ -141,7 +143,7 @@ public class homepage extends Fragment {
      * This method is used to get the user's preference from the database.
      * If the user has not set any preference, the default values will be used.
      */
-    private void getPreference(){
+    private void getPreference() {
         // Get a reference to the "Preference" node in the database
         DatabaseReference preferences = database.getReference("Preference");
 
@@ -167,31 +169,35 @@ public class homepage extends Fragment {
                                 "Default values chosen.");
                     }
                     // Set the user's preferences in the app
+                    String displayText = "Recommendations for the mood : " + mood;
+                    moodText.setText(displayText);
                     setPreference(mood, location);
-                }).addOnFailureListener(task2 ->{
+                }).addOnFailureListener(task2 -> {
                     // Log an error message if there is a problem retrieving the data from the database
-                    Log.e("Homepage: ", "Error getting data from database! " +  task2);
+                    Log.e("Homepage: ", "Error getting data from database! " + task2);
                 });
     }
 
     /**
      * This method is used to set the user's preference.
-     * @param mood The user's mood
+     *
+     * @param mood     The user's mood
      * @param location The user's location
      */
-    private void setPreference(String mood, String location){
+    private void setPreference(String mood, String location) {
         this.prefMood = mood;
         this.prefLocation = location;
     }
 
     /**
      * This method is used to fetch data from the database.
+     *
      * @param styles List of styles bound to mood
-     * @param pref The user's location
+     * @param pref   The user's location
      */
-    public void fetchFromDb(List styles, String pref){
+    public void fetchFromDb(List styles, String pref) {
 
-        if(styles == null){
+        if (styles == null) {
             styles = new ArrayList();
         }
         // fetch data from recipe table
@@ -207,12 +213,12 @@ public class homepage extends Fragment {
 
                 // Check if the user's location preference is "out"
                 // If it is, don't include recipes in the list
-                if(pref == null || !pref.equals("out")) {
+                if (pref == null || !pref.equals("out")) {
                     // Loop through all the recipes in the database
                     for (DataSnapshot recipeSnapshot : dataSnapshot.getChildren()) {
                         // Retrieve data for each recipe
 //                        Log.e("Homepage", finalStyles.toString() + recipeSnapshot.child("Style").getValue(String.class));
-                        if(finalStyles.contains(recipeSnapshot.child("Style").getValue(String.class))) {
+                        if (finalStyles.contains(recipeSnapshot.child("Style").getValue(String.class))) {
 
                             String recipeId = recipeSnapshot.getKey();
                             String recipeName = recipeSnapshot.child("Name").getValue(String.class);
@@ -250,11 +256,11 @@ public class homepage extends Fragment {
 
                 // Check if the user's location preference is "home"
                 // If it is, don't include restaurants in the list
-                if(pref == null || !pref.equals("home")) {
+                if (pref == null || !pref.equals("home")) {
                     // Loop through all the restaurants in the database
-                    for(DataSnapshot Restaurant : dataSnapshot1.getChildren()) {
+                    for (DataSnapshot Restaurant : dataSnapshot1.getChildren()) {
                         // retrieve data for each recipe
-                        if(finalStyles.contains(Restaurant.child("Style").getValue(String.class))) {
+                        if (finalStyles.contains(Restaurant.child("Style").getValue(String.class))) {
                             String restaurantId = Restaurant.getKey();
                             String restaurantName = Restaurant.child("Name").getValue(String.class);
                             String restaurantImage = Restaurant.child("Image").getValue(String.class);
@@ -284,14 +290,15 @@ public class homepage extends Fragment {
 
     /**
      * This method is used to get the styles from the database that are bound to the user's mood.
+     *
      * @param mood The user's mood
      * @return List of styles bound to mood
      */
-    private List<String> getStyles(String mood){
+    private List<String> getStyles(String mood) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("General Relation");
         List<String> styles = new ArrayList<>();
         ref.child(mood).get().addOnCompleteListener(result -> {
-            for(DataSnapshot data: result.getResult().getChildren()){
+            for (DataSnapshot data : result.getResult().getChildren()) {
                 Integer value = Integer.parseInt(data.getValue().toString());
                 if (value >= 0) {
                     String style = data.getKey();
@@ -330,15 +337,15 @@ public class homepage extends Fragment {
             TextView mTextView = view.findViewById(R.id.textViewCard); //get the TextView
             CardView card = view.findViewById(R.id.card); //get the CardView
 
-            if(!isDataShuffled) {
+            if (!isDataShuffled) {
                 shuffleData();
             }
             try {
                 //set the text of the TextView to the first element of the data array at position i
                 mTextView.setText(data[i][0]);
                 Picasso.with(getActivity().getApplicationContext()).load(data[i][1]).into(mImageView); //load the image using Picasso library
-            } catch (Exception e){
-                Log.e("Homepage: ", ""+ e); //log any errors that occur
+            } catch (Exception e) {
+                Log.e("Homepage: ", "" + e); //log any errors that occur
             }
 
             card.setOnClickListener(view1 -> {
@@ -387,7 +394,7 @@ public class homepage extends Fragment {
         // Combine the recipe and restaurant data into a single list
         List<String[]> dataList = new ArrayList<>();
         for (int i = 0; i < listNamesRec.size(); i++) {
-            dataList.add(new String[] {
+            dataList.add(new String[]{
                     listNamesRec.get(i),
                     listImagesRec.get(i),
                     listIdsRec.get(i),
@@ -395,7 +402,7 @@ public class homepage extends Fragment {
             });
         }
         for (int i = 0; i < listNamesRest.size(); i++) {
-            dataList.add(new String[] {
+            dataList.add(new String[]{
                     listNamesRest.get(i),
                     listImagesRest.get(i),
                     listIdsRest.get(i)
@@ -409,7 +416,7 @@ public class homepage extends Fragment {
         for (int i = 0; i < dataList.size(); i++) {
             try {
                 data[i] = dataList.get(i);
-            } catch (Exception e){
+            } catch (Exception e) {
                 Log.e("Homepage : ", "" + e);
             }
         }

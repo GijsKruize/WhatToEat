@@ -32,6 +32,7 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -66,13 +67,15 @@ public class RegisterRestaurant extends AppCompatActivity {
     private Boolean allowedToRegister = true;
 
     Boolean deliveryStatus;
+    private List<String> phoneNumbers = new ArrayList<>();
+
 
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if(currentUser != null){
+        if (currentUser != null) {
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
             finish();
@@ -85,12 +88,13 @@ public class RegisterRestaurant extends AppCompatActivity {
         getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
 
-        try{
+        try {
             restNames = loadRestaurantNames();
             userNames = loadUsernames();
-
-        } catch (Exception e){
-            Log.e("Error", "Error");
+            phoneNumbers = loadPhones();
+            phoneNumbers.addAll(loadRestPhones());
+        } catch (Exception e) {
+            Log.e("Error", "Error loading data!");
         }
         setContentView(R.layout.activity_register_restaurant);
         mAuth = FirebaseAuth.getInstance();
@@ -133,6 +137,18 @@ public class RegisterRestaurant extends AppCompatActivity {
             }
         });
 
+        editTextPhone.setOnFocusChangeListener((view, b) -> {
+            if (!b) {
+                String phone = String.valueOf(editTextPhone.getText());
+                Log.e("Register:", "Checking : " + phone+ " in " + phoneNumbers);
+                if (phoneNumbers.contains(phone)) {
+                    Log.e("Register: ", "non valid restaurant phoneNumbers");
+                    Toast.makeText(RegisterRestaurant.this,
+                            "Phone number already registered!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
         btnReg.setOnClickListener(view -> {
             String email = String.valueOf(editTextEmail.getText());
             String name = String.valueOf(editTextName.getText());
@@ -152,19 +168,19 @@ public class RegisterRestaurant extends AppCompatActivity {
 
             //Check the entries.
             allowedToRegister = true;
-            if(!emptyEntries(email, name, phone, password)){
+            if (!emptyEntries(email, name, phone, password)) {
                 Log.e("Register: ", "empty entry!");
                 allowedToRegister = false;
             }
 
             //Check owner specific entries
-            if(!ownerEntries(restaurant, address)){
+            if (!ownerEntries(restaurant, address)) {
                 Log.e("Register Restaurant:", "owner entry empty");
                 allowedToRegister = false;
 
             }
 
-            if(!validEntries(name, password)){
+            if (!validEntries(name, password, phone)) {
                 Log.e("Register: ", "non valid entry!");
                 allowedToRegister = false;
 
@@ -179,7 +195,7 @@ public class RegisterRestaurant extends AppCompatActivity {
 
             }
 
-            if(userNames.contains(name.toLowerCase(Locale.ROOT))){
+            if (userNames.contains(name.toLowerCase(Locale.ROOT))) {
                 Toast.makeText(RegisterRestaurant.this,
                         "Please chose a different username!",
                         Toast.LENGTH_SHORT).show();
@@ -206,7 +222,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                 double longitude = location.longitude;
                 mapRest.put("Latitude", latitude);
                 mapRest.put("Longitude", longitude);
-            } catch (Exception e){
+            } catch (Exception e) {
                 Log.e("Register: ", "Empty address");
                 Toast.makeText(this,
                         "Address not valid try another address!",
@@ -219,7 +235,7 @@ public class RegisterRestaurant extends AppCompatActivity {
             mapRest.put("Style", "");
             mapRest.put("Verified", false);
 
-            if(allowedToRegister) {
+            if (allowedToRegister) {
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
@@ -341,17 +357,22 @@ public class RegisterRestaurant extends AppCompatActivity {
 
     }
 
+    private void addPhones(List<String> map){
+        this.phoneNumbers.addAll(map);
+        Log.e("Phones:", phoneNumbers+"");
+    }
+
     private List<String> loadRestaurantNames() {
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("Restaurant");
         List<String> restaurantNames = new ArrayList<>();
         ref.get().addOnCompleteListener(task -> {
-            for(DataSnapshot list: task.getResult().getChildren()){
+            for (DataSnapshot list : task.getResult().getChildren()) {
                 try {
                     String nameRest = list.child("Name").getValue().toString();
                     nameRest = nameRest.toLowerCase(Locale.ROOT);
                     restaurantNames.add(nameRest);
-                } catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Register: ", "error finding restaurant name");
                 }
             }
@@ -364,18 +385,65 @@ public class RegisterRestaurant extends AppCompatActivity {
                 .getReference("User");
         List<String> usernamesTemp = new ArrayList<>();
         ref.get().addOnCompleteListener(task -> {
-            for(DataSnapshot list: task.getResult().getChildren()){
-                try{
+            for (DataSnapshot list : task.getResult().getChildren()) {
+                try {
                     String nameToAdd = list.child("name").getValue().toString();
                     nameToAdd = nameToAdd.toLowerCase(Locale.ROOT);
                     usernamesTemp.add(nameToAdd);
                     Log.e("Register: ", nameToAdd);
-                } catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Register: ", "User without name found. Continuing..");
                 }
             }
         }).addOnFailureListener(e -> Log.e("Register:", "error"));
         return usernamesTemp;
+    }
+
+    public List<String> loadPhones() {
+        DatabaseReference refUser = FirebaseDatabase.getInstance()
+                .getReference("User");
+        List<String> phonesTemp = new ArrayList<>();
+
+        refUser.get().addOnCompleteListener(task -> {
+            for(DataSnapshot list: task.getResult().getChildren()){
+                try{
+                    String phoneToAdd = list
+                            .child("phone")
+                            .getValue()
+                            .toString()
+                            .toLowerCase();
+                    phonesTemp.add(phoneToAdd);
+                } catch (Exception e){
+                    Log.e("Register: ", "Phones error");
+                }
+            }
+        }).addOnFailureListener(e -> Log.e("Register:", "error"));
+        return phonesTemp;
+    }
+
+    private List<String> loadRestPhones(){
+        DatabaseReference refRest = FirebaseDatabase.getInstance()
+                .getReference("Restaurant");
+        List<String> phonesTemp = new ArrayList<>();
+
+        refRest.get().addOnCompleteListener(task -> {
+            for(DataSnapshot list: task.getResult().getChildren()){
+                try{
+                    String phoneToAdd = list
+                            .child("Phone")
+                            .getValue()
+                            .toString()
+                            .toLowerCase();
+                    Log.e("Phone rest", phoneToAdd);
+                    phonesTemp.add(phoneToAdd);
+                } catch (Exception e){
+                    Log.e("Register: ", "Phones error");
+                }
+            }
+        }).addOnFailureListener(e -> Log.e("Register:", "error"));
+
+        Log.e("PHones LIST: ", "" + phonesTemp);
+        return phonesTemp;
     }
 
 
@@ -393,7 +461,7 @@ public class RegisterRestaurant extends AppCompatActivity {
             }
 
             Address location = address.get(0);
-            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
+            p1 = new LatLng(location.getLatitude(), location.getLongitude());
 
         } catch (IOException ex) {
 
@@ -405,17 +473,18 @@ public class RegisterRestaurant extends AppCompatActivity {
 
     /**
      * Check whether the entries of owner registration are empty
+     *
      * @param restName the restaurants name
-     * @param address the address of a restaurant
+     * @param address  the address of a restaurant
      * @return boolean depending on whether they are empty
      */
-    private boolean ownerEntries(String restName, String address){
-        if(TextUtils.isEmpty(restName)){
+    private boolean ownerEntries(String restName, String address) {
+        if (TextUtils.isEmpty(restName)) {
             Toast.makeText(RegisterRestaurant.this,
                     "Enter a restaurant name!", Toast.LENGTH_SHORT).show();
             return false;
         }
-        if(TextUtils.isEmpty(address)){
+        if (TextUtils.isEmpty(address)) {
             Toast.makeText(RegisterRestaurant.this,
                     "Enter an address!", Toast.LENGTH_SHORT).show();
             return false;
@@ -423,24 +492,31 @@ public class RegisterRestaurant extends AppCompatActivity {
         return true;
     }
 
-    public boolean validEntries(String name, String password){
+    public boolean validEntries(String name, String password, String phone) {
         Pattern pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
 
-        if(name.length() > 16){
+        if (name.length() > 16) {
             Toast.makeText(getApplicationContext(),
                     "Username needs to be 16 characters or shorter!",
                     Toast.LENGTH_LONG).show();
             return false;
         }
 
-        if(!pattern.matcher(password).find()){
+        if(phoneNumbers.contains(phone)){
+            Toast.makeText(getApplicationContext(),
+                    "Phone number already in use!",
+                    Toast.LENGTH_LONG).show();
+            return false;
+        }
+
+        if (!pattern.matcher(password).find()) {
             Toast.makeText(getApplicationContext(),
                     "Password needs to contain a special character!",
                     Toast.LENGTH_LONG).show();
             return false;
         }
 
-        if (password.length() <= 8){
+        if (password.length() <= 8) {
             Toast.makeText(getApplicationContext(),
                     "Password needs to be at least 8 characters long",
                     Toast.LENGTH_LONG).show();
@@ -449,23 +525,23 @@ public class RegisterRestaurant extends AppCompatActivity {
         return true;
     }
 
-    private boolean emptyEntries(String email, String name, String phone, String password){
-        if(TextUtils.isEmpty(email)){
+    private boolean emptyEntries(String email, String name, String phone, String password) {
+        if (TextUtils.isEmpty(email)) {
             Toast.makeText(getApplicationContext(), "Enter Email", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if(TextUtils.isEmpty(name)){
+        if (TextUtils.isEmpty(name)) {
             Toast.makeText(getApplicationContext(), "Enter Name", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if(TextUtils.isEmpty(phone)){
+        if (TextUtils.isEmpty(phone)) {
             Toast.makeText(getApplicationContext(), "Enter Phone number", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (TextUtils.isEmpty(password)){
+        if (TextUtils.isEmpty(password)) {
             Toast.makeText(getApplicationContext(), "Enter Password", Toast.LENGTH_SHORT).show();
             return false;
         }

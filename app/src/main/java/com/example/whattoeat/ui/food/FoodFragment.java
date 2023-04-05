@@ -36,12 +36,12 @@ public class FoodFragment extends Fragment {
     private SwipeListener listener;
     private String mood;
     private String location;
-    private List<String> recipeIds = new ArrayList<>();
-    private List<String> recipeNames = new ArrayList<>();
-    private List<String> recipeImages = new ArrayList<>();
-    private List<String> recipeStyles = new ArrayList<>();
+    private final List<String> recipeIds = new ArrayList<>();
+    private final List<String> recipeNames = new ArrayList<>();
+    private final List<String> recipeImages = new ArrayList<>();
+    private final List<String> recipeStyles = new ArrayList<>();
 
-    private List<String> historyFilter = new ArrayList<>();
+    private final List<String> historyFilter = new ArrayList<>();
     FirebaseDatabase database;
     DatabaseReference preferenceRef;
 
@@ -71,7 +71,8 @@ public class FoodFragment extends Fragment {
         getUserPref();
 
     }
-    protected void getUserPref(){
+
+    protected void getUserPref() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
         database = FirebaseDatabase.getInstance();
@@ -98,6 +99,7 @@ public class FoodFragment extends Fragment {
                     }
                 });
     }
+
     protected void filterData() {
         FirebaseAuth auth = FirebaseAuth.getInstance();
         String uid = auth.getCurrentUser().getUid();
@@ -143,8 +145,12 @@ public class FoodFragment extends Fragment {
                     String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
                     String recipeStyle = recipeSnapshot.child("Style").getValue(String.class);
                     boolean verified = (Boolean) recipeSnapshot.child("Verified").getValue(Boolean.class);
+                    if (location.equals(null)) {
+                        location = "both";
+                    }
                     boolean wanted = location.equals("both") || location.equals("out");
-                    if (!historyFilter.contains(recipeId) && verified == true && wanted ) {
+
+                    if (!historyFilter.contains(recipeId) && verified == true && wanted) {
                         recipeIds.add(recipeId);
                         recipeNames.add(recipeName);
                         recipeImages.add(recipeImage);
