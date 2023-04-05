@@ -147,7 +147,7 @@ public class FoodFragment extends Fragment {
                     String recipeImage = recipeSnapshot.child("Image").getValue(String.class);
                     String recipeStyle = recipeSnapshot.child("Style").getValue(String.class);
                     boolean verified = (Boolean) recipeSnapshot.child("Verified").getValue(Boolean.class);
-                    if (location.equals(null)) {
+                    if (location == null) {
                         location = "both";
                     }
                     boolean wanted = location.equals("both") || location.equals("out");
