@@ -247,7 +247,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                                 try {
                                     String stringSenderEmail = "whattoeattue@gmail.com";
                                     String stringReceiverEmail = "whattoeattue@gmail.com";
-                                    String stringPasswordSenderEmail = "z3e#54nND9!JiJp6odhS";
+                                    String stringPasswordSenderEmail = "teyvfrxqaxlbwcac";
                                     String stringHost = "smtp.gmail.com";
 
                                     Properties properties = System.getProperties();
