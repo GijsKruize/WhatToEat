@@ -95,6 +95,28 @@ public class EditProfile extends Fragment {
 
         mUpdateProfileBtn = view.findViewById(R.id.updateProfileBtn);
 
+        DatabaseReference myRef = mDatabaseRef.child("User").child(user.getUid()).child("Owner");
+        myRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Boolean result = false;
+                if(task.getResult().getValue() != null){
+                    result = (Boolean) task.getResult().getValue();
+                }
+
+                isUserOwner = result;
+                if (Boolean.FALSE.equals(result) || result == null) {
+                    Log.e("Edit profile", "user is not an owner.");
+                    mWebsiteContainer.setVisibility(View.GONE);
+                    mStyleContainer.setVisibility(View.GONE);
+                    mAddressContainer.setVisibility(View.GONE);
+                    mRestNameContainer.setVisibility(View.GONE);
+                    mRestPhoneContainer.setVisibility(View.GONE);
+                }
+            } else {
+                Log.e("firebase", "Error getting data", task.getException());
+            }
+        });
+
         if(isUserOwner) {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("User");
             getRestaurantName(ref, user);
@@ -138,28 +160,6 @@ public class EditProfile extends Fragment {
                 saveOwnerProfile(name, phone, style, website, address, restName, restPhone);
             } else {
                 saveUserProfile(name, phone, UID);
-            }
-        });
-
-        DatabaseReference myRef = mDatabaseRef.child("User").child(user.getUid()).child("Owner");
-        myRef.get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                Boolean result = false;
-                if(task.getResult().getValue() != null){
-                    result = (Boolean) task.getResult().getValue();
-                }
-                
-                isUserOwner = result;
-                if (Boolean.FALSE.equals(result) || result == null) {
-                    Log.e("Edit profile", "user is not an owner.");
-                    mWebsiteContainer.setVisibility(View.GONE);
-                    mStyleContainer.setVisibility(View.GONE);
-                    mAddressContainer.setVisibility(View.GONE);
-                    mRestNameContainer.setVisibility(View.GONE);
-                    mRestPhoneContainer.setVisibility(View.GONE);
-                }
-            } else {
-                Log.e("firebase", "Error getting data", task.getException());
             }
         });
 
