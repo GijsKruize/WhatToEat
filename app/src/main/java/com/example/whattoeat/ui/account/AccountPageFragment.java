@@ -23,6 +23,7 @@ import android.widget.Toast;
 
 import com.example.whattoeat.MainActivity;
 import com.example.whattoeat.R;
+import com.example.whattoeat.ui.SplashScreen;
 import com.example.whattoeat.ui.home.food_card;
 import com.example.whattoeat.ui.home.homepage;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -225,7 +226,7 @@ public class AccountPageFragment extends Fragment {
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
             getActivity().finish();
-            getActivity().startActivity(new Intent(getActivity(), Login.class));
+            getActivity().startActivity(new Intent(getActivity(), SplashScreen.class));
 
         });
 
