@@ -233,11 +233,8 @@ public class homepage extends Fragment {
                         }
                     }
                 }
-//                //Adapter goes hier!!!
                 MyAdapter adapter = (MyAdapter) mListView.getAdapter();
                 adapter.notifyDataSetChanged(); // Refresh the adapter with new data
-//                progressBar.setVisibility(View.GONE); // Hide the progress bar
-
             }
 
             @Override
@@ -312,23 +309,48 @@ public class homepage extends Fragment {
         return styles;
     }
 
+    /**
+     * Adapter class for displaying cards in the homepage ListView.
+     */
     public class MyAdapter extends BaseAdapter {
 
+        /**
+         * Returns the total number of items in the adapter, which is the sum of the
+         * number of elements in both the restaurant and recipe lists.
+         * @return the total number of items in the adapter
+         */
         @Override
         public int getCount() {
             return listNamesRec.size() + listNamesRest.size();
         }
 
+        /**
+         * Returns the data item at the specified position in the adapter. Not used in this adapter.
+         * @param i the position of the item to retrieve
+         * @return null
+         */
         @Override
         public Object getItem(int i) {
             return null;
         }
 
+        /**
+         *  Returns the row ID of the specified item in the adapter. Not used in this adapter.
+         * @param i the position of the item
+         * @return 0
+         */
         @Override
         public long getItemId(int i) {
             return 0;
         }
 
+        /**
+         * Creates and returns the view for the item at the specified position in the adapter.
+         * @param i the position of the item in the adapter
+         * @param view the recycled view to populate, if available
+         * @param viewGroup the parent view group for the view
+         * @return the view for the item at the specified position
+         */
         @Override
         public View getView(int i, View view, ViewGroup viewGroup) {
             view = getLayoutInflater().inflate(R.layout.card, viewGroup, false);

@@ -85,7 +85,7 @@ public class StatisticFragment extends Fragment {
      * Adds data to textviews and piechart
      */
     private void addData() {
-        
+
         // replace restaurantValue with "Restaurant_1" if there is no result
         // some restaurants haven't been swiped yet so there might be no data.
 
@@ -103,11 +103,10 @@ public class StatisticFragment extends Fragment {
         };
 
 
-
         ownerRef.child(uid).child("Restaurant").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
+                if (snapshot.exists()) {
                     String restaurantValue = snapshot.getValue(String.class); // gives the actual name of the resto
 
                     getRestaurantIndex(restaurantValue, new RestaurantKeyCallback() {
@@ -127,7 +126,7 @@ public class StatisticFragment extends Fragment {
                                     int colorIndex = 0;
 
                                     for (Map.Entry<String, Integer> entry : map.entrySet()) {
-                                        if(!map.isEmpty()) {
+                                        if (!map.isEmpty()) {
                                             int color = colorArray[colorIndex % colorArray.length];
                                             pieChart.addPieSlice(new PieModel(entry.getKey(), entry.getValue(), color));
                                             TextView legendItem = new TextView(getContext());
@@ -136,8 +135,7 @@ public class StatisticFragment extends Fragment {
                                             legendItem.setTextColor(color);
                                             graphLegend.addView(legendItem);
                                             colorIndex++;
-                                        }
-                                        else {
+                                        } else {
                                             Log.d("Statistics", "There is no data to show right now.");
                                         }
 
@@ -162,23 +160,20 @@ public class StatisticFragment extends Fragment {
         });
 
 
-
-
-
     }
 
     /**
      * returns a map with moods as keys and total number of trues for a restaurant in that mood as values
-     * @param restaurantKey
-     * @return  map
      *
+     * @param restaurantKey
+     * @return map
      */
-    public HashMap<String,Integer> getStats(String restaurantKey, StatsCallback callback) {
+    public HashMap<String, Integer> getStats(String restaurantKey, StatsCallback callback) {
         statsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 
-                for(DataSnapshot userSnapshot : snapshot.getChildren()) {
+                for (DataSnapshot userSnapshot : snapshot.getChildren()) {
 
                     for (DataSnapshot moodSnapshot : userSnapshot.getChildren()) {
                         int trueCount = 0;
@@ -208,15 +203,14 @@ public class StatisticFragment extends Fragment {
     public String getMostFrequentMood(HashMap<String, Integer> map) {
         String mostFrequentMood = "";
         int maxCount = 0;
-        if(!map.isEmpty()) {
+        if (!map.isEmpty()) {
             for (Map.Entry<String, Integer> entry : map.entrySet()) {
                 if (entry.getValue() > maxCount) {
                     maxCount = entry.getValue();
                     mostFrequentMood = entry.getKey();
                 }
             }
-        }
-        else {
+        } else {
             mostFrequentMood = "No data yet";
 
         }
@@ -225,7 +219,7 @@ public class StatisticFragment extends Fragment {
 
     public int getTotalLikes(HashMap<String, Integer> map) {
         totLikes = 0;
-        for(Integer value : map.values()) {
+        for (Integer value : map.values()) {
             totLikes += value;
         }
         return totLikes;
@@ -255,7 +249,6 @@ public class StatisticFragment extends Fragment {
             }
         });
     }
-
 
 
 }

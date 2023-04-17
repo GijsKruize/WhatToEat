@@ -61,7 +61,6 @@
         <meta-data
             android:name="com.google.firebase.auth.DEFAULT_WEB_CLIENT_ID"
             android:value="@string/firebase_web_client_id" />
-        <activity android:name=".ui.food.HomeRestaurant"/>
     </application>
 
 </manifest>

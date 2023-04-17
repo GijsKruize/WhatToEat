@@ -75,7 +75,7 @@ public class fragment_mood extends Fragment {
     }
 
     @Override
-    public void onDestroyView(){
+    public void onDestroyView() {
         super.onDestroyView();
     }
 
@@ -92,7 +92,7 @@ public class fragment_mood extends Fragment {
         mMultiLineRadioGroup.setOnCheckedChangeListener(new MultiLineRadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(ViewGroup group, RadioButton button) {
-                int buttonID = ((button.getId()-1) % 8);
+                int buttonID = ((button.getId() - 1) % 8);
                 mood = moods.get(buttonID);
             }
         });
