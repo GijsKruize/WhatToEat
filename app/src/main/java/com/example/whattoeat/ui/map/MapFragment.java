@@ -250,8 +250,8 @@ public class MapFragment extends Fragment {
                                 i = 0; // reset index to retry from beginning
                             }
                         }
-                        i++;
                     }
+                    i++;
                 }
 
                /* for(String name : markerNames) {
