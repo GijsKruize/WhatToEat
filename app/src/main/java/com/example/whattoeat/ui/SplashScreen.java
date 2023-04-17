@@ -9,6 +9,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.os.StrictMode;
@@ -117,6 +118,14 @@ public class SplashScreen extends AppCompatActivity {
                 }
             }
         });
+        final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
+
+        if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            Toast.makeText(getApplicationContext(), "Please turn on GPS before using our app", Toast.LENGTH_LONG).show();
+            Intent gpsOptionsIntent = new Intent(
+                    android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(gpsOptionsIntent);
+        }
 
     }
 }
