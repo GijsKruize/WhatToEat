@@ -39,7 +39,6 @@ import com.google.firebase.database.FirebaseDatabase;
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
- *
  */
 public class AccountPageFragment extends Fragment {
 
@@ -75,7 +74,7 @@ public class AccountPageFragment extends Fragment {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
 
-        if (user == null){
+        if (user == null) {
             Intent intent = new Intent(getActivity(), Login.class);
             startActivity(intent);
             getActivity().finish();
@@ -85,8 +84,7 @@ public class AccountPageFragment extends Fragment {
                     .addOnCompleteListener(task -> {
                         if (!task.isSuccessful()) {
                             Log.e("firebase", "Error getting data", task.getException());
-                        }
-                        else {
+                        } else {
                             Log.d("firebase return", String.valueOf(task.getResult().getValue()));
                             textView.setText(String.valueOf(task.getResult().getValue()));
                         }
@@ -110,14 +108,12 @@ public class AccountPageFragment extends Fragment {
             }
         });
 
+        // Change to the statistics page if the user is allowed to
         mStatistics.setOnClickListener(view3 -> {
             Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
             if (currentFragment instanceof StatisticFragment) {
                 return; // do nothing if EditProfile fragment is already displayed
             }
-
-//            ConstraintLayout accountPageContainer = view.findViewById(R.id.containerAccount);
-//            accountPageContainer.setVisibility(View.GONE);
             //Get the new fragment
             Fragment fragment1 = new StatisticFragment();
             //Change it
@@ -128,29 +124,33 @@ public class AccountPageFragment extends Fragment {
                     .commit();
         });
 
+        // Actions for the reset password button
         resetPwBtn.setOnClickListener(view1 -> {
             String email = user.getEmail();
             Context context = getActivity().getApplicationContext();
-            if (email.isEmpty()){
+            // if the email is empty then there was an error
+            if (email.isEmpty()) {
                 Toast.makeText(context,
                         "Something went wrong there.. Try again later!",
                         Toast.LENGTH_SHORT).show();
                 return;
             } else {
+                // Firebase built in function to send reset password email
                 auth.sendPasswordResetEmail(email)
                         .addOnSuccessListener(unused -> Toast.makeText(context,
                                 "Check your email! Password reset email " +
                                         "was sent to you!",
                                 Toast.LENGTH_LONG).show()).addOnFailureListener(e -> {
-                                    Log.e("Login Page: ", e.toString());
-                                    Toast.makeText(context,
-                                            "There was a problem with sending the email! " +
-                                                    "Please try again later.",
-                                            Toast.LENGTH_SHORT).show();
-                                });
+                            Log.e("Login Page: ", e.toString());
+                            Toast.makeText(context,
+                                    "There was a problem with sending the email! " +
+                                            "Please try again later.",
+                                    Toast.LENGTH_SHORT).show();
+                        });
             }
         });
 
+        // Open the edit profile page.
         editProfileBtn.setOnClickListener(view1 -> {
             // Change the fragment to the preferences fragment
             Fragment currentFragment = fragmentManager.findFragmentById(R.id.containerAccount);
@@ -158,8 +158,9 @@ public class AccountPageFragment extends Fragment {
                 return; // do nothing if EditProfile fragment is already displayed
             }
 
+            // explanation of how the page works
             Toast.makeText(context, "Fill in either of the bars " +
-                    "to change your Profile! Empty means it wont change.",
+                            "to change your Profile! Empty means it wont change.",
                     Toast.LENGTH_LONG).show();
 
             //Get the new fragment
@@ -190,6 +191,9 @@ public class AccountPageFragment extends Fragment {
                     .commit();
         });
 
+        // Firebase built in delete account method.
+        // Remove user from the authentication
+        // and delete the user data from the firebase realtime db
         deleteUserBtn.setOnClickListener(view1 -> {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
             dialog.setTitle("Are you sure?");
@@ -197,17 +201,17 @@ public class AccountPageFragment extends Fragment {
                     " be removed from our systems. There is no way back!");
             dialog.setPositiveButton("Delete", (dialogInterface, i) -> user.delete().addOnCompleteListener(
                     task -> {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             user.getUid();
-                            Toast.makeText(context ,
+                            Toast.makeText(context,
                                     "Account deleted!",
                                     Toast.LENGTH_SHORT).show();
 
                             myRef = myRef.child("User").child(user.getUid());
                             myRef.removeValue()
-                                  .addOnSuccessListener(unused ->
-                                          Log.d("Account Page ",
-                                                  "Account successfully deleted from the database!"));
+                                    .addOnSuccessListener(unused ->
+                                            Log.d("Account Page ",
+                                                    "Account successfully deleted from the database!"));
                             FirebaseAuth.getInstance().signOut();
                             getActivity().startActivity(new Intent(getActivity(), Login.class));
                         } else {
@@ -221,6 +225,8 @@ public class AccountPageFragment extends Fragment {
             AlertDialog alertDialog = dialog.create();
             alertDialog.show();
         });
+
+        // Button that logs the user out and sends them to the splashscreen
         logoutButton.setOnClickListener(view1 -> {
             FirebaseAuth.getInstance().signOut();
             Intent intent = new Intent(getActivity(), MainActivity.class);
@@ -234,7 +240,7 @@ public class AccountPageFragment extends Fragment {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         Log.d("Resumed Accountpage", "Success!");
         ConstraintLayout accountPageContainer = this.getView().findViewById(R.id.containerAccount);

@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
 import com.example.whattoeat.R;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -95,11 +96,14 @@ public class EditProfile extends Fragment {
 
         mUpdateProfileBtn = view.findViewById(R.id.updateProfileBtn);
 
+        // Set db reference to get owner data
         DatabaseReference myRef = mDatabaseRef.child("User").child(user.getUid()).child("Owner");
         myRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
+
+                //default value
                 Boolean result = false;
-                if(task.getResult().getValue() != null){
+                if (task.getResult().getValue() != null) {
                     result = (Boolean) task.getResult().getValue();
                 }
 
@@ -117,7 +121,8 @@ public class EditProfile extends Fragment {
             }
         });
 
-        if(isUserOwner) {
+        // if the user is an owner then get their restaurant data
+        if (isUserOwner) {
             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("User");
             getRestaurantName(ref, user);
         }
@@ -132,7 +137,7 @@ public class EditProfile extends Fragment {
                         Log.e("firebase", "Error getting data", task.getException());
                     } else {
                         mName.setText(String.valueOf(task.getResult().child("name").getValue()));
-                        if(isUserOwner){
+                        if (isUserOwner) {
                             String rest = String.valueOf(task.getResult().child("Restaurant").getValue());
                             setRestaurant(rest);
                             getRestaurantId(rest);
@@ -140,6 +145,7 @@ public class EditProfile extends Fragment {
                     }
                 });
 
+        // Display the users email on the edit profile page.
         mEmail = view.findViewById(R.id.editProfileUserEmail);
         mEmail.setText(user.getEmail());
 
@@ -166,6 +172,24 @@ public class EditProfile extends Fragment {
         return view;
     }
 
+    /**
+     * Saves the owner profile data to the Firebase database.
+     *
+     * @param name      the name of the owner
+     * @param phone     the phone number of the owner
+     * @param style     the style of the restaurant
+     * @param website   the website of the restaurant
+     * @param address   the address of the restaurant
+     * @param restName  the name of the restaurant
+     * @param restPhone the phone number of the restaurant
+     *                  <p>The method updates two child nodes, "User" and "Restaurant", in the Firebase database
+     *                  with the provided owner profile data. The method processes the input data and stores them in
+     *                  two separate hashmaps, mapUser and mapRest, with keys corresponding to the Firebase database fields.
+     *                  If the address is not empty, the method uses the RegisterRestaurant class to get the latitude
+     *                  and longitude of the address, and updates the mapRest accordingly.
+     *                  Finally, the method updates the Firebase database with the processed data using the Firebase
+     *                  updateChildren() method. The method logs success or failure messages for each update operation.
+     */
     private void saveOwnerProfile(String name,
                                   String phone,
                                   String style,
@@ -179,7 +203,7 @@ public class EditProfile extends Fragment {
         HashMap<String, Object> mapRest = new HashMap<>();
 
         //manual check for address because of double type
-        if(!address.isEmpty()){
+        if (!address.isEmpty()) {
             RegisterRestaurant regPage = new RegisterRestaurant();
             LatLng location = regPage.getLocationFromAddress(getContext(), address);
             double latitude = location.latitude;
@@ -190,12 +214,12 @@ public class EditProfile extends Fragment {
 
         // Add data to the users hashmap
         processData(name, "name", mapUser);
-        processData(phone,"Phone", mapUser);
+        processData(phone, "Phone", mapUser);
         processData(restName, "Restaurant", mapUser);
 
         // Add data to the Restaurant hashmap
         processData(restPhone, "Phone", mapRest);
-        processData(style,"Style", mapRest);
+        processData(style, "Style", mapRest);
         processData(website, "Hyperlink", mapRest);
         processData(address, "Location", mapRest);
         processData(restName, "Name", mapRest);
@@ -227,13 +251,22 @@ public class EditProfile extends Fragment {
                                 "Account data failed to update : " + error));
     }
 
-    private void processData(String toCheck,String key, HashMap map){
-        if(!toCheck.isEmpty()){
+    /**
+     * Processes the input data and updates the provided hashmap with the data.
+     *
+     * @param toCheck the input data to check
+     * @param key     the key to use when updating the hashmap
+     * @param map     the hashmap to update
+     *                <p>The method checks if the input data is not empty. If the input data is not empty,
+     *                the method updates the provided hashmap with the input data using the provided key.
+     */
+    private void processData(String toCheck, String key, HashMap map) {
+        if (!toCheck.isEmpty()) {
             map.put(key, toCheck);
         }
     }
 
-    private void getRestaurantName(DatabaseReference ref, FirebaseUser name){
+    private void getRestaurantName(DatabaseReference ref, FirebaseUser name) {
         ref.child(name.getUid()).child("Restaurant")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -249,30 +282,60 @@ public class EditProfile extends Fragment {
     private void setRestaurant(Object value) {
         this.restaurantName = value.toString();
     }
+
+    /**
+     * This method sets the value of the restaurant id
+     * @modifies restaurantId with the value that was set.
+     * @param value
+     */
     private void setRestaurantId(Object value) {
         Log.e("Set restid", " yes" + value);
         this.restaurantId = value.toString();
     }
 
+    /**
+     * Returns the restaurant ID.
+     * <p>The method returns the value of the private field restaurantId, which is a String
+     * representing the ID of the restaurant.
+     * @return the restaurant ID
+     */
     private String getRestaurantId() {
         return restaurantId;
     }
 
-    private void getRestaurantId(String name){
+    /**
+     * Retrieves the ID of the restaurant with the provided name from the Firebase database.
+     * @param name the name of the restaurant to search for
+     * <p>The method searches the "Restaurant" child node in the Firebase database for a restaurant with
+     * the provided name. If a matching restaurant is found, the method sets the private field
+     * restaurantId to the ID of the matching restaurant. The method logs success or failure messages
+     * accordingly.
+     */
+    private void getRestaurantId(String name) {
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Restaurant");
         ref.get().addOnCompleteListener(task -> {
             Log.d("TASK", task.toString());
             for (DataSnapshot childSnapshot : task.getResult().getChildren()) {
                 if (childSnapshot.child("Name").getValue(String.class).equals(name)) {
                     // Do something with the matching child
-                    Log.e("Edit profile: ", "Result of id: " + childSnapshot.getKey() + "Looking for : "+ name);
+                    Log.e("Edit profile: ", "Result of id: " + childSnapshot.getKey() + "Looking for : " + name);
                     setRestaurantId(childSnapshot.getKey());
                 } else {
-                    Log.e("Firebase fetch:", "Could not find it in" +childSnapshot.getKey() + "Looking for : "+ name );
+                    Log.e("Firebase fetch:", "Could not find it in" + childSnapshot.getKey() + "Looking for : " + name);
                 }
             }
         });
     }
+
+    /**
+     * Saves user profile data to the Firebase database.
+     * @param name the name of the user to save
+     * @param phone the phone number of the user to save
+     * @param UID the unique ID of the user to save
+     * <p>The method creates a hashmap with the provided user profile data and updates the "User" child
+     * node in the Firebase database with the new data. The method logs success or failure messages
+     * accordingly.
+     */
     private void saveUserProfile(String name,
                                  String phone,
                                  String UID) {
@@ -281,7 +344,6 @@ public class EditProfile extends Fragment {
 
         processData(name, "name", map);
         processData(phone, "Phone", map);
-
 
         mDatabaseRef.child("User")
                 .child(UID)
@@ -292,7 +354,5 @@ public class EditProfile extends Fragment {
                 .addOnFailureListener(error ->
                         Log.d("Edit user profile: ",
                                 "Account data failed to update : " + error));
-
-
     }
 }

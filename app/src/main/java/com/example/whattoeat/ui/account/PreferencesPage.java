@@ -93,31 +93,29 @@ public class PreferencesPage extends Fragment {
                         mHome.setBackgroundColor(Color.LTGRAY);
                         mBoth.setBackgroundColor(Color.LTGRAY);
                         selectedLocation = location;
-                        if (location == null){
+                        if (location == null) {
                             location = "both";
                             selectedLocation = "both";
                         }
                         if (location.equals("both")) {
                             mBoth.setBackgroundColor(Color.parseColor("#0FB652"));
-                        } else if (location.equals("out")){
+                        } else if (location.equals("out")) {
                             mOut.setBackgroundColor(Color.parseColor("#0FB652"));
-                        } else if (location.equals("home")){
+                        } else if (location.equals("home")) {
                             mHome.setBackgroundColor(Color.parseColor("#0FB652"));
                         }
                     }
                 });
 
 
+        // Radio buttons, get id from the one that is pressed
         MultiLineRadioGroup mMultiLineRadioGroup = (MultiLineRadioGroup) view.findViewById(R.id.main_activity_multi_line_radio_group);
-
-        mMultiLineRadioGroup.setOnCheckedChangeListener(new MultiLineRadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(ViewGroup group, RadioButton button) {
-                int buttonID = ((button.getId()-1) % 8);
-                mood = moods.get(buttonID);
-            }
+        mMultiLineRadioGroup.setOnCheckedChangeListener((MultiLineRadioGroup.OnCheckedChangeListener) (group, button) -> {
+            int buttonID = ((button.getId() - 1) % 8);
+            mood = moods.get(buttonID);
         });
 
+        // Reset the users swiping history
         mReset.setOnClickListener(view1 -> {
             AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
             dialog.setTitle("Are you sure?");
@@ -130,58 +128,39 @@ public class PreferencesPage extends Fragment {
             alertDialog.show();
         });
 
-        mSubmit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Set the mood and location in the database
-                preferencesRef.child(uid).child("Location").setValue(selectedLocation);
-                preferencesRef.child(uid).child("Mood").setValue(mood);
-                Toast.makeText(getContext(), "Saved: "+ mood, Toast.LENGTH_SHORT).show();
-            }
+        mSubmit.setOnClickListener(v -> {
+            //Set the mood and location in the database
+            preferencesRef.child(uid).child("Location").setValue(selectedLocation);
+            preferencesRef.child(uid).child("Mood").setValue(mood);
+            Toast.makeText(getContext(), "Saved: " + mood, Toast.LENGTH_SHORT).show();
         });
 
-        mOut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        //set the location value to out
+        mOut.setOnClickListener(v -> {
+            selectedLocation = "out";
+            mOut.setBackgroundColor(Color.parseColor("#0FB652"));
+            mHome.setBackgroundColor(Color.LTGRAY);
+            mBoth.setBackgroundColor(Color.LTGRAY);
 
-                selectedLocation = "out";
-                mOut.setBackgroundColor(Color.parseColor("#0FB652"));
-                mHome.setBackgroundColor(Color.LTGRAY);
-                mBoth.setBackgroundColor(Color.LTGRAY);
-
-            }
         });
 
-        mHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        //set the location value to home
+        mHome.setOnClickListener(v -> {
+            selectedLocation = "home";
+            mOut.setBackgroundColor(Color.LTGRAY);
+            mHome.setBackgroundColor(Color.parseColor("#0FB652"));
+            mBoth.setBackgroundColor(Color.LTGRAY);
 
-                selectedLocation = "home";
-                mOut.setBackgroundColor(Color.LTGRAY);
-                mHome.setBackgroundColor(Color.parseColor("#0FB652"));
-                mBoth.setBackgroundColor(Color.LTGRAY);
-
-            }
         });
 
-        mBoth.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedLocation = "both";
-                mOut.setBackgroundColor(Color.LTGRAY);
-                mHome.setBackgroundColor(Color.LTGRAY);
-                mBoth.setBackgroundColor(Color.parseColor("#0FB652"));
+        //set the location value to both
+        mBoth.setOnClickListener(v -> {
+            selectedLocation = "both";
+            mOut.setBackgroundColor(Color.LTGRAY);
+            mHome.setBackgroundColor(Color.LTGRAY);
+            mBoth.setBackgroundColor(Color.parseColor("#0FB652"));
 
-            }
         });
         return view;
     }
-//    @Override
-//    public void onResume() {
-//        super.onResume();
-//        mBoth.setBackgroundColor(Color.LTGRAY);
-//        mOut.setBackgroundColor(Color.LTGRAY);
-//        mHome.setBackgroundColor(Color.LTGRAY);
-//
-//    }
 }
