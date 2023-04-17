@@ -140,7 +140,7 @@ public class RegisterRestaurant extends AppCompatActivity {
         editTextPhone.setOnFocusChangeListener((view, b) -> {
             if (!b) {
                 String phone = String.valueOf(editTextPhone.getText());
-                Log.e("Register:", "Checking : " + phone+ " in " + phoneNumbers);
+                Log.e("Register:", "Checking : " + phone + " in " + phoneNumbers);
                 if (phoneNumbers.contains(phone)) {
                     Log.e("Register: ", "non valid restaurant phoneNumbers");
                     Toast.makeText(RegisterRestaurant.this,
@@ -158,14 +158,6 @@ public class RegisterRestaurant extends AppCompatActivity {
             String address = String.valueOf(editTextAddress.getText());
             deliveryStatus = delivery.isChecked();
 
-//                editTextName.setVisibility(View.INVISIBLE);
-//                editTextAddress.setVisibility(View.INVISIBLE);
-//                editTextEmail.setVisibility(View.INVISIBLE);
-//                editTextPassword.setVisibility(View.INVISIBLE);
-//                editTextPhone.setVisibility(View.INVISIBLE);
-//                restaurantName.setVisibility(View.INVISIBLE);
-//                btnReg.setVisibility(View.INVISIBLE);
-
             //Check the entries.
             allowedToRegister = true;
             if (!emptyEntries(email, name, phone, password)) {
@@ -180,6 +172,7 @@ public class RegisterRestaurant extends AppCompatActivity {
 
             }
 
+            // Check if the entries are valid
             if (!validEntries(name, password, phone)) {
                 Log.e("Register: ", "non valid entry!");
                 allowedToRegister = false;
@@ -203,8 +196,10 @@ public class RegisterRestaurant extends AppCompatActivity {
                 allowedToRegister = false;
 
             }
+            // Get a timestamp
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
+            // Add the data to a hashmap
             HashMap<String, Object> mapRestUser = new HashMap<>();
             mapRestUser.put("email", email);
             mapRestUser.put("name", name);
@@ -216,6 +211,8 @@ public class RegisterRestaurant extends AppCompatActivity {
             mapRest.put("Delivers", deliveryStatus);
             mapRest.put("Hyperlink", "");
             mapRest.put("Image", "");
+
+            // Try to convert the address to longitude and latitude values.
             try {
                 LatLng location = getLocationFromAddress(getApplicationContext(), address);
                 double latitude = location.latitude;
@@ -235,6 +232,7 @@ public class RegisterRestaurant extends AppCompatActivity {
             mapRest.put("Style", "");
             mapRest.put("Verified", false);
 
+            // If the owner is allowed to register then create an account
             if (allowedToRegister) {
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(task -> {
@@ -244,6 +242,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                                                 "\nYou will hear from us soon.",
                                         Toast.LENGTH_LONG).show();
 
+                                // Try to send the email to the whattoeat email address
                                 try {
                                     String stringSenderEmail = "whattoeattue@gmail.com";
                                     String stringReceiverEmail = "whattoeattue@gmail.com";
@@ -277,14 +276,11 @@ public class RegisterRestaurant extends AppCompatActivity {
                                             + phone + "\n\nEmail: " + email + "\n\nAddress: "
                                             + address);
 
-                                    Thread thread = new Thread(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            try {
-                                                Transport.send(mimeMessage);
-                                            } catch (MessagingException e) {
-                                                e.printStackTrace();
-                                            }
+                                    Thread thread = new Thread(() -> {
+                                        try {
+                                            Transport.send(mimeMessage);
+                                        } catch (MessagingException e) {
+                                            e.printStackTrace();
                                         }
                                     });
                                     thread.start();
@@ -334,7 +330,6 @@ public class RegisterRestaurant extends AppCompatActivity {
                                                             "Failed to send data!" + e
                                                     ));
                                         });
-
                                 startActivity(new Intent(RegisterRestaurant.this,
                                         Login.class));
                             } else {
@@ -357,11 +352,12 @@ public class RegisterRestaurant extends AppCompatActivity {
 
     }
 
-    private void addPhones(List<String> map){
-        this.phoneNumbers.addAll(map);
-        Log.e("Phones:", phoneNumbers+"");
-    }
-
+    /**
+     * This method retrieves the list of restaurant names from the Firebase Realtime Database
+     * and adds them to a List of Strings, which is returned by the method.
+     * If an exception is thrown, it will log an error message.
+     * @return List of restaurant names
+     */
     private List<String> loadRestaurantNames() {
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("Restaurant");
@@ -380,6 +376,12 @@ public class RegisterRestaurant extends AppCompatActivity {
         return restaurantNames;
     }
 
+    /**
+     * This method retrieves the list of user names from the Firebase Realtime Database
+     * and adds them to a List of Strings, which is returned by the method.
+     * If an exception is thrown, it will log an error message.
+     * @return List of user names
+     */
     public List<String> loadUsernames() {
         DatabaseReference ref = FirebaseDatabase.getInstance()
                 .getReference("User");
@@ -399,21 +401,27 @@ public class RegisterRestaurant extends AppCompatActivity {
         return usernamesTemp;
     }
 
+    /**
+     * This method retrieves the list of phone numbers from the Firebase Realtime Database
+     * and adds them to a List of Strings, which is returned by the method.
+     * If an exception is thrown, it will log an error message.
+     * @return List of phone numbers
+     */
     public List<String> loadPhones() {
         DatabaseReference refUser = FirebaseDatabase.getInstance()
                 .getReference("User");
         List<String> phonesTemp = new ArrayList<>();
 
         refUser.get().addOnCompleteListener(task -> {
-            for(DataSnapshot list: task.getResult().getChildren()){
-                try{
+            for (DataSnapshot list : task.getResult().getChildren()) {
+                try {
                     String phoneToAdd = list
                             .child("phone")
                             .getValue()
                             .toString()
                             .toLowerCase();
                     phonesTemp.add(phoneToAdd);
-                } catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Register: ", "Phones error");
                 }
             }
@@ -421,14 +429,20 @@ public class RegisterRestaurant extends AppCompatActivity {
         return phonesTemp;
     }
 
-    private List<String> loadRestPhones(){
+    /**
+     * This method retrieves the list of restaurant phone numbers from the Firebase Realtime Database
+     * and adds them to a List of Strings, which is returned by the method.
+     * If an exception is thrown, it will log an error message.
+     * @return List of restaurant phone numbers
+     */
+    private List<String> loadRestPhones() {
         DatabaseReference refRest = FirebaseDatabase.getInstance()
                 .getReference("Restaurant");
         List<String> phonesTemp = new ArrayList<>();
 
         refRest.get().addOnCompleteListener(task -> {
-            for(DataSnapshot list: task.getResult().getChildren()){
-                try{
+            for (DataSnapshot list : task.getResult().getChildren()) {
+                try {
                     String phoneToAdd = list
                             .child("Phone")
                             .getValue()
@@ -436,7 +450,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                             .toLowerCase();
                     Log.e("Phone rest", phoneToAdd);
                     phonesTemp.add(phoneToAdd);
-                } catch (Exception e){
+                } catch (Exception e) {
                     Log.e("Register: ", "Phones error");
                 }
             }
@@ -446,7 +460,13 @@ public class RegisterRestaurant extends AppCompatActivity {
         return phonesTemp;
     }
 
-
+    /**
+     * Retrieves the latitude and longitude coordinates of an address using the Geocoder class.
+     *
+     * @param context the context of the application
+     * @param strAddress the string representation of the address to retrieve coordinates for
+     * @return a LatLng object containing the latitude and longitude coordinates of the address
+     */
     public LatLng getLocationFromAddress(Context context, String strAddress) {
 
         Geocoder coder = new Geocoder(context);
@@ -492,9 +512,19 @@ public class RegisterRestaurant extends AppCompatActivity {
         return true;
     }
 
-    public boolean validEntries(String name, String password, String phone) {
+    /**
+     * Checks if the entered user details are valid or not. Returns false if the entries are invalid.
+     *
+     * @param name     the name of the user to be checked
+     * @param password the password of the user to be checked
+     * @param phone    the phone number of the user to be checked
+     * @return true if the entries are valid, false otherwise
+     */
+    private boolean validEntries(String name, String password, String phone) {
+        // Compiles pattern for special characters
         Pattern pattern = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
 
+        // Checks if name is longer than 16 characters
         if (name.length() > 16) {
             Toast.makeText(getApplicationContext(),
                     "Username needs to be 16 characters or shorter!",
@@ -502,20 +532,21 @@ public class RegisterRestaurant extends AppCompatActivity {
             return false;
         }
 
-        if(phoneNumbers.contains(phone)){
+        // Checks if phone number is already in use
+        if (phoneNumbers.contains(phone)) {
             Toast.makeText(getApplicationContext(),
                     "Phone number already in use!",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-
+        // Checks if password contains special character
         if (!pattern.matcher(password).find()) {
             Toast.makeText(getApplicationContext(),
                     "Password needs to contain a special character!",
                     Toast.LENGTH_LONG).show();
             return false;
         }
-
+        // Checks if password is at least 8 characters long
         if (password.length() <= 8) {
             Toast.makeText(getApplicationContext(),
                     "Password needs to be at least 8 characters long",
@@ -525,54 +556,39 @@ public class RegisterRestaurant extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Checks if the given entries are empty or not.
+     * @param email Email of the user
+     * @param name Name of the user
+     * @param phone Phone number of the user\
+     * @param password Password of the user
+     * @return True if all entries are not empty, false otherwise
+     */
     private boolean emptyEntries(String email, String name, String phone, String password) {
+
+        //check if email bar is empty
         if (TextUtils.isEmpty(email)) {
             Toast.makeText(getApplicationContext(), "Enter Email", Toast.LENGTH_SHORT).show();
             return false;
         }
 
+        //check if name bar is empty
         if (TextUtils.isEmpty(name)) {
             Toast.makeText(getApplicationContext(), "Enter Name", Toast.LENGTH_SHORT).show();
             return false;
         }
 
+        //check if phone bar is empty
         if (TextUtils.isEmpty(phone)) {
             Toast.makeText(getApplicationContext(), "Enter Phone number", Toast.LENGTH_SHORT).show();
             return false;
         }
 
+        //check if password bar is empty
         if (TextUtils.isEmpty(password)) {
             Toast.makeText(getApplicationContext(), "Enter Password", Toast.LENGTH_SHORT).show();
             return false;
         }
         return true;
     }
-
-
-//    private boolean ownerValidEntries(String restName, String address){
-//        DatabaseReference ref = FirebaseDatabase.getInstance()
-//                .getReference().child("restaurants");
-//        Query query = ref.orderByChild("username").equalTo(restName);
-//        AtomicReference<Boolean> exists = new AtomicReference<>(false);
-//        query.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                for (DataSnapshot userSnapshot: dataSnapshot.getChildren()) {
-//                    exists.set(true);
-//                    break;
-//                }
-//                if (exists.get()) {
-//                    result = false;
-//                } else {
-//                    result = true;
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//                // Handle error
-//            }
-//        });
-//        return result;
-//    }
 }

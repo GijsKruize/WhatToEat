@@ -85,13 +85,7 @@ public class StatisticFragment extends Fragment {
      * Adds data to textviews and piechart
      */
     private void addData() {
-//        statsRef = FirebaseDatabase.getInstance().getReference("Restaurant");
-
-
-//        map.clear();
-//        pieChart.clearChart();
-//        graphLegend.removeAllViews();
-
+        
         // replace restaurantValue with "Restaurant_1" if there is no result
         // some restaurants haven't been swiped yet so there might be no data.
 
