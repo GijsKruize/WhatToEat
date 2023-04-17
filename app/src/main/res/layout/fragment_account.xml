@@ -101,7 +101,7 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/gray_bar_background"
                     android:backgroundTint="@color/light_grey"
-                    android:text="Statisctics"
+                    android:text="Statistics"
                     android:visibility="gone"
                     android:layout_margin="12dp"
                     android:layout_gravity="center"
