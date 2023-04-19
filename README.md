@@ -9,7 +9,9 @@ What to eat is an Android Studio project created by a a group of students from t
 - Find places to eat around you!
 
 ## Installation
-TODO - Add installation instructions
+- Download the apk from android studio
+- Open the apk on an android phone
+- Open the app
 
 ### Requirements
 
