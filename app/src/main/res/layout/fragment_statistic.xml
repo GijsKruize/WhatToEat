@@ -53,7 +53,7 @@
         android:background="@drawable/preference_background"
         android:gravity="center_vertical"
         android:orientation="vertical"
-        android:padding="15dp">
+        android:padding="20dp">
 
 
         <TextView
