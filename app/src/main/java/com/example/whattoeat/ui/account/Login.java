@@ -114,6 +114,7 @@ public class Login extends AppCompatActivity {
                 email = String.valueOf(editTextEmail.getText());
                 password = String.valueOf(editTextPassword.getText());
 
+                // Check if the email and password are empty
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(Login.this, "Enter Email", Toast.LENGTH_SHORT).show();
                     return;
@@ -122,11 +123,15 @@ public class Login extends AppCompatActivity {
                     Toast.makeText(Login.this, "Enter Password", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 progressBar.setVisibility(View.GONE);
+
+                                // If sign in succeeds the auth state listener will be notified and logic to handle the
+                                // signed in user can be handled in the listener.
                                 if (task.isSuccessful()) {
                                     Toast.makeText(getApplicationContext(), "Login Succes", Toast.LENGTH_SHORT).show();
                                     final String UID = mAuth.getUid();

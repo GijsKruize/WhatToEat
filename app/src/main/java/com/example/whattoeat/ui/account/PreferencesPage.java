@@ -88,15 +88,19 @@ public class PreferencesPage extends Fragment {
                         Log.e("firebase", "Error getting data", task.getException());
                     } else {
                         Log.d("firebase return", String.valueOf(task.getResult().getValue()));
+                        // Get the location from the database and set the colors of the buttons to default values
                         String location = (String) task.getResult().getValue();
                         mOut.setBackgroundColor(Color.LTGRAY);
                         mHome.setBackgroundColor(Color.LTGRAY);
                         mBoth.setBackgroundColor(Color.LTGRAY);
                         selectedLocation = location;
+
+                        // If the location is null, set it to both
                         if (location == null) {
                             location = "both";
                             selectedLocation = "both";
                         }
+                        // Set the color of the button that is pressed
                         if (location.equals("both")) {
                             mBoth.setBackgroundColor(Color.parseColor("#0FB652"));
                         } else if (location.equals("out")) {

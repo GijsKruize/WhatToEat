@@ -88,6 +88,7 @@ public class RegisterRestaurant extends AppCompatActivity {
         getSupportActionBar().hide();
         super.onCreate(savedInstanceState);
 
+        // Load the data from the database
         try {
             restNames = loadRestaurantNames();
             userNames = loadUsernames();
@@ -109,6 +110,8 @@ public class RegisterRestaurant extends AppCompatActivity {
         editTextAddress = findViewById(R.id.addressRestaurantRegister);
         restaurantName = findViewById(R.id.restaurantNameRestaurantRegister);
         returnBtn = findViewById(R.id.existingUser);
+
+        // Set the database reference
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         Switch delivery = (Switch) findViewById(R.id.deliveryToggleButton);
@@ -184,6 +187,7 @@ public class RegisterRestaurant extends AppCompatActivity {
 
             }
 
+            // Check if the restaurant name is already taken
             Log.e("Register:", "Checking : " + restaurant);
             if (restNames.contains(restaurant.toLowerCase(Locale.ROOT))) {
                 Log.e("Register: ", "non valid restaurant name");
@@ -193,6 +197,7 @@ public class RegisterRestaurant extends AppCompatActivity {
 
             }
 
+            // Check if the username is already taken
             if (userNames.contains(name.toLowerCase(Locale.ROOT))) {
                 Toast.makeText(RegisterRestaurant.this,
                         "Please chose a different username!",
@@ -325,6 +330,7 @@ public class RegisterRestaurant extends AppCompatActivity {
                                                     .getChildrenCount() + 1;
                                             idNumber.toString();
 
+                                            // Add the data to a hashmap
                                             myRef.child("Restaurant")
                                                     .child(id + idNumber)
                                                     .setValue(mapRest)
