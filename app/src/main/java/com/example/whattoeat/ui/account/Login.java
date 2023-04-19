@@ -78,6 +78,7 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        // Forgot Password Button
         forgotPassword.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 String email = String.valueOf(editTextEmail.getText());
@@ -103,6 +104,8 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
+
+        // Login Button
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

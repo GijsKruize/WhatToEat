@@ -160,7 +160,6 @@ public class EditProfile extends Fragment {
             String restName = mRestName.getText().toString();
             String restPhone = mRestPhone.getText().toString();
 
-            Log.d("Edit profile page: ", "Update button pressed!");
             // Save the user inputs to the Firebase database
             if (isUserOwner) {
                 saveOwnerProfile(name, phone, style, website, address, restName, restPhone);

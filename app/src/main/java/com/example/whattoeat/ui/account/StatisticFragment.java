@@ -35,9 +35,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-/**
- * A simple {@link Fragment} subclass.
- * create an instance of this fragment.
+/*
+ * This fragment is used to display the statistics of the user
+ * It shows the most liked mood, the total number of likes and a piechart
+ * with the number of likes per mood
+ * 
  */
 public class StatisticFragment extends Fragment {
 

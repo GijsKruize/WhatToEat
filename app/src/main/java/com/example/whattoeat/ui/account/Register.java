@@ -254,6 +254,7 @@ public class Register extends AppCompatActivity {
                 .getReference("User");
         List<String> usernamesTemp = new ArrayList<>();
 
+        // Get the data from the database
         ref.get().addOnCompleteListener(task -> {
             for (DataSnapshot list : task.getResult().getChildren()) {
                 try {
