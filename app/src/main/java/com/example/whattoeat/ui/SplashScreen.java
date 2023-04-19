@@ -39,8 +39,6 @@ public class SplashScreen extends AppCompatActivity {
     private TextView createAccount;
 
     private TextView createOwnerAccount;
-//    private View splash0;
-//    private View splash1;
     private Button signIn;
     FirebaseAuth mAuth;
     FirebaseDatabase database;
@@ -67,21 +65,12 @@ public class SplashScreen extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         mAuth = FirebaseAuth.getInstance();
-
-//        splash0 = findViewById(R.id.splashTop);
-//        splash1 = findViewById(R.id.splashTop1);
-
-//        int width = getResources().getDisplayMetrics().widthPixels/3;
-//        int height = getResources().getDisplayMetrics().heightPixels/3;
-//
-//        splash0.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
-//        splash1.setLayoutParams(new RelativeLayout.LayoutParams(width, height));
             ActivityCompat.requestPermissions(this,
                     new String[] {
                             android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.ACCESS_NETWORK_STATE
                     }, 1);
 
-
+        // User pressed the create account button, send them to the register page.
         createAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -89,6 +78,7 @@ public class SplashScreen extends AppCompatActivity {
             }
         });
 
+        // User pressed the create owner account button, send them to the register restaurant page.
         createOwnerAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -96,6 +86,7 @@ public class SplashScreen extends AppCompatActivity {
             }
         });
 
+        // User pressed the sign in button, send them to the login page.
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

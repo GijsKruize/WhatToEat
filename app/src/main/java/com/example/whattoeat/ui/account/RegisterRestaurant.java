@@ -96,6 +96,8 @@ public class RegisterRestaurant extends AppCompatActivity {
         } catch (Exception e) {
             Log.e("Error", "Error loading data!");
         }
+
+        // Set the views
         setContentView(R.layout.activity_register_restaurant);
         mAuth = FirebaseAuth.getInstance();
         editTextEmail = findViewById(R.id.emailRestaurantRegister);
@@ -112,7 +114,7 @@ public class RegisterRestaurant extends AppCompatActivity {
         Switch delivery = (Switch) findViewById(R.id.deliveryToggleButton);
         user = FirebaseAuth.getInstance().getCurrentUser();
 
-
+        // When the user leaves the field, check if the username is already taken.
         editTextName.setOnFocusChangeListener((view, b) -> {
             if (!b) {
                 String name = String.valueOf(editTextName.getText());
@@ -125,6 +127,7 @@ public class RegisterRestaurant extends AppCompatActivity {
             }
         });
 
+        // When the user leaves the field, check if the restaurantName is already taken.
         restaurantName.setOnFocusChangeListener((view, b) -> {
             if (!b) {
                 String name = String.valueOf(restaurantName.getText());
@@ -137,6 +140,7 @@ public class RegisterRestaurant extends AppCompatActivity {
             }
         });
 
+        // when the user leaves the field, check if the phone number is already taken.
         editTextPhone.setOnFocusChangeListener((view, b) -> {
             if (!b) {
                 String phone = String.valueOf(editTextPhone.getText());
@@ -149,6 +153,7 @@ public class RegisterRestaurant extends AppCompatActivity {
             }
         });
 
+        // Register button
         btnReg.setOnClickListener(view -> {
             String email = String.valueOf(editTextEmail.getText());
             String name = String.valueOf(editTextName.getText());
@@ -251,11 +256,13 @@ public class RegisterRestaurant extends AppCompatActivity {
 
                                     Properties properties = System.getProperties();
 
+                                    // Setup mail server
                                     properties.put("mail.smtp.host", stringHost);
                                     properties.put("mail.smtp.port", "465");
                                     properties.put("mail.smtp.ssl.enable", "true");
                                     properties.put("mail.smtp.auth", "true");
 
+                                    // Get the Session object.
                                     Session session = Session.getInstance(properties,
                                             new Authenticator() {
                                                 @Override

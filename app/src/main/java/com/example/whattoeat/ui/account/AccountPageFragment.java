@@ -221,6 +221,8 @@ public class AccountPageFragment extends Fragment {
                         }
                     }
             ));
+            // If the user cancels the delete account action
+            // then the dialog will close
             dialog.setNegativeButton("Cancel", (dialogInterface, i) -> dialogInterface.dismiss());
             AlertDialog alertDialog = dialog.create();
             alertDialog.show();
@@ -228,12 +230,14 @@ public class AccountPageFragment extends Fragment {
 
         // Button that logs the user out and sends them to the splashscreen
         logoutButton.setOnClickListener(view1 -> {
+            // Firebase built in sign out method
             FirebaseAuth.getInstance().signOut();
+
+            // Send the user to the splashscreen
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
             getActivity().finish();
             getActivity().startActivity(new Intent(getActivity(), SplashScreen.class));
-
         });
 
         return view;
