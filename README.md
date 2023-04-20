@@ -13,14 +13,14 @@ What to eat is an Android Studio project created by a a group of students from t
 - Open the apk on an android phone
 - Open the app
 
-### Requirements
+## Requirements
 
 - Android Studio 3.0 or higher
 - Android SDK 26 or higher
 - Android Build Tools v26.0.2 or higher
 - Android Support Repository
 
-### Setup
+## Setup
 
 1. Clone the repository
 2. Open the project in Android Studio
