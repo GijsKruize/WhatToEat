@@ -76,6 +76,17 @@ public class MapFragment extends Fragment {
     Button button;
     LocationManager locationManager;
 
+    /**
+     * @param inflater           The LayoutInflater object that can be used to inflate
+     *                           any views in the fragment,
+     * @param container          If non-null, this is the parent view that the fragment's
+     *                           UI should be attached to.  The fragment should not add the view itself,
+     *                           but this can be used to generate the LayoutParams of the view.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     * @return
+     * During the onCreateView execution, the map is instantiated the way we need it.
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         MapViewModel mapViewModel =
@@ -150,6 +161,11 @@ public class MapFragment extends Fragment {
     }
 
 
+    /**
+     * @param i index number for the marker that is being setup.
+     * @throws ImagesNotLoaded
+     * Method for setting up a marker based on the current restaurant/recipe in the list.
+     */
     public void setupMarkers(int i) throws ImagesNotLoaded{
 
         map = binding.mapView;
@@ -193,9 +209,13 @@ public class MapFragment extends Fragment {
         map.getOverlays().add(restaurantMarker);
 
     }
+
+    /**
+     * This method is used to fetch data from the database.
+     * When the data is stored in lists, the markerSetup method is called.
+     */
     private void fetchData(){
 
-        //progressBar.setVisibility(View.VISIBLE);
         //Connect to the database
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference("Restaurant");
@@ -254,14 +274,6 @@ public class MapFragment extends Fragment {
                     i++;
                 }
 
-               /* for(String name : markerNames) {
-                    if(markerVerifiers.get(i) == true) {
-                        setupMarkers(i);
-                    }
-                    i++;
-                }
-                */
-                //progressBar.setVisibility(View.GONE); // Hide the progress bar
             }
 
             @Override
@@ -270,30 +282,4 @@ public class MapFragment extends Fragment {
             }
         });
     }
-
-    public LatLng getLocationFromAddress(Context context, String strAddress) {
-
-        Geocoder coder = new Geocoder(context);
-        List<Address> address;
-        LatLng p1 = null;
-
-        try {
-            // May throw an IOException
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return null;
-            }
-
-            Address location = address.get(0);
-            p1 = new LatLng(location.getLatitude(), location.getLongitude() );
-
-        } catch (IOException ex) {
-
-            ex.printStackTrace();
-        }
-
-        return p1;
-    }
 }
-
-//check if the address is the correct address such as captical

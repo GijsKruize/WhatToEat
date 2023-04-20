@@ -65,10 +65,12 @@ public class SplashScreen extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myRef = database.getReference();
         mAuth = FirebaseAuth.getInstance();
-            ActivityCompat.requestPermissions(this,
-                    new String[] {
-                            android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.ACCESS_NETWORK_STATE
-                    }, 1);
+
+        // Check if the app has the required permissions, if not the app asks for permissions.
+        ActivityCompat.requestPermissions(this,
+                new String[] {
+                        android.Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.MANAGE_EXTERNAL_STORAGE, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_WIFI_STATE, Manifest.permission.ACCESS_NETWORK_STATE
+                }, 1);
 
         // User pressed the create account button, send them to the register page.
         createAccount.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +111,9 @@ public class SplashScreen extends AppCompatActivity {
                 }
             }
         });
+
+
+        // The next section checks if location is turned on on the used phone.
         final LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE );
 
         if (!manager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
