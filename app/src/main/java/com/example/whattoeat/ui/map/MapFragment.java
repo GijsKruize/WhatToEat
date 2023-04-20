@@ -77,6 +77,8 @@ public class MapFragment extends Fragment {
     LocationManager locationManager;
 
     /**
+     * During the onCreateView execution, the map is instantiated the way we need it.
+     *
      * @param inflater           The LayoutInflater object that can be used to inflate
      *                           any views in the fragment,
      * @param container          If non-null, this is the parent view that the fragment's
@@ -85,7 +87,6 @@ public class MapFragment extends Fragment {
      * @param savedInstanceState If non-null, this fragment is being re-constructed
      *                           from a previous saved state as given here.
      * @return
-     * During the onCreateView execution, the map is instantiated the way we need it.
      */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -162,9 +163,10 @@ public class MapFragment extends Fragment {
 
 
     /**
+     * Method for setting up a marker based on the current restaurant/recipe in the list.
+     *
      * @param i index number for the marker that is being setup.
      * @throws ImagesNotLoaded
-     * Method for setting up a marker based on the current restaurant/recipe in the list.
      */
     public void setupMarkers(int i) throws ImagesNotLoaded{
 
