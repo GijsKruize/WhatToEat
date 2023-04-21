@@ -68,7 +68,6 @@ public class StatisticFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_statistic, container, false);
-
         uid = FirebaseAuth.getInstance().getUid();
         pieChart = view.findViewById(R.id.piechart);
         mostLinkedMood = view.findViewById(R.id.mostLinkedMood);
@@ -84,12 +83,13 @@ public class StatisticFragment extends Fragment {
     }
 
     /**
-     * Adds data to textviews and piechart
+     * Adds data to textviews and piechart using
+     * data snapshots from database references.
+     *
      */
     private void addData() {
 
-        // replace restaurantValue with "Restaurant_1" if there is no result
-        // some restaurants haven't been swiped yet so there might be no data.
+
 
         int[] colorArray = new int[]{
                 Color.parseColor("#ff595e"),
@@ -126,17 +126,18 @@ public class StatisticFragment extends Fragment {
 
                                     //Adding values to piechart
                                     int colorIndex = 0;
-
                                     for (Map.Entry<String, Integer> entry : map.entrySet()) {
                                         if (!map.isEmpty()) {
                                             int color = colorArray[colorIndex % colorArray.length];
                                             pieChart.addPieSlice(new PieModel(entry.getKey(), entry.getValue(), color));
-                                            TextView legendItem = new TextView(getContext());
-                                            legendItem.setText(entry.getKey());
-                                            legendItem.setTextSize(16);
-                                            legendItem.setTextColor(color);
-                                            graphLegend.addView(legendItem);
-                                            colorIndex++;
+                                            if(entry.getValue() > 0) {
+                                                TextView legendItem = new TextView(getContext());
+                                                legendItem.setText(entry.getKey());
+                                                legendItem.setTextSize(16);
+                                                legendItem.setTextColor(color);
+                                                graphLegend.addView(legendItem);
+                                                colorIndex++;
+                                            }
                                         } else {
                                             Log.d("Statistics", "There is no data to show right now.");
                                         }
@@ -165,9 +166,9 @@ public class StatisticFragment extends Fragment {
     }
 
     /**
-     * returns a map with moods as keys and total number of trues for a restaurant in that mood as values
-     *
-     * @param restaurantKey
+     * returns a map with moods as keys and total number of trues (likes)
+     * for a restaurant in that mood as values
+     * @param restaurantKey String, callback StatsCallback
      * @return map
      */
     public HashMap<String, Integer> getStats(String restaurantKey, StatsCallback callback) {
@@ -202,6 +203,15 @@ public class StatisticFragment extends Fragment {
         return map;
     }
 
+    /**
+     * returns the mood that has the greatest value in the hash map,
+     * meaning that the most occurred mood is returned.
+     * @pre {@code map != null}
+     * @param map input hashmap
+     * @return the greatest value in the map in input hashmap {@code map}
+     * @post {\mostFrequentMood == (maxCount.getKey())}
+     *
+     **/
     public String getMostFrequentMood(HashMap<String, Integer> map) {
         String mostFrequentMood = "";
         int maxCount = 0;
@@ -219,6 +229,14 @@ public class StatisticFragment extends Fragment {
         return mostFrequentMood;
     }
 
+    /**
+     * returns the sum of all the values in the hash map,
+     * which stands for the total likes. If the map is empty or null,
+     * the returned total will be 0.
+     * @param map input Hash map
+     * @return the sum of all values in hash map{@code map}
+     *
+     */
     public int getTotalLikes(HashMap<String, Integer> map) {
         totLikes = 0;
         for (Integer value : map.values()) {
@@ -232,6 +250,15 @@ public class StatisticFragment extends Fragment {
         void onRestaurantKeyReceived(String restaurantKey);
     }
 
+    /**
+     * Extracts the restaurant index based on the restaurant
+     * name which is in the Firebase realtime database,
+     * using database reference and data snapshot. Restaurant index
+     * is the keys in the database in the format "Restaurant_i", with
+     * i being the index.
+     * @param restaurantName String, callback RestaurantKeyCallback
+     *
+     */
     public void getRestaurantIndex(String restaurantName, RestaurantKeyCallback callback) {
         restaurantRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
